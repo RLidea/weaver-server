@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+
+  # App Environment: node.js
+  app:
+    image: node:12.13.1
+    container_name: ${APP_NAME}-server
+    working_dir: /usr/src/service
+    volumes:
+      - .:/usr/src/service
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    command: npm start
+    expose:
+      - ${PORT}
+    ports:
+      - 3000:${PORT}
+    restart: always
+
+
+  # Database: mariaDB
+  database:
+    image: mariadb:10.4.10
+    container_name: ${APP_NAME}-mariadb
+    volumes:
+      # Configuration
+      - "./docker/mariadb/my.cnf:/etc/mysql/conf.d/my.cnf"
+      # Keep DB data
+      - "./docker/mariadb/data:/var/lib/mysql"
+    environment:
+      - TZ=Asia/Seoul
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOSTNAME=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    expose:
+      - ${MYSQL_PORT}
+    ports:
+      - ${MYSQL_LOCAL_PORT}:${MYSQL_PORT}
+    restart: always
+
