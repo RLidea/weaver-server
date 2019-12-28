@@ -6,16 +6,18 @@
     <meta name="viewport" content="width=device-width"/>
 
     <title>Login</title>
-
+    <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body>
-
-<form action="/auth/login">
-    <h1>Login</h1>
-    <input type="email">
-    <input type="password">
-    <button type="submit">Submit</button>
-</form>
+    <div class="flex-center position-ref full-height">
+        <div class="content">
+            <form action="/auth/login">
+                <h1>Login</h1>
+                <input id="email" type="email" name="email" placeholder="email">
+                <input id="password" type="password" name="password" placeholder="password">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
-

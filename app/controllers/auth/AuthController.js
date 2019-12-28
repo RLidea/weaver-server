@@ -1,13 +1,15 @@
-const path = require("path");
-const jwt = require("jsonwebtoken");
+const path = require('path');
+const jwt = require('jsonwebtoken');
 // const { genJwtToken } = require("./jwt-generator");
 
 const viewLogin = (req, res, next) => {
-  if (isAuthorized(req)) {
-    res.send("Already Logged In");
-  } else {
-    res.sendfile(path.join(__dirname, "/../../../public/login.html"));
-  }
+  // console.log('@viewLogin', isAuthorized(req));
+  // if (isAuthorized(req)) {
+  //   res.send('Already Logged In');
+  // } else {
+  //   res.sendfile(path.join(__dirname, '/../../../public/login.html'));
+  // }
+  res.sendfile(path.join(__dirname, '/../../../public/login.html'));
 };
 
 // check login information
@@ -16,23 +18,23 @@ const doLogin = async (req, res, next) => {
 
   let token = jwt.sign(
     {
-      email: "a@b.com"
+      email: 'a@b.com',
     },
     process.env.JWT_PRIVATE_KEY,
     {
-      expiresIn: "5m"
-    }
+      expiresIn: '5m',
+    },
   );
 
-  const pass = "foo";
-  if (pass === "foo") {
-    res.cookie("user", token);
+  const pass = 'foo';
+  if (pass === 'foo') {
+    res.cookie('user', token);
     res.json({
-      token
+      token,
     });
   } else {
     res.json({
-      message: "login failed"
+      message: 'login failed',
     });
   }
 };
@@ -42,13 +44,13 @@ const isAuthorized = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
     return {
-      message: "allowed",
-      decoded
+      message: 'allowed',
+      decoded,
     };
   } catch (e) {
     console.log(e);
     return {
-      message: "not allowed"
+      message: 'not allowed',
     };
   }
 };
@@ -65,10 +67,10 @@ const testApi = (req, res, next) => {
   try {
     jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
-    res.send("authorized user");
+    res.send('authorized user');
   } catch (e) {
     console.log(e);
-    res.send("not allowed");
+    res.send('not allowed');
   }
 };
 
@@ -78,6 +80,6 @@ module.exports = Object.assign(
     viewLogin,
     doLogin,
     isAuthorized,
-    testApi
-  }
+    testApi,
+  },
 );
