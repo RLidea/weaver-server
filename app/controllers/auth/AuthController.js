@@ -1,77 +1,59 @@
 const path = require('path');
 const jwt = require('jsonwebtoken');
-// const { genJwtToken } = require("./jwt-generator");
+const passport = require('passport');
+require('dotenv').config();
 
 const viewLogin = (req, res, next) => {
-  // console.log('@viewLogin', isAuthorized(req));
-  // if (isAuthorized(req)) {
-  //   res.send('Already Logged In');
-  // } else {
-  //   res.sendfile(path.join(__dirname, '/../../../public/login.html'));
-  // }
-  res.sendfile(path.join(__dirname, '/../../../public/login.html'));
-};
-
-// check login information
-const doLogin = async (req, res, next) => {
-  // const { email, password } = req.body;
-
-  let token = jwt.sign(
-    {
-      email: 'a@b.com',
-    },
-    process.env.JWT_PRIVATE_KEY,
-    {
-      expiresIn: '5m',
-    },
-  );
-
-  const pass = 'foo';
-  if (pass === 'foo') {
-    res.cookie('user', token);
-    res.json({
-      token,
-    });
+  if (isAuthorized(req)) {
+    res.send('Already Logged In');
   } else {
-    res.json({
-      message: 'login failed',
-    });
+    res.sendfile(path.join(__dirname, '/../../../public/login.html'));
   }
 };
 
 const isAuthorized = (req, res, next) => {
   const token = req.cookies.user;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-    return {
-      message: 'allowed',
-      decoded,
-    };
+    jwt.verify(token, process.env.JWT_SECRET_KEY);
+    return true;
   } catch (e) {
-    console.log(e);
-    return {
-      message: 'not allowed',
-    };
+    return false;
   }
 };
 
-const testApi = (req, res, next) => {
-  // console.log(req.message);
-  // if (isAuthorized(req)) {
-  //   res.send("success!");
-  // } else {
-  //   res.send("fail!");
-  // }
+const doLogin = (req, res, next) => {
+  passport.authenticate('local', { session: false }, (err, user) => {
+    if (err || !user) {
+      // return res.status(400).json({
+      //   message: 'Login Failed',
+      // });
+      return next(err);
+    }
 
-  const token = req.cookies.user;
-  try {
-    jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+    const payload = {
+      email: user.email,
+    };
+    req.login(payload, { session: false }, err => {
+      if (err) {
+        console.error(err);
+        res.json(err);
+      }
+      const token = createToken(payload);
+      const newDate = new Date();
+      const expDate = newDate.setMonth(newDate.getMonth() + 3);
+      res.cookie('id', token, { sameSite: true, maxAge: expDate });
+      res.send({ success: true });
+      // return res.json({ success: 'true', token });
+    });
+  })(req, res);
+};
 
-    res.send('authorized user');
-  } catch (e) {
-    console.log(e);
-    res.send('not allowed');
-  }
+const createToken = payload => {
+  return jwt.sign({ ...payload }, process.env.JWT_SECRET_KEY, {
+    algorithm: 'HS256',
+    expiresIn: '5m',
+    issuer: process.env.APP_NAME,
+  });
 };
 
 module.exports = Object.assign(
@@ -80,6 +62,6 @@ module.exports = Object.assign(
     viewLogin,
     doLogin,
     isAuthorized,
-    testApi,
+    createToken,
   },
 );

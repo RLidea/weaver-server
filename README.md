@@ -5,7 +5,7 @@
 ### 개발 환경
 - express 기반
 - dotenv 환경변수 관리
-- 바로 시작할 수 있는 docker 환경
+- 바로 시작할 수 있는 docker 환경 
 - eslint 적용 및 규칙
 - prettier 규칙
 
@@ -15,13 +15,18 @@
 
 ### 네트워크 및 인증
 - CSRF 보호
-- passport 기반 jwt 이용한 로그인
+- passport 기반 jwt 이용한 로그인 기능
 
 ### 관리 및 테스트
 - 시스템 로그
-- mocha 기반 테스트 환경 
+- mocha 기반 테스트 환경
+
+### 에러
+- 시스템 에러 기능
 
 updated_at: 2019-12-02
+
+
 ## Quick Start
 ```shell script
 $ cp .env-example .env

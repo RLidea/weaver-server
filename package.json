@@ -21,16 +21,18 @@
     "singleQuote": true,
     "trailingComma": "all",
     "bracketSpacing": true,
-    "arrowParens" : "avoid",
+    "arrowParens": "avoid",
     "endOfLine": "lf"
   },
-  "eslintConfig": {
+    "eslintConfig": {
     "env": {
       "commonjs": true,
       "es6": true,
       "node": true
     },
-    "extends": ["plugin:prettier/recommended"],
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
     "globals": {
       "Atomics": "readonly",
       "SharedArrayBuffer": "readonly"
@@ -39,9 +41,20 @@
       "ecmaVersion": 2018
     },
     "rules": {
-      "semi": ["error", "always"],
-      "indent": ["error", 2],
-      "no-unused-vars": ["error", { "argsIgnorePattern": "^next$|^res" }]
+      "semi": [
+        "error",
+        "always"
+      ],
+      "indent": [
+        "error",
+        2
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^next$|^res"
+        }
+      ]
     }
   },
   "dependencies": {
