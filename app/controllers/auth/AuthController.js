@@ -4,11 +4,10 @@ const passport = require('passport');
 require('dotenv').config();
 
 const viewLogin = (req, res, next) => {
-  if (isAuthorized(req)) {
-    res.send('Already Logged In');
-  } else {
-    res.sendfile(path.join(__dirname, '/../../../public/login.html'));
+  if (isAuthorized(req, res, next)) {
+    return res.send('Already Logged In');
   }
+  res.sendfile(path.join(__dirname, '/../../../public/login.html'));
 };
 
 const doLogin = (req, res, next) => {
@@ -39,7 +38,7 @@ const doLogin = (req, res, next) => {
 };
 
 const createToken = payload => {
-  return jwt.sign({ ...payload }, process.env.JWT_SECRET_KEY, {
+  return jwt.sign({ ...payload, access: 'authenticated' }, process.env.JWT_SECRET_KEY, {
     algorithm: 'HS256',
     expiresIn: '5m',
     issuer: process.env.APP_NAME,
@@ -47,19 +46,29 @@ const createToken = payload => {
 };
 
 const isAuthorized = (req, res, next) => {
-  const token = req.cookies.jwt;
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET_KEY, function(err, decoded) {
-      console.log(err, decoded);
+  const token = req.cookies['jwt'];
+  const sign = process.env.JWT_SECRET_KEY;
+
+  return jwt.verify(token, sign, function(err, decoded) {
+    console.log(decoded);
+    if (err || !decoded) {
+      console.log('invalid token');
+      return false;
+    } else if (decoded && (!decoded.access || decoded.access == 'unauthenticated')) {
+      console.log('unauthenticated token');
+      return false;
+    } else if (decoded && decoded.access == 'authenticated') {
+      console.log('valid token');
       return true;
-    });
-  } catch (e) {
-    return false;
-  }
+    } else {
+      console.log('something suspicious');
+      return false;
+    }
+  });
 };
 
 const authenticateRouter = (req, res, next) => {
-  const token = req.cookies.jwt;
+  const token = req.cookies['jwt'];
   const sign = process.env.JWT_SECRET_KEY;
 
   jwt.verify(token, sign, function(err, decoded) {
