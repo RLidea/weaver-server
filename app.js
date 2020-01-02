@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require('passport');
 const passportConfig = require('./app/controllers/auth/passport');
+const csrf = require('csurf');
+
 /*
  * Environment Configurations
  */
@@ -32,7 +34,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 passportConfig();
-
+const csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection);
 /*
  * Routers
  */

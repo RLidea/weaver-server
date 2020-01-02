@@ -11,11 +11,8 @@
 <body>
 <div class="flex-center position-ref full-height">
     <div class="content">
-        <%if(page == 'login'){%>
-            <form action="/auth/login" method="post">
-        <%} else if(page == 'register'){%>
-            <form action="/auth/register" method="post">
-        <%}%>
+        <form action="/auth/<%= page %>" method="post">
+            <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
             <h1><%= title %></h1>
             <%if(page == 'register'){%>
                 <input id="name" type="text" name="name" placeholder="name">

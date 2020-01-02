@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
+    "csurf": "^1.10.0",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",

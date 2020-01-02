@@ -6,10 +6,9 @@ require('dotenv').config();
 
 const viewLogin = (req, res, next) => {
   if (isAuthorized(req, res, next)) {
-    res.redirect('/');
-    // return res.send('Already Logged In');
+    return res.redirect('/');
   }
-  res.render('auth', { title: 'Login', page: 'login' });
+  res.render('auth', { title: 'Login', page: 'login', csrfToken: req.csrfToken() });
 };
 
 const doLogin = (req, res, next) => {
@@ -50,9 +49,8 @@ const doLogin = (req, res, next) => {
 const viewRegister = (req, res, next) => {
   if (isAuthorized(req, res, next)) {
     res.redirect('/');
-    // return res.send('Already Logged In');
   }
-  res.render('auth', { title: 'Register', page: 'register' });
+  res.render('auth', { title: 'Register', page: 'register', csrfToken: req.csrfToken() });
 };
 
 const doRegister = (req, res, next) => {
@@ -64,7 +62,6 @@ const doRegister = (req, res, next) => {
     .update(password + salt)
     .digest('hex');
 
-  console.log(name, email, password, salt, hashPassword);
   UserModel.create({
     authorities_id: 1,
     name,
@@ -72,8 +69,8 @@ const doRegister = (req, res, next) => {
     password: hashPassword,
     salt,
   }).then(r => {
-    console.log('completed');
-    console.log(r);
+    console.log(r.dataValues);
+    res.redirect('/auth/login');
   });
 };
 
@@ -81,8 +78,6 @@ const doLogout = (req, res, next) => {
   if (isAuthorized(req, res, next)) {
     res.clearCookie('jwt');
     return res.redirect('/');
-
-    // res.redirect('/auth/login');
   } else {
     return res.send('Not Logged In');
   }
@@ -101,7 +96,6 @@ const isAuthorized = (req, res, next) => {
   const sign = process.env.JWT_SECRET_KEY;
 
   return jwt.verify(token, sign, function(err, decoded) {
-    console.log(decoded);
     if (err || !decoded) {
       console.log('invalid token');
       return false;
