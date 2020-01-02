@@ -76,20 +76,23 @@ $ npm i
 ```
 
 ### 데이터베이스 생성 및 관리
-데이터베이스 관리를 위해 글로벌에 `sequelize-cli` 를 설치합니다.
+데이터베이스 관리를 위해 `docker`에 접속해서 `sequelize-cli` 를 사용합니다.
 ```shell script
-$ npm i -g sequelize-cli
+$ docker ps // node:12.13.1  이미지의 <CONTAINER ID> 를 획득
+$ docker exec -it <CONTAINER ID> /bin/bash // docker 이미지로 진입
 ```
 
-이제 마이그레이션 스크립트를 실행합니다. 이때, 도커 컨테이너 실행 등으로 `.env`환경에 맞는 디비가 존재해야 합니다. 
+이제 `Migration Script`를 실행합니다. 이때, 도커 컨테이너 실행 등으로 `.env`환경에 맞는 디비가 존재해야 합니다. 
 ```shell script
-$ sequelize db:migrate
+$ ./node_modules/.bin/sequelize db:migrate
 ```
 
-기본 데이터들을 시더를 실행하여 DB에 저장합니다.
+기본 데이터들을 `Seeder`를 실행하여 DB에 저장합니다.
 ```shell script
-$ sequelize db:seed:all
+$ ./node_modules/.bin/sequelize db:seed:all
 ```
+
+`exit`명령어로 도커 프로세스에서 벗어날 수 있습니다.
 
 이제 프로젝트를 시작할 준비가 되었습니다. 매번 작업을 시작하기 전에 `docker-compose up -d`로 프로젝트고 환경을 시작하고, `docker-compose down`으로 종료합니다.
 
