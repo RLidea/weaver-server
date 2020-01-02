@@ -6,7 +6,7 @@ const AuthController = require('./../app/controllers/auth/AuthController');
 router.get('/', function(req, res, next) {
   const isAuthorized = AuthController.isAuthorized(req, res, next);
   console.log(isAuthorized.toString());
-  res.render('index', { title: 'Weaver', isAuthorized: isAuthorized.toString() });
+  res.render('index', { title: process.env.APP_NAME, isAuthorized: isAuthorized.toString() });
 });
 
 module.exports = router;

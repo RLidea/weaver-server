@@ -4,7 +4,7 @@
 
 ### 개발 환경
 - express 기반
-- dotenv 환경변수 관리
+- dotenv 를 이용한 환경변수 관리
 - 바로 시작할 수 있는 docker 환경 
 - eslint 적용 및 규칙
 - prettier 규칙
@@ -20,12 +20,12 @@
 ### 관리 및 테스트
 - 시스템 로그 (개발중)
 - mocha 기반 테스트 환경 (개발중)
+- common_code 테이블을 통해 시스템 메타데이터 관리 (개발중) 
 
 ### 에러
 - 시스템 에러 기능 (개발중)
 
-updated_at: 2019-12-02
-
+updated_at: 2020-01-02
 
 ## Quick Start
 ```shell script
