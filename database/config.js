@@ -9,6 +9,7 @@ module.exports = {
     host: process.env.MYSQL_HOST,
     port: process.env.MYSQL_PORT,
     dialect: 'mysql',
+    timezone: '+09:00',
     seederStorage: 'sequelize',
     define: {
       charset: 'utf8mb4',
@@ -26,6 +27,7 @@ module.exports = {
     host: process.env.MYSQL_TEST_HOST,
     port: process.env.MYSQL_TEST_PORT,
     dialect: 'mysql',
+    timezone: '+09:00',
     seederStorage: 'sequelize',
     define: {
       charset: 'utf8mb4',
@@ -43,6 +45,7 @@ module.exports = {
     host: process.env.MYSQL_PRODUCTION_HOST,
     port: process.env.MYSQL_PRODUCTION_PORT,
     dialect: 'mysql',
+    timezone: '+09:00',
     seederStorage: 'sequelize',
     define: {
       charset: 'utf8mb4',
@@ -51,5 +54,5 @@ module.exports = {
       },
     },
     // operatorsAliases: false,
-  }
+  },
 };

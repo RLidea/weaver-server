@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       wechat_id: DataTypes.STRING(50),
       certicifation_data: DataTypes.STRING(191),
       last_login: DataTypes.DATE,
+      salt: DataTypes.STRING(191),
       deleted_at: DataTypes.DATE,
     },
     {

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <link rel="stylesheet" href="/stylesheets/style.css">
+
+    <title><%= title %></title>
+
+</head>
+<body>
+
+<div class="flex-center position-ref full-height">
+    <div class="top-right links">
+        <a href="/">Home</a>
+        <%if(isAuthorized === 'false'){%>
+            <a href="/auth/login">Login</a>
+            <a href="/auth/register">Register</a>
+        <%} else {%>
+<!--            <a href="/user/">MyPage</a>-->
+            <a href="/auth/logout">Logout</a>
+        <%}%>
+
+    </div>
+    <div class="content">
+        <div class="title m-b-md">
+            Hello, <%= title %>
+        </div>
+
+        <div class="links">
+            <a href="https://github.com/centell/weaver" target="_blank">GitHub</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

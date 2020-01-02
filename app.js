@@ -4,6 +4,7 @@
 require('dotenv').config();
 
 const express = require('express');
+// const createError = require('http-errors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -13,6 +14,13 @@ const passportConfig = require('./app/controllers/auth/passport');
  * Environment Configurations
  */
 const app = express();
+
+/*
+ * View Engine Setup
+ */
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 /*
  * Express Configurations

@@ -2,12 +2,17 @@ const express = require('express');
 
 const router = express.Router();
 const AuthController = require('../app/controllers/auth/AuthController');
-// const AuthTokenController = require('../app/controllers/auth/AuthTokenController');
 
-router.route('/login').get(AuthController.viewLogin);
-router.route('/login').post(AuthController.doLogin);
+router
+  .route('/login')
+  .get(AuthController.viewLogin)
+  .post(AuthController.doLogin);
 
-router.route('/tokens').post(AuthController.createToken);
-router.route('/users').get(AuthController.viewLogin);
+router
+  .route('/register')
+  .get(AuthController.viewRegister)
+  .post(AuthController.doRegister);
+
+router.route('/logout').get(AuthController.doLogout);
 
 module.exports = router;
