@@ -159,4 +159,7 @@ app/controllers/auth/jwtPrivate.pub
 ### Docker ###
 docker/mariadb
 
+### Logger ###
+app.log
+
 # End of https://www.gitignore.io/api/node,code,linux,macos,windows

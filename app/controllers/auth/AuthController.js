@@ -68,10 +68,14 @@ const doRegister = (req, res, next) => {
     email,
     password: hashPassword,
     salt,
-  }).then(r => {
-    console.log(r.dataValues);
-    res.redirect('/auth/login');
-  });
+  })
+    .then(r => {
+      console.log(r.dataValues);
+      res.redirect('/auth/login');
+    })
+    .catch(() => {
+      res.redirect('back');
+    });
 };
 
 const doLogout = (req, res, next) => {

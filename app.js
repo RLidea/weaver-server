@@ -11,6 +11,7 @@ const logger = require('morgan');
 const passport = require('passport');
 const passportConfig = require('./app/controllers/auth/passport');
 const csrf = require('csurf');
+const fs = require('fs');
 
 /*
  * Environment Configurations
@@ -36,6 +37,26 @@ app.use(passport.initialize());
 passportConfig();
 const csrfProtection = csrf({ cookie: true });
 app.use(csrfProtection);
+
+/*
+ * Logger
+ */
+if (process.env.NODE_ENV == 'development') {
+  app.use(
+    logger({
+      format: 'dev',
+      stream: fs.createWriteStream('app.log', { flags: 'w' }),
+    }),
+  );
+} else {
+  app.use(
+    logger({
+      format: 'default',
+      stream: fs.createWriteStream('app.log', { flags: 'w' }),
+    }),
+  );
+}
+
 /*
  * Routers
  */

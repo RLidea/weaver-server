@@ -18,7 +18,7 @@
 - passport 기반 jwt 이용한 로그인 기능
 
 ### 관리 및 테스트
-- 시스템 로그 (개발중)
+- 시스템 로그
 - mocha 기반 테스트 환경 (개발중)
 - common_code 테이블을 통해 시스템 메타데이터 관리 (개발중) 
 
@@ -26,12 +26,6 @@
 - 시스템 에러 기능 (개발중)
 
 updated_at: 2020-01-02
-
-## Quick Start
-```shell script
-$ cp .env-example .env
-$ docker-compose up
-```
 
 ## 처음 프로젝트를 받았을 때
 
@@ -97,6 +91,8 @@ $ ./node_modules/.bin/sequelize db:seed:all
 이제 프로젝트를 시작할 준비가 되었습니다. 매번 작업을 시작하기 전에 `docker-compose up -d`로 프로젝트고 환경을 시작하고, `docker-compose down`으로 종료합니다.
 
 
-### eslint
-`eslint` 를 적용하여 일부 코드 스타일을 강제하고 있습니다.
-각자가 사용하는 편집기에서 `eslint`를 실시간으로 체크하도록 플러그인을 설치해서 사용하시길 권합니다.
+### eslint & Prettier
+`eslint` 및 `Prettier`를 적용하여 일부 코드 스타일을 강제하고 있습니다.
+각자가 사용하는 편집기에서 `eslint`실시간으로 체크하도록 플러그인을 설치해서 사용하시길 권합니다.
+또한 `Prettier`를 지원하는 플러그인으로 코드를 계속 자동으로 고쳐나가며 개발하실 수 있으며
+git 커밋시에 `Staged`된 파일이 자동으로 `Prettier`를 거치도록 되어 있습니다. 
