@@ -1,0 +1,39 @@
+<div class="flex-center">
+    <div class="content_style">
+        <div id="error-message">
+            <h1><%= error.status %> <%= message %></h1>
+        </div>
+
+        <div class="ce-padding-large">
+            <a onclick="goBack()" class="ce-button ce-button-default ce-margin-middle">Go back previous page</a>
+            <a href="/" class="ce-button ce-button-default ce-margin-middle">Go to main page</a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    const spanError = document.createElement('span');
+    const divErrorMessage = document.querySelector("#error-message");
+    // error code 에 따른 메시지
+    switch ('<%= error.status %>') {
+    case "403":
+      spanError.innerText = "Sorry, the page you are looking for could not be authorized";
+      break;
+    case "404":
+      spanError.innerText = "Sorry, the page you are looking for could not be found";
+      break;
+    case "500":
+      spanError.innerText = "Sorry, Something happened in my server";
+      break;
+    default:
+      spanError.innerText = "Sorry, An error has occurred";
+      break;
+    }
+    divErrorMessage.appendChild(spanError);
+  });
+  function goBack() {
+    window.history.back();
+  }
+</script>
