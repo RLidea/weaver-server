@@ -19,8 +19,8 @@ const doLogin = (req, res, next) => {
     if (err || !user) {
       return res.status(400).json({
         success: false,
-        message: message,
-        // message,
+        message,
+        err,
       });
       // res.redirect();
       // return next(err);
