@@ -1,14 +1,13 @@
-const logger = require('morgan');
+const morgan = require('morgan');
 const fs = require('fs');
+const writeStream = fs.createWriteStream('app.log', { flags: 'w' });
 
-const printTerminalDev = logger('dev');
-const saveFileDev = logger({
-  format: 'dev',
-  stream: fs.createWriteStream('app.log', { flags: 'w' }),
+const printTerminalDev = morgan('dev');
+const saveFileDev = morgan('dev', {
+  stream: writeStream,
 });
-const saveFileDefault = logger({
-  format: 'default',
-  stream: fs.createWriteStream('app.log', { flags: 'w' }),
+const saveFileDefault = morgan('combined', {
+  stream: writeStream,
 });
 
 module.exports = Object.assign(

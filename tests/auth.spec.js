@@ -14,7 +14,7 @@ describe('POST /auth/login', () => {
   //   request(app)
   //     .post('/auth/login')
   //     .end((err, res) => {
-  //       // if (err) done(err);
+  //       if (err) done(err);
   //
   //       console.log(res.body);
   //       res.body.should.be.instanceOf(Object);
@@ -47,6 +47,5 @@ describe('POST /auth/login', () => {
             done();
           });
       });
-    done();
   });
 });
