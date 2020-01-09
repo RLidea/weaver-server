@@ -14,14 +14,17 @@ const viewLogin = (req, res, next) => {
   res.render('auth', { title: 'Login', page: 'login', csrfToken: req.csrfToken() });
 };
 
-const doLogin = (req, res, next) => {
-  CommonCodeModel.findAll({
-    where: { group_codes_id: 1 },
-  }).then(r => {
-    console.log(r);
-  });
-  const redirectUrl = '/';
-  const period = 3;
+const doLogin = async (req, res, next) => {
+  const auth_period = await CommonCodeModel.findOne({
+    where: { name: 'auth_period' },
+  }).then(r => r.dataValues);
+
+  const redirect_uri_after_login = await CommonCodeModel.findOne({
+    where: { name: 'redirect_uri_after_login' },
+  }).then(r => r.dataValues);
+
+  const redirectUrl = `${redirect_uri_after_login}`;
+  const period = auth_period.data | 0;
 
   passport.authenticate('local', { session: false }, (err, user, message) => {
     if (err || !user) {

@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const AuthController = require('./../app/controllers/auth/AuthController');
+const AdminController = require('./../app/controllers/AdminController');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  const isAuthorized = AuthController.isAuthorized(req, res, next);
-  res.render('admin/index', { title: process.env.APP_NAME, isAuthorized: isAuthorized.toString() });
-});
+router.route('/dashboard').get(AdminController.viewDashboard);
+router.route('/settings').get(AdminController.viewSetting);
+router.route('/settings').post(AdminController.updateSettings);
 
 module.exports = router;
