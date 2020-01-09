@@ -17,14 +17,14 @@ const viewLogin = (req, res, next) => {
 const doLogin = async (req, res, next) => {
   const auth_period = await CommonCodeModel.findOne({
     where: { name: 'auth_period' },
-  }).then(r => r.dataValues);
+  }).then(r => r.dataValues.data);
 
   const redirect_uri_after_login = await CommonCodeModel.findOne({
     where: { name: 'redirect_uri_after_login' },
-  }).then(r => r.dataValues);
+  }).then(r => r.dataValues.data);
 
   const redirectUrl = `${redirect_uri_after_login}`;
-  const period = auth_period.data | 0;
+  const period = auth_period | 0;
 
   passport.authenticate('local', { session: false }, (err, user, message) => {
     if (err || !user) {
@@ -33,8 +33,6 @@ const doLogin = async (req, res, next) => {
         message,
         err,
       });
-      // res.redirect();
-      // return next(err);
     }
 
     const payload = {
@@ -63,11 +61,15 @@ const viewRegister = (req, res, next) => {
 };
 
 const doRegister = async (req, res, next) => {
+  const { name, email, password } = req.body;
+
   const default_authorities = await CommonCodeModel.findOne({
     where: { name: 'default_authorities' },
-  }).then(r => r.dataValues);
+  }).then(r => r.dataValues.data);
 
-  const { name, email, password } = req.body;
+  const redirect_uri_after_register = await CommonCodeModel.findOne({
+    where: { name: 'redirect_uri_after_register' },
+  }).then(r => r.dataValues.data);
 
   const salt = Math.round(new Date().valueOf() * Math.random()) + '';
   const hashPassword = crypto
@@ -85,7 +87,7 @@ const doRegister = async (req, res, next) => {
   })
     .then(r => {
       console.log(r.dataValues);
-      res.redirect('/auth/login');
+      res.redirect(redirect_uri_after_register);
     })
     .catch(() => {
       res.redirect('back');

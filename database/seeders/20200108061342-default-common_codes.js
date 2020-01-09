@@ -18,7 +18,7 @@ module.exports = {
           group_codes_id: 1,
           parent_id: 0,
           name: 'redirect_uri_after_register',
-          data: '/',
+          data: '/auth/login',
           description: 'uri',
         },
         {
