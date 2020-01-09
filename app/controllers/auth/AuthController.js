@@ -62,7 +62,11 @@ const viewRegister = (req, res, next) => {
   res.render('auth', { title: 'Register', page: 'register', csrfToken: req.csrfToken() });
 };
 
-const doRegister = (req, res, next) => {
+const doRegister = async (req, res, next) => {
+  const default_authorities = await CommonCodeModel.findOne({
+    where: { name: 'default_authorities' },
+  }).then(r => r.dataValues);
+
   const { name, email, password } = req.body;
 
   const salt = Math.round(new Date().valueOf() * Math.random()) + '';
@@ -70,9 +74,10 @@ const doRegister = (req, res, next) => {
     .createHash('sha512')
     .update(password + salt)
     .digest('hex');
+  const authorities_id = (default_authorities | 0) !== 0 ? default_authorities | 0 : 3;
 
   UserModel.create({
-    authorities_id: 1,
+    authorities_id,
     name,
     email,
     password: hashPassword,
