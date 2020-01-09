@@ -6,36 +6,36 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER.UNSIGNED
+        type: Sequelize.INTEGER.UNSIGNED,
       },
       group_codes_id: {
-        type: Sequelize.INTEGER.UNSIGNED
+        type: Sequelize.INTEGER.UNSIGNED,
       },
       parent_id: {
-        
         type: Sequelize.INTEGER.UNSIGNED,
-        defaultValue: 0
+        defaultValue: 0,
       },
       name: {
-        type: Sequelize.STRING(191)
+        type: Sequelize.STRING(191),
       },
-      info: {
-        type: Sequelize.TEXT
+      data: {
+        type: Sequelize.TEXT,
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('NOW()'),
       },
       updated_at: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+        allowNull: true,
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('common_codes');
-  }
+  },
 };

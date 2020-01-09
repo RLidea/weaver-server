@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const passportConfig = require('./app/controllers/auth/passport');
 const csrf = require('csurf');
+const ejsLocals = require('ejs-locals');
 
 /*
  * Environment Configurations
@@ -18,9 +19,9 @@ const app = express();
 /*
  * View Engine Setup
  */
-
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.engine('ejs', ejsLocals);
 
 /*
  * Express Configurations
@@ -40,6 +41,7 @@ app.use(csrfProtection);
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/auth', require('./routes/auth'));
+app.use('/admin', require('./routes/admin'));
 
 /*
  * Middleware

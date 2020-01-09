@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const crypto = require('crypto');
-const UserModel = require('./../../models').user;
+const Model = require('./../../models');
+const UserModel = Model.user;
+const CommonCodeModel = Model.common_code;
+
 require('dotenv').config();
 
 const viewLogin = (req, res, next) => {
@@ -12,6 +15,11 @@ const viewLogin = (req, res, next) => {
 };
 
 const doLogin = (req, res, next) => {
+  CommonCodeModel.findAll({
+    where: { group_codes_id: 1 },
+  }).then(r => {
+    console.log(r);
+  });
   const redirectUrl = '/';
   const period = 3;
 
@@ -40,8 +48,6 @@ const doLogin = (req, res, next) => {
       const expDate = newDate.setMonth(newDate.getMonth() + (period | 0));
       res.cookie('jwt', token, { sameSite: true, maxAge: expDate });
       res.redirect(redirectUrl);
-      // res.send({ success: true });
-      // return res.json({ success: 'true', token });
     });
   })(req, res, redirectUrl, period);
 };
