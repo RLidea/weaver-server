@@ -2,6 +2,11 @@ const AuthController = require('./auth/AuthController');
 const CommonCodeModel = require('./../../app/models').common_code;
 const Schema = require('validate');
 
+// const isAdmin = () => {
+//   // return true;
+//   console.log('hey');
+// };
+
 const viewDashboard = (req, res, next) => {
   const isAuthorized = AuthController.isAuthorized(req, res, next);
   res.render('admin/dashboard', {

@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const Model = require('./../../models');
 const UserModel = Model.user;
 const CommonCodeModel = Model.common_code;
+const Schema = require('validate');
+const regex = require('./../../utils/regex');
 
 require('dotenv').config();
 
@@ -15,6 +17,7 @@ const viewLogin = (req, res, next) => {
 };
 
 const doLogin = async (req, res, next) => {
+  // System metadata Parameters
   const auth_period = await CommonCodeModel.findOne({
     where: { name: 'auth_period' },
   }).then(r => r.dataValues.data);
@@ -26,6 +29,26 @@ const doLogin = async (req, res, next) => {
   const redirectUrl = `${redirect_uri_after_login}`;
   const period = auth_period | 0;
 
+  // Validation Check
+  const reqBodySchema = new Schema({
+    email: {
+      type: String,
+      required: true,
+      match: regex.email,
+      length: { min: 5 },
+    },
+    password: {
+      type: String,
+      required: true,
+      match: regex.password,
+    },
+  });
+  const validationError = reqBodySchema.validate(req.body);
+  if (validationError.length > 0) {
+    return res.status(400).json({ error: true, message: validationError[0].message });
+  }
+
+  // Login
   passport.authenticate('local', { session: false }, (err, user, message) => {
     if (err || !user) {
       return res.status(400).json({
@@ -61,6 +84,7 @@ const viewRegister = (req, res, next) => {
 };
 
 const doRegister = async (req, res, next) => {
+  // Parameters
   const { name, email, password } = req.body;
 
   const default_authorities = await CommonCodeModel.findOne({
@@ -71,6 +95,31 @@ const doRegister = async (req, res, next) => {
     where: { name: 'redirect_uri_after_register' },
   }).then(r => r.dataValues.data);
 
+  // Validation Check
+  const reqBodySchema = new Schema({
+    name: {
+      type: String,
+      required: true,
+      length: { min: 1 },
+    },
+    email: {
+      type: String,
+      required: true,
+      match: regex.email,
+      length: { min: 5 },
+    },
+    password: {
+      type: String,
+      required: true,
+      match: regex.password,
+    },
+  });
+  const validationError = reqBodySchema.validate(req.body);
+  if (validationError.length > 0) {
+    return res.status(400).json({ error: true, message: validationError[0].message });
+  }
+
+  // salt and hash
   const salt = Math.round(new Date().valueOf() * Math.random()) + '';
   const hashPassword = crypto
     .createHash('sha512')
@@ -132,6 +181,10 @@ const isAuthorized = (req, res, next) => {
   });
 };
 
+const authType = () => {
+  return '';
+};
+
 module.exports = Object.assign(
   {},
   {
@@ -142,5 +195,6 @@ module.exports = Object.assign(
     doLogout,
     isAuthorized,
     createToken,
+    authType,
   },
 );

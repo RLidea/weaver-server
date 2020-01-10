@@ -11,17 +11,30 @@
 <body>
 <div class="flex-center position-ref full-height">
     <div class="content">
-        <form action="/auth/<%= page %>" method="post">
+        <form action="/auth/<%= page %>" method="post" onsubmit="passwordHashing()">
             <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
             <h1><%= title %></h1>
             <%if(page == 'register'){%>
                 <input id="name" type="text" name="name" placeholder="name">
             <%}%>
-            <input id="email" type="email" name="email" placeholder="email">
-            <input id="password" type="password" name="password" placeholder="password">
+            <input id="email" type="email" name="email" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
+            <input id="password" type="password" name="password" placeholder="password" pattern="(.{6,})">
             <button type="submit">Submit</button>
         </form>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
+
+<script>
+function passwordHashing() {
+  const elPassword = document.querySelector('#password');
+  const objHash = new jsSHA("SHA-512", "TEXT", {numRounds: 1});
+  objHash.update(elPassword.value);
+  const hash = objHash.getHash("HEX");
+  elPassword.value = hash;
+  console.log(hash);
+}
+</script>
+
 </body>
 </html>
