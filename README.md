@@ -8,6 +8,7 @@
 - 바로 시작할 수 있는 docker 환경 
 - eslint 적용 및 규칙
 - prettier 규칙
+- React Frontend 사용 (개발중)
 
 ### 디자인 패턴 
 - sequelize 이용한 ORM 관리

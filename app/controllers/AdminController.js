@@ -1,5 +1,6 @@
 const AuthController = require('./auth/AuthController');
-const CommonCodeModel = require('./../../app/models').common_code;
+const Model = require('./../../app/models');
+const CommonCodeModel = Model.common_code;
 const Schema = require('validate');
 
 // const isAdmin = () => {
@@ -8,7 +9,7 @@ const Schema = require('validate');
 // };
 
 const viewDashboard = (req, res, next) => {
-  const isAuthorized = AuthController.isAuthorized(req, res, next);
+  const isAuthorized = AuthController.isAuthorized(req);
   res.render('admin/dashboard', {
     title: process.env.APP_NAME,
     isAuthorized: isAuthorized.toString(),
@@ -30,7 +31,7 @@ const viewSetting = async (req, res, next) => {
       };
     }),
   );
-  const isAuthorized = AuthController.isAuthorized(req, res, next);
+  const isAuthorized = AuthController.isAuthorized(req);
 
   res.render('admin/settings', {
     title: process.env.APP_NAME,

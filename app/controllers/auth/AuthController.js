@@ -4,13 +4,17 @@ const crypto = require('crypto');
 const Model = require('./../../models');
 const UserModel = Model.user;
 const CommonCodeModel = Model.common_code;
+// const AuthorityModel = Model.authority;
 const Schema = require('validate');
 const regex = require('./../../utils/regex');
 
 require('dotenv').config();
 
+/*
+  Login
+ */
 const viewLogin = (req, res, next) => {
-  if (isAuthorized(req, res, next)) {
+  if (isAuthorized(req)) {
     return res.redirect('/');
   }
   res.render('auth', { title: 'Login', page: 'login', csrfToken: req.csrfToken() });
@@ -76,8 +80,11 @@ const doLogin = async (req, res, next) => {
   })(req, res, redirectUrl, period);
 };
 
+/*
+  Register
+ */
 const viewRegister = (req, res, next) => {
-  if (isAuthorized(req, res, next)) {
+  if (isAuthorized(req)) {
     res.redirect('/');
   }
   res.render('auth', { title: 'Register', page: 'register', csrfToken: req.csrfToken() });
@@ -143,8 +150,11 @@ const doRegister = async (req, res, next) => {
     });
 };
 
+/*
+  Logout
+ */
 const doLogout = (req, res, next) => {
-  if (isAuthorized(req, res, next)) {
+  if (isAuthorized(req)) {
     res.clearCookie('jwt');
     return res.redirect('/');
   } else {
@@ -152,6 +162,9 @@ const doLogout = (req, res, next) => {
   }
 };
 
+/*
+  Authentication
+ */
 const createToken = payload => {
   return jwt.sign({ ...payload, access: 'authenticated' }, process.env.JWT_SECRET_KEY, {
     algorithm: 'HS256',
@@ -160,7 +173,11 @@ const createToken = payload => {
   });
 };
 
-const isAuthorized = (req, res, next) => {
+const isAuthorized = (req, authorities_id = []) => {
+  // Validation
+  if (authorities_id.length === 0) {
+    console.log('allow all users');
+  }
   const token = req.cookies['jwt'];
   const sign = process.env.JWT_SECRET_KEY;
 
@@ -181,8 +198,8 @@ const isAuthorized = (req, res, next) => {
   });
 };
 
-const authType = () => {
-  return '';
+const forgotPassword = (req, res, next) => {
+  console.log(req.body);
 };
 
 module.exports = Object.assign(
@@ -195,6 +212,6 @@ module.exports = Object.assign(
     doLogout,
     isAuthorized,
     createToken,
-    authType,
+    forgotPassword,
   },
 );

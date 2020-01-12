@@ -6,37 +6,43 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER.UNSIGNED
+        type: Sequelize.INTEGER.UNSIGNED,
       },
       name: {
         allowNull: false,
         type: Sequelize.STRING(191),
-        comment: '메뉴 이름'
+        comment: '메뉴 이름',
       },
       uri: {
         type: Sequelize.STRING(191),
-        comment: '메뉴의 uri'
+        comment: '메뉴의 uri',
+      },
+      order: {
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        comment: '메뉴의 순서',
+        defaultValue: 0,
       },
       description: {
-        type: Sequelize.STRING(191)
+        type: Sequelize.STRING(191),
       },
       is_use: {
         allowNull: false,
         type: Sequelize.ENUM('Y', 'N'),
-        defaultValue: 'N'
+        defaultValue: 'N',
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('NOW()')
+        defaultValue: Sequelize.literal('NOW()'),
       },
       updated_at: {
         allowNull: true,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('menus');
-  }
+  },
 };

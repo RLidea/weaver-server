@@ -3,10 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "./node_modules/.bin/nodemon ./bin/www",
+    "start": "npm-run-all --parallel start:**",
+    "start:server": "./node_modules/.bin/nodemon ./bin/www",
     "dev": "./node_modules/.bin/nodemon ./bin/www",
     "precommit": "lint-staged",
-    "test": "./node_modules/.bin/mocha ./tests --recursive -w"
+    "test:server": "./node_modules/.bin/mocha ./tests --recursive -w",
+    "migrate": "./node_modules/.bin/sequelize db:migrate",
+    "seed": "./node_modules/.bin/sequelize db:seed:all"
   },
   "lint-staged": {
     "*.js": [
@@ -87,6 +90,7 @@
     "lint-staged": "^9.5.0",
     "mocha": "^7.0.0",
     "nodemon": "^2.0.2",
+    "npm-run-all": "^4.1.5",
     "prettier": "1.19.1",
     "sequelize-cli": "^5.5.1",
     "supertest": "^4.0.2"

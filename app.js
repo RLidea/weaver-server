@@ -48,12 +48,12 @@ app.use('/admin', require('./routes/admin'));
  */
 
 // logger
-const logger = require('./app/middleware/logger');
+const logger = require('./app/middleware/Logger');
 app.use(logger.printTerminalDev);
 app.use(process.env.NODE_ENV == 'development' ? logger.saveFileDev : logger.saveFileDefault);
 
 // error
-const error = require('./app/middleware/error');
+const error = require('./app/middleware/Error');
 app.use(error.notFoundError);
 app.use(error.errorMessage);
 
