@@ -2,18 +2,16 @@ const AuthController = require('./auth/AuthController');
 const Model = require('./../../app/models');
 const CommonCodeModel = Model.common_code;
 const Schema = require('validate');
+const MenuController = require('./../controllers/MenuController');
 
-// const isAdmin = () => {
-//   // return true;
-//   console.log('hey');
-// };
-
-const viewDashboard = (req, res, next) => {
+const viewDashboard = async (req, res, next) => {
   const isAuthorized = AuthController.isAuthorized(req);
+  const menus = await MenuController.menuList(1);
   res.render('admin/dashboard', {
     title: process.env.APP_NAME,
     isAuthorized: isAuthorized.toString(),
     csrfToken: req.csrfToken(),
+    menus,
   });
 };
 

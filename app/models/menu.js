@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const menu = sequelize.define(
     'menu',
     {
+      parent_id: DataTypes.INTEGER.UNSIGNED,
       name: DataTypes.STRING(191),
       uri: DataTypes.STRING(191),
       order: DataTypes.INTEGER.UNSIGNED,

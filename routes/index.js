@@ -6,7 +6,7 @@ const AuthController = require('./../app/controllers/auth/AuthController');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   const isAuthorized = AuthController.isAuthorized(req);
-  console.log(isAuthorized.toString());
+  // console.log(isAuthorized.toString());
   res.render('production/index', { title: process.env.APP_NAME, isAuthorized: isAuthorized.toString() });
 });
 

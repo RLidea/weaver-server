@@ -8,6 +8,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED,
       },
+      parent_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        comment: '상위 메뉴',
+        defaultValue: 0,
+      },
       name: {
         allowNull: false,
         type: Sequelize.STRING(191),

@@ -7,6 +7,16 @@ module.exports = {
       [
         {
           id: 1,
+          parent_id: 0,
+          name: 'Admin',
+          uri: '/admin',
+          order: 0,
+          description: 'Admin Page Default Setting Page',
+          is_use: 'Y',
+        },
+        {
+          id: 2,
+          parent_id: 1,
           name: 'Admin Settings',
           uri: '/admin/settings',
           order: 0,
@@ -14,7 +24,8 @@ module.exports = {
           is_use: 'Y',
         },
         {
-          id: 2,
+          id: 3,
+          parent_id: 1,
           name: 'Dashboard',
           uri: '/admin/dashboard',
           order: 1,
@@ -22,7 +33,8 @@ module.exports = {
           is_use: 'Y',
         },
         {
-          id: 3,
+          id: 4,
+          parent_id: 1,
           name: 'Manage Users',
           uri: '/admin/users',
           order: 2,
