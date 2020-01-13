@@ -39,6 +39,11 @@ updated_at: 2020-01-09
 ```shell script
 $ cp .env-sample .env
 ```
+`JWT_SECRET_KEY`값을 생성해줍니다.
+```shell script
+ssh-keygen -t rsa -C "your-email-account@email.com"
+```
+
 **중요**: .env 파일은 환경의 분리 및 보안을 위해 절대로 `git`에 커밋하지 않습니다.
 
 ### Docker
