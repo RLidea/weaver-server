@@ -1,11 +1,11 @@
 const Model = require('./../../app/models');
 const MenuModel = Model.menu;
+const formatter = require('./../utils/formatter');
 // const AuthorityMenuRelationModel = Model.authority_menu_relation;
 
 module.exports.menuList = async menus_id => {
   const menus = await getAllMenuList();
-  console.log(JSON.stringify(createMenuTree(menus, menus_id))); // menus_id: origin_id
-  return createMenuTree(menus, menus_id)[0].children;
+  return getOneMenuList(formatter.list_to_tree(menus), menus_id).children;
 };
 
 const getAllMenuList = async () => {
@@ -20,41 +20,15 @@ const getAllMenuList = async () => {
   return menus;
 };
 
-function createMenuTree(menus, menu_id) {
-  let result = [];
-  const master_menu_id = menu_id;
-
-  for (let i in menus) {
-    const menu = menus[i];
-    const item = {
-      id: menu.id,
-      parent_id: menu.parent_id,
-      name: menu.name,
-      uri: menu.uri,
-      children: [],
-    };
-
-    // create root node
-    if (menu.parent_id == 0 && menu.id == master_menu_id) {
-      result.push(item);
+function getOneMenuList(menus, master_menu_id) {
+  let result;
+  for (let i = 0, l = menus.length; i < l; i += 1) {
+    const data = menus[i];
+    if (data.id !== master_menu_id) {
       continue;
     }
-
-    // create another nodes
-    result = recursiveSearch(result, item);
+    result = data;
   }
+
   return result;
 }
-
-const recursiveSearch = (parents, child) => {
-  for (let i in parents) {
-    const parent = parents[i];
-    console.log(parent, child);
-    if (parent.id == child.parent_id) {
-      parent.children.push(child);
-    }
-  }
-  console.log('########');
-  console.log(parents);
-  return parents;
-};
