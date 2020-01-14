@@ -1,7 +1,44 @@
-<ul>
-    <% for(let i in menus){%>
-    <li>
-        <a href="<%- menus[i].uri %>"><%- menus[i].name %></a>
-    </li>
-    <%}%>
-</ul>
+<nav id="navigations"></nav>
+
+<script>
+    const menus = <%- JSON.stringify(menus) %>;
+
+    document.addEventListener('DOMContentLoaded', function (){
+      console.log(JSON.stringify(menus));
+      document.querySelector('#navigations').appendChild(createMenu(menus));
+    });
+
+    function createMenu(menus) {
+      const ul = document.createElement('ul');
+      for( let i = 0, l = menus.length; i < l; i += 1 ) {
+        const menu = menus[i];
+        ul.appendChild(elList(menu));
+      }
+
+      return ul;
+    }
+
+    function elList(menu) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = menu.uri;
+      a.innerText = menu.name;
+
+      li.appendChild(a);
+
+      if (menu.children.length !== 0) {
+        console.log('.');
+        const ul = document.createElement('ul');
+        for( let i = 0, l = menu.children.length; i < l; i += 1 ) {
+          const child = menu.children[i];
+          console.log(child);
+          ul.appendChild(elList(child))
+        }
+
+        li.appendChild(ul);
+      }
+
+      return li;
+    }
+
+</script>
