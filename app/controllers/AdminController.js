@@ -4,18 +4,22 @@ const CommonCodeModel = Model.common_code;
 const Schema = require('validate');
 const MenuController = require('./../controllers/MenuController');
 
-const viewDashboard = async (req, res, next) => {
-  const isAuthorized = AuthController.isAuthorized(req);
-  const menus = await MenuController.menuList(1);
-  res.render('admin/dashboard', {
+const objInitRender = async req => {
+  return {
     title: process.env.APP_NAME,
-    isAuthorized: isAuthorized.toString(),
+    isAuthorized: AuthController.isAuthorized(req).toString(),
     csrfToken: req.csrfToken(),
-    menus,
-  });
+    menus: await MenuController.menuList(1),
+  };
+};
+
+const viewDashboard = async (req, res, next) => {
+  const obj = await objInitRender(req);
+  res.render('admin/dashboard', { ...obj });
 };
 
 const viewSetting = async (req, res, next) => {
+  const obj = await objInitRender(req);
   const systemMetadata = await CommonCodeModel.findAll({
     where: {
       group_codes_id: 1,
@@ -29,12 +33,9 @@ const viewSetting = async (req, res, next) => {
       };
     }),
   );
-  const isAuthorized = AuthController.isAuthorized(req);
 
   res.render('admin/settings', {
-    title: process.env.APP_NAME,
-    isAuthorized: isAuthorized.toString(),
-    csrfToken: req.csrfToken(),
+    ...obj,
     systemMetadata: systemMetadata,
   });
 };
