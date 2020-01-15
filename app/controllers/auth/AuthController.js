@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const Model = require('./../../models');
 const UserModel = Model.user;
 const CommonCodeModel = Model.common_code;
-// const AuthorityModel = Model.authority;
+const AuthorityModel = Model.authority;
 const Schema = require('validate');
 const regex = require('./../../utils/regex');
 
@@ -13,8 +13,8 @@ require('dotenv').config();
 /*
   Login
  */
-const viewLogin = (req, res, next) => {
-  if (getAuthInfo(req).isLogin) {
+const viewLogin = async (req, res, next) => {
+  if (await getAuthInfo(req).isLogin) {
     return res.redirect('/');
   }
   res.render('auth', { title: 'Login', page: 'login', csrfToken: req.csrfToken() });
@@ -83,8 +83,8 @@ const doLogin = async (req, res, next) => {
 /*
   Register
  */
-const viewRegister = (req, res, next) => {
-  if (getAuthInfo(req).isLogin) {
+const viewRegister = async (req, res, next) => {
+  if (await getAuthInfo(req).isLogin) {
     res.redirect('/');
   }
   res.render('auth', { title: 'Register', page: 'register', csrfToken: req.csrfToken() });
@@ -173,13 +173,12 @@ const createToken = payload => {
   });
 };
 
-// isLogin
-const getDecodedToken = req => {
+const getLoginInfo = req => {
   // Validation
   const token = req.cookies['jwt'];
   const sign = process.env.JWT_SECRET_KEY;
 
-  const objResult = (isLogin, message, decoded = {}) => {
+  const objResult = (isLogin, message, decoded = null) => {
     return {
       isLogin,
       message,
@@ -190,25 +189,50 @@ const getDecodedToken = req => {
   return jwt.verify(token, sign, function(err, decoded) {
     if (err || !decoded) {
       console.log('invalid token');
-      return objResult(false, 'invalid token', {});
+      return objResult(false, 'invalid token');
     } else if (decoded && (!decoded.access || decoded.access == 'unauthenticated')) {
       console.log('unauthenticated token');
-      return objResult(false, 'unauthenticated token', {});
+      return objResult(false, 'unauthenticated token');
     } else if (decoded && decoded.access == 'authenticated') {
       console.log('valid token');
       return objResult(true, 'login Succeed', decoded);
     } else {
       console.log('something suspicious');
-      return objResult(false, 'something suspicious', {});
+      return objResult(false, 'something suspicious');
     }
   });
 };
 
-const getAuthInfo = (req, authorities_ids = []) => {
-  console.log(authorities_ids);
-  console.log(getDecodedToken(req));
+const getAuthInfo = async (req, authorities_ids = []) => {
+  const loginInfo = getLoginInfo(req);
+  const objResult = isAllowed => {
+    return {
+      isAllowed,
+      ...loginInfo,
+    };
+  };
 
-  return getDecodedToken(req);
+  // not logged in
+  if (!loginInfo.decoded) {
+    if (authorities_ids.length !== 0) {
+      return objResult(false);
+    } else {
+      return objResult(true);
+    }
+  }
+
+  // logged in
+  const authorities_id = await UserModel.findOne({
+    where: {
+      email: loginInfo.decoded.email,
+    },
+  }).then(user => user.dataValues.authorities_id);
+
+  if (authorities_ids.includes(authorities_id)) {
+    return objResult(true);
+  } else {
+    return objResult(false);
+  }
 };
 
 const forgotPassword = (req, res, next) => {
