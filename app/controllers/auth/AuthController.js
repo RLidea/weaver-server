@@ -14,7 +14,7 @@ require('dotenv').config();
   Login
  */
 const viewLogin = (req, res, next) => {
-  if (isAuthorized(req)) {
+  if (getAuthInfo(req).isLogin) {
     return res.redirect('/');
   }
   res.render('auth', { title: 'Login', page: 'login', csrfToken: req.csrfToken() });
@@ -84,7 +84,7 @@ const doLogin = async (req, res, next) => {
   Register
  */
 const viewRegister = (req, res, next) => {
-  if (isAuthorized(req)) {
+  if (getAuthInfo(req).isLogin) {
     res.redirect('/');
   }
   res.render('auth', { title: 'Register', page: 'register', csrfToken: req.csrfToken() });
@@ -154,7 +154,7 @@ const doRegister = async (req, res, next) => {
   Logout
  */
 const doLogout = (req, res, next) => {
-  if (isAuthorized(req)) {
+  if (getAuthInfo(req).isLogin) {
     res.clearCookie('jwt');
     return res.redirect('/');
   } else {
@@ -173,32 +173,46 @@ const createToken = payload => {
   });
 };
 
-const isAuthorized = (req, authorities_id = []) => {
+// isLogin
+const getDecodedToken = req => {
   // Validation
-  if (authorities_id.length === 0) {
-    console.log('allow all users');
-  }
   const token = req.cookies['jwt'];
   const sign = process.env.JWT_SECRET_KEY;
+
+  const objResult = (isLogin, message, decoded = {}) => {
+    return {
+      isLogin,
+      message,
+      decoded,
+    };
+  };
 
   return jwt.verify(token, sign, function(err, decoded) {
     if (err || !decoded) {
       console.log('invalid token');
-      return false;
+      return objResult(false, 'invalid token', {});
     } else if (decoded && (!decoded.access || decoded.access == 'unauthenticated')) {
       console.log('unauthenticated token');
-      return false;
+      return objResult(false, 'unauthenticated token', {});
     } else if (decoded && decoded.access == 'authenticated') {
       console.log('valid token');
-      return true;
+      return objResult(true, 'login Succeed', decoded);
     } else {
       console.log('something suspicious');
-      return false;
+      return objResult(false, 'something suspicious', {});
     }
   });
 };
 
+const getAuthInfo = (req, authorities_ids = []) => {
+  console.log(authorities_ids);
+  console.log(getDecodedToken(req));
+
+  return getDecodedToken(req);
+};
+
 const forgotPassword = (req, res, next) => {
+  // TODO
   console.log(req.body);
 };
 
@@ -210,7 +224,7 @@ module.exports = Object.assign(
     viewRegister,
     doRegister,
     doLogout,
-    isAuthorized,
+    getAuthInfo,
     createToken,
     forgotPassword,
   },

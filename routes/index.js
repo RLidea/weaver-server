@@ -4,9 +4,8 @@ const AuthController = require('./../app/controllers/auth/AuthController');
 // const MenuController = require('./../app/controllers/MenuController');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  const isAuthorized = AuthController.isAuthorized(req);
-  // console.log(isAuthorized.toString());
+router.get('/', async function(req, res, next) {
+  const isAuthorized = await AuthController.getAuthInfo(req).isLogin;
   res.render('production/index', { title: process.env.APP_NAME, isAuthorized: isAuthorized.toString() });
 });
 
