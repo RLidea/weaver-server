@@ -43,7 +43,7 @@ module.exports = {
           parent_id: 0,
           name: 'auth_period',
           data: '3',
-          description: 'month',
+          description: 'date',
         },
       ],
       {},

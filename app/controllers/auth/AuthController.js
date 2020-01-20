@@ -4,7 +4,6 @@ const crypto = require('crypto');
 const Model = require('./../../models');
 const UserModel = Model.user;
 const CommonCodeModel = Model.common_code;
-const AuthorityModel = Model.authority;
 const Schema = require('validate');
 const regex = require('./../../utils/regex');
 
@@ -14,7 +13,8 @@ require('dotenv').config();
   Login
  */
 const viewLogin = async (req, res, next) => {
-  if (await getAuthInfo(req).isLogin) {
+  const authInfo = await getAuthInfo(req);
+  if (authInfo.isLogin) {
     return res.redirect('/');
   }
   res.render('auth', { title: 'Login', page: 'login', csrfToken: req.csrfToken() });
@@ -72,9 +72,13 @@ const doLogin = async (req, res, next) => {
         res.json(err);
       }
       const token = createToken(payload);
-      const newDate = new Date();
-      const expDate = newDate.setMonth(newDate.getMonth() + (period | 0));
-      res.cookie('jwt', token, { sameSite: true, maxAge: expDate });
+      // const newDate = new Date();
+      // const expDate = newDate.setMonth(newDate.getMonth() + (period | 0));
+      // const convertedDate = new Date(expDate);
+
+      const expiresIn = 1000 * 60 * 60 * 24 * period; // date
+
+      res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
       res.redirect(redirectUrl);
     });
   })(req, res, redirectUrl, period);
@@ -84,7 +88,8 @@ const doLogin = async (req, res, next) => {
   Register
  */
 const viewRegister = async (req, res, next) => {
-  if (await getAuthInfo(req).isLogin) {
+  const authInfo = await getAuthInfo(req);
+  if (authInfo.isLogin) {
     res.redirect('/');
   }
   res.render('auth', { title: 'Register', page: 'register', csrfToken: req.csrfToken() });
@@ -153,8 +158,9 @@ const doRegister = async (req, res, next) => {
 /*
   Logout
  */
-const doLogout = (req, res, next) => {
-  if (getAuthInfo(req).isLogin) {
+const doLogout = async (req, res, next) => {
+  const authInfo = await getAuthInfo(req);
+  if (authInfo.isLogin) {
     res.clearCookie('jwt');
     return res.redirect('/');
   } else {

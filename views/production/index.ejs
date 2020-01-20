@@ -2,7 +2,7 @@
 <div class="flex-center position-ref full-height">
     <div class="top-right links">
         <a href="/">Home</a>
-        <%if(isAuthorized === 'false'){%>
+        <%if(auth.isLogin === false){%>
             <a href="/auth/login">Login</a>
             <a href="/auth/register">Register</a>
         <%} else {%>

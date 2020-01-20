@@ -9,6 +9,7 @@ module.exports.menuList = async menus_id => {
 };
 
 const getAllMenuList = async () => {
+  // TODO: user 정보 받아서 권한이 있는 메뉴만 출력
   const menus = await MenuModel.findAll({
     order: [['order', 'ASC']],
   }).then(menus =>

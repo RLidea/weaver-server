@@ -8,7 +8,12 @@ router.get('/', function(req, res) {
 });
 
 router.route('/dashboard').get(AdminController.viewDashboard);
-router.route('/settings').get(AdminController.viewSetting);
-router.route('/settings').post(AdminController.updateSettings);
+
+router.route('/users').get(AdminController.viewUsers);
+
+router
+  .route('/settings')
+  .get(AdminController.viewSetting)
+  .post(AdminController.updateSettings);
 
 module.exports = router;

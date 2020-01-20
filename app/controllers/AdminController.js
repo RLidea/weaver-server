@@ -4,22 +4,35 @@ const CommonCodeModel = Model.common_code;
 const Schema = require('validate');
 const MenuController = require('./../controllers/MenuController');
 
-const objInitRender = async req => {
+const initializeParams = async req => {
+  const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
+  // console.log(authInfo);
   return {
     title: process.env.APP_NAME,
-    isAuthorized: AuthController.isAuthorized(req).toString(),
+    auth: authInfo,
     csrfToken: req.csrfToken(),
     menus: await MenuController.menuList(1),
   };
 };
 
+/*
+ * DashBoard
+ */
 const viewDashboard = async (req, res, next) => {
-  const obj = await objInitRender(req);
-  res.render('admin/dashboard', { ...obj });
+  const init = await initializeParams(req);
+  console.log(init);
+  if (init.auth.isAllowed) {
+    res.render('admin/dashboard', { ...init });
+  } else {
+    res.redirect('/');
+  }
 };
 
+/*
+ * Settings
+ */
 const viewSetting = async (req, res, next) => {
-  const obj = await objInitRender(req);
+  const init = await initializeParams(req);
   const systemMetadata = await CommonCodeModel.findAll({
     where: {
       group_codes_id: 1,
@@ -35,7 +48,7 @@ const viewSetting = async (req, res, next) => {
   );
 
   res.render('admin/settings', {
-    ...obj,
+    ...init,
     systemMetadata: systemMetadata,
   });
 };
@@ -89,11 +102,22 @@ const updateSettings = async (req, res, next) => {
   res.redirect('/admin/settings');
 };
 
+/*
+ * User Management
+ */
+const viewUsers = async (req, res, next) => {
+  const init = await initializeParams(req);
+  res.render('admin/users', {
+    ...init,
+  });
+};
+
 module.exports = Object.assign(
   {},
   {
     viewDashboard,
     viewSetting,
     updateSettings,
+    viewUsers,
   },
 );
