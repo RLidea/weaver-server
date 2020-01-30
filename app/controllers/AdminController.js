@@ -3,6 +3,7 @@ const Model = require('./../../app/models');
 const CommonCodeModel = Model.common_code;
 const Schema = require('validate');
 const MenuController = require('./../controllers/MenuController');
+const UserController = require('./UserController');
 
 const initializeParams = async req => {
   const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
@@ -107,8 +108,13 @@ const updateSettings = async (req, res, next) => {
  */
 const viewUsers = async (req, res, next) => {
   const init = await initializeParams(req);
+
+  const pageNum = req.body.pageNum > 0 ? req.body.pageNum : 1;
+
+  const users = await UserController.allUsers(pageNum, 2);
   res.render('admin/users', {
     ...init,
+    data: users,
   });
 };
 

@@ -8,20 +8,28 @@
   <title><%= title %> :: Admin</title>
 
 </head>
-<body>
-<header id="header">
-  <hgroup>
-    <h1 class="logo">Logo</h1>
-    <h2 class="theme">Project</h2>
-  </hgroup>
-  <% include ./menu %>
-</header>
-<container>
-  <%- body %>
-</container>
-<footer id="footer">
-  <p class="footer__info">Info</p>
-  <p class="copyright">Copyright &copy; <%= title %> All right reserved</p>
-</footer>
+<body class="layouts">
+
+<div class="full height">
+  <div class="main_manu">
+    <header id="header" class="full width">
+      <hgroup>
+        <h1 class="logo">Logo</h1>
+        <h2 class="theme">Project</h2>
+      </hgroup>
+    </header>
+  </div>
+  <div>
+    <% include ./menu %>
+    <container>
+      <%- body %>
+    </container>
+    <footer id="footer">
+      <p class="footer_info">Company Info</p>
+      <p class="copyright">Copyright &copy; <%= title %> All right reserved</p>
+    </footer>
+  </div>
+</div>
+
 </body>
 </html>

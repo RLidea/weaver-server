@@ -1,0 +1,69 @@
+<div>
+    <div id="board"></div>
+    <div id="pagination"></div>
+</div>
+
+<script>
+    const data = <%- JSON.stringify(data) %>;
+    console.log(data);
+    document.addEventListener('DOMContentLoaded', function (){
+      document.querySelector('#board').appendChild(createBoard(data.list));
+      document.querySelector('#pagination').appendChild(createPagination(data));
+    });
+
+    function createBoard(list) {
+
+      const table = document.createElement('table');
+      table.className = 'ui celled padded table';
+
+      const thead = document.createElement('thead');
+
+      const tbody = document.createElement('tbody');
+
+      for( let i = 0, l = list.length; i < l; i += 1 ) {
+        tbody.appendChild(elItem(list[i]));
+      }
+
+      table.appendChild(thead);
+      table.appendChild(tbody);
+
+      return table;
+    }
+
+    function elItem(item) {
+      const keys = Object.keys(item);
+
+      const tr = document.createElement('tr');
+
+      for( let i = 0, l = keys.length; i < l; i += 1 ) {
+        const td = document.createElement('td');
+        td.innerText = item[keys[i]];
+        tr.appendChild(td);
+      }
+
+      return tr;
+    }
+
+    function createPagination(data) {
+      const { currentPageNum, lastPageNum, limit, total_count } = data;
+
+      const nav = document.createElement('nav');
+      const div = document.createElement('div');
+      div.className = 'ui pagination menu';
+
+      for (let i = 1; i < lastPageNum + 1; i += 1) {
+        const a = document.createElement('a');
+        a.innerText = `${i}`;
+        a.className = 'item';
+
+        if (i == currentPageNum) {
+          a.classList.add('active')
+        }
+        div.appendChild(a);
+      }
+
+      nav.appendChild(div);
+
+      return nav
+    }
+</script>

@@ -1,11 +1,12 @@
-<nav id="navigations"></nav>
+<div class="">
+    <div id="menus" class=""></div>
+</div>
 
 <script>
     const menus = <%- JSON.stringify(menus) %>;
 
     document.addEventListener('DOMContentLoaded', function (){
-      console.log(JSON.stringify(menus));
-      document.querySelector('#navigations').appendChild(createMenu(menus));
+      document.querySelector('#menus').appendChild(createMenu(menus));
     });
 
     function createMenu(menus) {

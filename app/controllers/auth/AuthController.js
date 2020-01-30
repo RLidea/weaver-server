@@ -21,7 +21,7 @@ const viewLogin = async (req, res, next) => {
 };
 
 const doLogin = async (req, res, next) => {
-  // System metadata Parameters
+  // System config Parameters
   const auth_period = await CommonCodeModel.findOne({
     where: { name: 'auth_period' },
   }).then(r => r.dataValues.data);

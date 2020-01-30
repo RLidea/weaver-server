@@ -7,8 +7,8 @@ module.exports = {
       [
         {
           id: 1,
-          name: 'system_metadata',
-          description: 'System metadata',
+          name: 'system_config',
+          description: 'System config',
         },
       ],
       {},

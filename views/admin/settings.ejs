@@ -22,7 +22,7 @@
       const input = document.createElement('input');
 
       label.for = systemMetadata.name;
-      label.innerText = systemMetadata.name;
+      label.innerText = `${systemMetadata.name}(${systemMetadata.description})`;
       input.id = systemMetadata.name;
       input.name = systemMetadata.name;
       input.value = systemMetadata.data;
