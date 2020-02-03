@@ -3,7 +3,7 @@ const passport = require('passport');
 const crypto = require('crypto');
 const Model = require('./../../models');
 const UserModel = Model.user;
-const CommonCodeModel = Model.common_code;
+const CommonCodeController = require('./../CommonCodeController');
 const Schema = require('validate');
 const regex = require('./../../utils/regex');
 
@@ -22,13 +22,8 @@ const viewLogin = async (req, res, next) => {
 
 const doLogin = async (req, res, next) => {
   // System config Parameters
-  const auth_period = await CommonCodeModel.findOne({
-    where: { name: 'auth_period' },
-  }).then(r => r.dataValues.data);
-
-  const redirect_uri_after_login = await CommonCodeModel.findOne({
-    where: { name: 'redirect_uri_after_login' },
-  }).then(r => r.dataValues.data);
+  const auth_period = await CommonCodeController.authPeriod();
+  const redirect_uri_after_login = await CommonCodeController.redirectUriAfterLogin();
 
   const redirectUrl = `${redirect_uri_after_login}`;
   const period = auth_period | 0;
@@ -99,13 +94,8 @@ const doRegister = async (req, res, next) => {
   // Parameters
   const { name, email, password } = req.body;
 
-  const default_authorities = await CommonCodeModel.findOne({
-    where: { name: 'default_authorities' },
-  }).then(r => r.dataValues.data);
-
-  const redirect_uri_after_register = await CommonCodeModel.findOne({
-    where: { name: 'redirect_uri_after_register' },
-  }).then(r => r.dataValues.data);
+  const default_authorities = await CommonCodeController.defaultAuthorities();
+  const redirect_uri_after_register = await CommonCodeController.redirectUriAfterRegister();
 
   // Validation Check
   const reqBodySchema = new Schema({
@@ -174,7 +164,7 @@ const doLogout = async (req, res, next) => {
 const createToken = payload => {
   return jwt.sign({ ...payload, access: 'authenticated' }, process.env.JWT_SECRET_KEY, {
     algorithm: 'HS256',
-    expiresIn: '5m',
+    expiresIn: '7d',
     issuer: process.env.APP_NAME,
   });
 };
