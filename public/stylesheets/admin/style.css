@@ -36,11 +36,22 @@ html, body {
 
 #container .menu-container {
   width: 230px;
-  padding: 10px 15px;
+  padding: 10px 0;
   border-right: 1px solid #ddd;
 }
 #container .content-container {
   padding: 10px 15px;
+}
+#container #menus ul {
+  list-style: none;
+}
+#container #menus ul li {
+  padding: 10px 0;
+  font-size: 20px;
+}
+#container #menus ul li a {
+  color: #636b6f;
+  text-decoration: none;
 }
 
 /*# sourceMappingURL=style.css.map */
