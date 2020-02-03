@@ -1,6 +1,6 @@
 const Model = require('../../app/models');
 
-module.exports = async (model, currentPageNum, limit, where = {}) => {
+module.exports = async (model, currentPageNum, limit, select = [], where = {}) => {
   if (currentPageNum < 1) currentPageNum = 1;
   const offset = limit * (currentPageNum - 1);
 
@@ -8,6 +8,7 @@ module.exports = async (model, currentPageNum, limit, where = {}) => {
   const list = await TargetModel.findAll({
     offset,
     limit,
+    attributes: select,
     where,
   }).then(data =>
     data.map(item => {
