@@ -22,11 +22,11 @@ const viewLogin = async (req, res, next) => {
 
 const doLogin = async (req, res, next) => {
   // System config Parameters
-  const auth_period = await CommonCodeController.authPeriod();
-  const redirect_uri_after_login = await CommonCodeController.redirectUriAfterLogin();
+  const authPeriod = await CommonCodeController.authPeriod();
+  const redirectUriAfterLogin = await CommonCodeController.redirectUriAfterLogin();
 
-  const redirectUrl = `${redirect_uri_after_login}`;
-  const period = auth_period | 0;
+  const redirectUrl = `${redirectUriAfterLogin}`;
+  const period = authPeriod | 0;
 
   // Validation Check
   const reqBodySchema = new Schema({
@@ -66,15 +66,16 @@ const doLogin = async (req, res, next) => {
         console.error(err);
         res.json(err);
       }
-      const token = createToken(payload);
-      // const newDate = new Date();
-      // const expDate = newDate.setMonth(newDate.getMonth() + (period | 0));
-      // const convertedDate = new Date(expDate);
 
       const expiresIn = 1000 * 60 * 60 * 24 * period; // date
-
-      res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
-      res.redirect(redirectUrl);
+      createToken(payload)
+        .then(token => {
+          res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
+          res.redirect(redirectUrl);
+        })
+        .catch(() => {
+          res.redirect(redirectUrl);
+        });
     });
   })(req, res, redirectUrl, period);
 };
@@ -94,8 +95,8 @@ const doRegister = async (req, res, next) => {
   // Parameters
   const { name, email, password } = req.body;
 
-  const default_authorities = await CommonCodeController.defaultAuthorities();
-  const redirect_uri_after_register = await CommonCodeController.redirectUriAfterRegister();
+  const defaultAuthorities = await CommonCodeController.defaultAuthorities();
+  const redirectUriAfterRegister = await CommonCodeController.redirectUriAfterRegister();
 
   // Validation Check
   const reqBodySchema = new Schema({
@@ -127,7 +128,7 @@ const doRegister = async (req, res, next) => {
     .createHash('sha512')
     .update(password + salt)
     .digest('hex');
-  const authorities_id = (default_authorities | 0) !== 0 ? default_authorities | 0 : 3;
+  const authorities_id = (defaultAuthorities | 0) !== 0 ? defaultAuthorities | 0 : 3;
 
   UserModel.create({
     authorities_id,
@@ -138,7 +139,7 @@ const doRegister = async (req, res, next) => {
   })
     .then(r => {
       console.log(r.dataValues);
-      res.redirect(redirect_uri_after_register);
+      res.redirect(redirectUriAfterRegister);
     })
     .catch(() => {
       res.redirect('back');
@@ -161,10 +162,11 @@ const doLogout = async (req, res, next) => {
 /*
   Authentication
  */
-const createToken = payload => {
+const createToken = async payload => {
+  const authPeriod = await CommonCodeController.authPeriod();
   return jwt.sign({ ...payload, access: 'authenticated' }, process.env.JWT_SECRET_KEY, {
     algorithm: 'HS256',
-    expiresIn: '7d',
+    expiresIn: `${authPeriod}d`,
     issuer: process.env.APP_NAME,
   });
 };
