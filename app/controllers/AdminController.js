@@ -21,12 +21,19 @@ const initializeParams = async req => {
  */
 const viewDashboard = async (req, res, next) => {
   const init = await initializeParams(req);
-  console.log(init);
+  // console.log(init);
   if (init.auth.isAllowed) {
-    res.render('admin/dashboard', { ...init });
+    res.render('admin/dashboard', { ...init, data: dashboardData() });
   } else {
     res.redirect('/');
   }
+};
+
+const dashboardData = () => {
+  const data = {
+    user_count: '3',
+  };
+  return data;
 };
 
 /*

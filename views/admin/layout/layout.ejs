@@ -6,29 +6,30 @@
   <meta name="viewport" content="width=device-width"/>
 
   <title><%= title %> :: Admin</title>
-
+  <link rel="stylesheet" href="/stylesheets/admin/style.css">
 </head>
 <body class="layouts">
 
-<div class="full height">
-  <div class="main_manu">
-    <header id="header" class="full width">
-      <hgroup>
-        <h1 class="logo">Logo</h1>
-        <h2 class="theme">Project</h2>
-      </hgroup>
-    </header>
-  </div>
-  <div>
-    <% include ./menu %>
-    <container>
+<div class="flex flex-col">
+  <header id="header">
+    <hgroup class="flex">
+      <div class="logo">
+        <img src="/images/weaver-logo.png" alt="logo" height="30px">
+      </div>
+      <div class="title">
+        <%= title %>
+      </div>
+    </hgroup>
+  </header>
+
+  <container id="container" class="flex full-height">
+    <div class="menu-container">
+      <% include ./menu %>
+    </div>
+    <div class="content-container">
       <%- body %>
-    </container>
-    <footer id="footer">
-      <p class="footer_info">Company Info</p>
-      <p class="copyright">Copyright &copy; <%= title %> All right reserved</p>
-    </footer>
-  </div>
+    </div>
+  </container>
 </div>
 
 </body>
