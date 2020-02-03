@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const passportConfig = require('./app/controllers/auth/passport');
 const csrf = require('csurf');
+const cors = require('cors');
 const ejsLocals = require('ejs-locals');
 
 /*
@@ -34,6 +35,7 @@ app.use(passport.initialize());
 passportConfig();
 const csrfProtection = csrf({ cookie: true });
 app.use(csrfProtection);
+app.use(cors(require('./app/middleware/cors')));
 
 /*
  * Routers
