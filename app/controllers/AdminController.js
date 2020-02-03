@@ -23,15 +23,16 @@ const viewDashboard = async (req, res, next) => {
   const init = await initializeParams(req);
   // console.log(init);
   if (init.auth.isAllowed) {
-    res.render('admin/dashboard', { ...init, data: dashboardData() });
+    res.render('admin/dashboard', { ...init, data: await dashboardData() });
   } else {
     res.redirect('/');
   }
 };
 
-const dashboardData = () => {
+const dashboardData = async () => {
+  const userCount = await UserController.userCount();
   const data = {
-    user_count: '3',
+    userCount,
   };
   return data;
 };
