@@ -6,6 +6,7 @@ const UserModel = Model.user;
 const CommonCodeController = require('./../CommonCodeController');
 const Schema = require('validate');
 const regex = require('./../../utils/regex');
+const csrf = require('./../../utils/csrf');
 
 require('dotenv').config();
 
@@ -14,10 +15,11 @@ require('dotenv').config();
  */
 const viewLogin = async (req, res, next) => {
   const authInfo = await getAuthInfo(req);
+
   if (authInfo.isLogin) {
     return res.redirect('/');
   }
-  res.render('auth', { title: 'Login', page: 'login', csrfToken: req.csrfToken() });
+  res.render('auth', { title: 'Login', page: 'login', csrfToken: csrf.token(req) });
 };
 
 const doLogin = async (req, res, next) => {
@@ -88,7 +90,7 @@ const viewRegister = async (req, res, next) => {
   if (authInfo.isLogin) {
     res.redirect('/');
   }
-  res.render('auth', { title: 'Register', page: 'register', csrfToken: req.csrfToken() });
+  res.render('auth', { title: 'Register', page: 'register', csrfToken: csrf.token(req) });
 };
 
 const doRegister = async (req, res, next) => {

@@ -4,6 +4,7 @@ const CommonCodeModel = Model.common_code;
 const Schema = require('validate');
 const MenuController = require('./../controllers/MenuController');
 const UserController = require('./UserController');
+const csrf = require('./../utils/csrf');
 
 const initializeParams = async req => {
   const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
@@ -11,7 +12,7 @@ const initializeParams = async req => {
   return {
     title: process.env.APP_NAME,
     auth: authInfo,
-    csrfToken: req.csrfToken(),
+    csrfToken: csrf.token(req),
     menus: await MenuController.menuList(1),
   };
 };

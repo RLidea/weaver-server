@@ -33,16 +33,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 passportConfig();
-const csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
-app.use(cors(require('./app/middleware/cors')));
+app.use(cors(require('./app/middleware/CORS')));
 
 /*
  * Routers
  */
+
+app.use(csrf({ cookie: true }));
 app.use('/', require('./routes/index'));
-app.use('/users', require('./routes/users'));
 app.use('/auth', require('./routes/auth'));
+app.use('/users', require('./routes/users'));
 app.use('/admin', require('./routes/admin'));
 
 /*
@@ -59,4 +59,5 @@ const error = require('./app/middleware/Error');
 app.use(error.notFoundError);
 app.use(error.errorMessage);
 
+console.log(`[System] ${process.env.APP_NAME} is ready`);
 module.exports = app;
