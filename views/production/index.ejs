@@ -3,7 +3,7 @@
     <div class="top-right links">
         <a href="/">Home</a>
         <%if(auth.isLogin === false){%>
-            <a href="/auth/login">Login</a>
+            <a href="/auth/login"><%= t("auth.login") %></a>
             <a href="/auth/register">Register</a>
         <%} else {%>
 <!--            <a href="/user/">MyPage</a>-->

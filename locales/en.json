@@ -1,4 +1,7 @@
 {
+  "auth": {
+    "login": "Login"
+  },
   "admin": {
     "demo": "Hello World!"
   }

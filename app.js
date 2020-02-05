@@ -4,6 +4,7 @@
 require('dotenv').config();
 
 const express = require('express');
+// const middleware = require('./app/middleware');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
@@ -47,7 +48,7 @@ const logger = require('./app/middleware/Logger');
 app.use(logger.printTerminalDev);
 app.use(process.env.NODE_ENV == 'development' ? logger.saveFileDev : logger.saveFileDefault);
 
-// i18n
+// i18next
 i18next
   .use(i18nextFsBackend)
   .use(i18nextMiddleware.LanguageDetector)
@@ -62,12 +63,36 @@ i18next
   });
 app.use(i18nextMiddleware.handle(i18next));
 
+app.all('*', (req, res, next) => {
+  // set locale
+
+  // Routing
+  const rxLocal = /^\/(ko|en)/i;
+  if (rxLocal.test(req.url)) {
+    const arr = rxLocal.exec(req.url);
+    const local = arr[1];
+    req.i18n.changeLanguage(local);
+  } else {
+    req.i18n.changeLanguage('en');
+  }
+
+  // Query String
+  const lng = req.query.lng;
+  if (typeof lng !== 'undefined') {
+    req.i18n.changeLanguage(lng);
+  }
+
+  next();
+});
+
 /*
  * Routers
  */
 
 app.use(csrf({ cookie: true }));
+
 app.use('/', require('./routes/index'));
+// app.use('/:lng', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'));
 app.use('/admin', require('./routes/admin'));
