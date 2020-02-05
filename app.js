@@ -91,6 +91,8 @@ app.all('*', (req, res, next) => {
 
 app.use(csrf({ cookie: true }));
 
+app.use('/api', require('./routes/apis'));
+
 app.use('/', require('./routes/index'));
 // app.use('/:lng', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
