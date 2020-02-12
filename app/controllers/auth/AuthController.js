@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const Model = require('./../../models');
 const UserModel = Model.user;
 const CommonCodeController = require('./../CommonCodeController');
+const UserAuthorityRelationModel = Model.user_authority_relation;
 const Schema = require('validate');
 const regex = require('./../../utils/regex');
 const csrf = require('./../../utils/csrf');
@@ -133,15 +134,21 @@ const doRegister = async (req, res, next) => {
   const authorities_id = (defaultAuthorities | 0) !== 0 ? defaultAuthorities | 0 : 3;
 
   UserModel.create({
-    authorities_id,
     name,
     email,
     password: hashPassword,
     salt,
   })
-    .then(r => {
-      console.log(r.dataValues);
-      res.redirect(redirectUriAfterRegister);
+    .then(user => {
+      console.log(user.dataValues);
+
+      UserAuthorityRelationModel.create({
+        users_id: user.dataValues.id,
+        authorities_id,
+      }).then(r => {
+        console.log(r.dataValues);
+        res.redirect(redirectUriAfterRegister);
+      });
     })
     .catch(() => {
       res.redirect('back');
@@ -222,11 +229,17 @@ const getAuthInfo = async (req, authorities_ids = []) => {
   }
 
   // logged in
-  const authorities_id = await UserModel.findOne({
+  const users_id = await UserModel.findOne({
     where: {
       email: loginInfo.decoded.email,
     },
-  }).then(user => user.dataValues.authorities_id);
+  }).then(user => user.dataValues.id);
+
+  const authorities_id = await UserAuthorityRelationModel.findOne({
+    where: {
+      users_id,
+    },
+  }).then(auth => auth.dataValues.authorities_id);
 
   if (authorities_ids.includes(authorities_id)) {
     return objResult(true);

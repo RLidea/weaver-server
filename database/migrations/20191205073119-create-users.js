@@ -12,10 +12,6 @@ module.exports = {
       //   allowNull: false,
       //   type: Sequelize.INTEGER.UNSIGNED,
       // },
-      id_name: {
-        unique: true,
-        type: Sequelize.STRING(191),
-      },
       email: {
         allowNull: false,
         unique: true,
