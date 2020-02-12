@@ -1,5 +1,6 @@
 const Model = require('./../../app/models');
 const MenuModel = Model.menu;
+const MenuTranslationModel = Model.menu_translation;
 const formatter = require('./../utils/formatter');
 // const AuthorityMenuRelationModel = Model.authority_menu_relation;
 
