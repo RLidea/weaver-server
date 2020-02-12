@@ -7,7 +7,7 @@ module.exports = {
       [
         {
           id: 1,
-          authorities_id: 1,
+          // authorities_id: 1,
           id_name: 'dev',
           email: 'dev@weaver.com',
           password:

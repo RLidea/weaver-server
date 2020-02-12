@@ -1,34 +1,30 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('common_codes', {
+    return queryInterface.createTable('user_authority_relations', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED,
       },
-      group_codes_id: {
+      authorities_id: {
         type: Sequelize.INTEGER.UNSIGNED,
         references: {
           model: {
-            tableName: 'group_codes',
+            tableName: 'authorities',
           },
           key: 'id',
         },
       },
-      parent_id: {
+      users_id: {
         type: Sequelize.INTEGER.UNSIGNED,
-        defaultValue: 0,
-      },
-      name: {
-        type: Sequelize.STRING(191),
-      },
-      data: {
-        type: Sequelize.TEXT,
-      },
-      description: {
-        type: Sequelize.STRING,
+        references: {
+          model: {
+            tableName: 'users',
+          },
+          key: 'id',
+        },
       },
       created_at: {
         allowNull: false,
@@ -42,6 +38,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('common_codes');
+    return queryInterface.dropTable('user_authority_relations');
   },
 };

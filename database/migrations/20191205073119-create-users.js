@@ -8,10 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED,
       },
-      authorities_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER.UNSIGNED,
-      },
+      // authorities_id: {
+      //   allowNull: false,
+      //   type: Sequelize.INTEGER.UNSIGNED,
+      // },
       id_name: {
         unique: true,
         type: Sequelize.STRING(191),
