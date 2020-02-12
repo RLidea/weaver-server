@@ -8,7 +8,7 @@ module.exports = {
         {
           id: 1,
           parent_id: 0,
-          name: 'Admin',
+          // name: 'Admin',
           uri: '/admin',
           order: 0,
           description: 'Admin Page Category',
@@ -17,7 +17,7 @@ module.exports = {
         {
           id: 2,
           parent_id: 0,
-          name: 'default',
+          // name: 'default',
           uri: '/',
           order: 0,
           description: 'Main Page Category',
@@ -26,7 +26,7 @@ module.exports = {
         {
           id: 3,
           parent_id: 1,
-          name: 'Admin Settings',
+          // name: 'Admin Settings',
           uri: '/admin/settings',
           order: 99,
           description: 'Admin Page Default Setting Page',
@@ -35,7 +35,7 @@ module.exports = {
         {
           id: 4,
           parent_id: 1,
-          name: 'Dashboard',
+          // name: 'Dashboard',
           uri: '/admin/dashboard',
           order: 1,
           description: 'Admin Page Dashboard',
@@ -44,7 +44,7 @@ module.exports = {
         {
           id: 5,
           parent_id: 1,
-          name: 'Manage Users',
+          // name: 'Manage Users',
           uri: '/admin/users',
           order: 2,
           description: 'Admin Page User Management',

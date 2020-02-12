@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     'menu',
     {
       parent_id: DataTypes.INTEGER.UNSIGNED,
-      name: DataTypes.STRING(191),
+      // name: DataTypes.STRING(191),
       uri: DataTypes.STRING(191),
       order: DataTypes.INTEGER.UNSIGNED,
       description: DataTypes.STRING(191),

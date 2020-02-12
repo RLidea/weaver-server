@@ -14,11 +14,11 @@ module.exports = {
         comment: '상위 메뉴',
         defaultValue: 0,
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING(191),
-        comment: '메뉴 이름',
-      },
+      // name: {
+      //   allowNull: false,
+      //   type: Sequelize.STRING(191),
+      //   comment: '메뉴 이름',
+      // },
       uri: {
         type: Sequelize.STRING(191),
         comment: '메뉴의 uri',

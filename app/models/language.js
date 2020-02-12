@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       code: DataTypes.STRING(191),
       english: DataTypes.STRING(191),
       description: DataTypes.STRING(191),
+      is_use: DataTypes.ENUM('Y', 'N'),
     },
     {
       underscored: true,
