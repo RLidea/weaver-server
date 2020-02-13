@@ -1,3 +1,8 @@
+/**
+ * 자료구조 변환: 리스트 -> 트리
+ * @param list
+ * @returns {[]}
+ */
 module.exports.list_to_tree = list => {
   const map = {};
   const roots = [];

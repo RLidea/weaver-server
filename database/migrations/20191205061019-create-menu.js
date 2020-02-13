@@ -8,6 +8,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED,
       },
+      menu_categories_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        comment: '카테고리',
+        defaultValue: 0,
+      },
       parent_id: {
         allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
@@ -22,6 +28,12 @@ module.exports = {
       uri: {
         type: Sequelize.STRING(191),
         comment: '메뉴의 uri',
+      },
+      depth: {
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        comment: '메뉴 깊이',
+        defaultValue: 0,
       },
       order: {
         allowNull: false,

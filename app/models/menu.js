@@ -5,7 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       parent_id: DataTypes.INTEGER.UNSIGNED,
       // name: DataTypes.STRING(191),
+      menu_categories_id: DataTypes.INTEGER.UNSIGNED,
       uri: DataTypes.STRING(191),
+      depth: DataTypes.INTEGER.UNSIGNED,
       order: DataTypes.INTEGER.UNSIGNED,
       description: DataTypes.STRING(191),
       is_use: DataTypes.ENUM('Y', 'N'),

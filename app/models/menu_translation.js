@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     'menu_translation',
     {
       name: DataTypes.STRING,
-      languages_id: DataTypes.INTEGER.UNSIGNED,
       menus_id: DataTypes.INTEGER.UNSIGNED,
+      languages_id: DataTypes.INTEGER.UNSIGNED,
     },
     {
       underscored: true,

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('menu_translations', {
+    return queryInterface.createTable('menu_categories', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,11 +11,13 @@ module.exports = {
       name: {
         type: Sequelize.STRING(191),
       },
-      menus_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+      description: {
+        type: Sequelize.STRING(191),
       },
-      languages_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+      is_use: {
+        allowNull: false,
+        type: Sequelize.ENUM('Y', 'N'),
+        defaultValue: 'N',
       },
       created_at: {
         allowNull: false,
@@ -29,6 +31,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('menu_translations');
+    return queryInterface.dropTable('menu_categories');
   },
 };
