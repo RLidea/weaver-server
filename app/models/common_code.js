@@ -14,7 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   common_code.associate = function(models) {
-    // associations can be defined here
+    common_code.belongsTo(models.group_code, {
+      foreignKey: 'group_codes_id',
+    });
   };
   return common_code;
 };

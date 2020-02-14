@@ -16,14 +16,17 @@ module.exports = {
         allowNull: false,
         unique: true,
         type: Sequelize.STRING(191),
+        comment: 'email',
       },
       password: {
         allowNull: false,
         type: Sequelize.STRING(191),
+        comment: '비밀번호',
       },
       name: {
         allowNull: false,
         type: Sequelize.STRING(191),
+        comment: '사용자 이름',
       },
       files_id: {
         type: Sequelize.INTEGER.UNSIGNED,
@@ -33,27 +36,23 @@ module.exports = {
           },
           key: 'id',
         },
+        comment: '프로필 이미',
       },
       phone: {
         type: Sequelize.CHAR(13),
-      },
-      mobile: {
-        type: Sequelize.CHAR(13),
-      },
-      fax: {
-        type: Sequelize.CHAR(13),
-      },
-      wechat_id: {
-        type: Sequelize.STRING(50),
+        comment: '전화번호',
       },
       certicifation_data: {
         type: Sequelize.STRING(191),
+        comment: '인증 날짜',
       },
       last_login: {
         type: Sequelize.DATE,
+        comment: '최종 로그인 날짜',
       },
       salt: {
         type: Sequelize.STRING(191),
+        comment: '암호화 보안을 위한 salt',
       },
       created_at: {
         allowNull: false,

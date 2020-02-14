@@ -13,8 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true,
     },
   );
-  address.associate = function(models) {
-    // associations can be defined here
-  };
+  address.associate = function(models) {};
   return address;
 };

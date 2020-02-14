@@ -8,7 +8,6 @@ const csrf = require('./../utils/csrf');
 
 const initializeParams = async req => {
   const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
-  const a = await MenuController.menuList(1, req.i18n.language);
 
   return {
     title: process.env.APP_NAME,
@@ -18,8 +17,12 @@ const initializeParams = async req => {
   };
 };
 
-/*
+/**
  * DashBoard
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
  */
 const viewDashboard = async (req, res, next) => {
   const init = await initializeParams(req);
@@ -31,6 +34,10 @@ const viewDashboard = async (req, res, next) => {
   }
 };
 
+/**
+ * Dashboard 에 출력하는 데이터들을 정리
+ * @returns {Promise<{userCount}>}
+ */
 const dashboardData = async () => {
   const userCount = await UserController.userCount();
   const data = {
@@ -39,8 +46,12 @@ const dashboardData = async () => {
   return data;
 };
 
-/*
+/**
  * Settings
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
  */
 const viewSetting = async (req, res, next) => {
   const init = await initializeParams(req);
@@ -64,6 +75,13 @@ const viewSetting = async (req, res, next) => {
   });
 };
 
+/**
+ * d
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<Json|any>}
+ */
 const updateSettings = async (req, res, next) => {
   // Parameters
   const parameters = {
@@ -113,8 +131,12 @@ const updateSettings = async (req, res, next) => {
   res.redirect('/admin/settings');
 };
 
-/*
+/**
  * User Management
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
  */
 const viewUsers = async (req, res, next) => {
   const init = await initializeParams(req);

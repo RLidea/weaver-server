@@ -10,12 +10,15 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING(191),
+        comment: '각 나라의 언어로 쓰인 언어의 이름',
       },
       code: {
         type: Sequelize.STRING(191),
+        comment: '각 언어의 코드 ex) en, ko',
       },
       english: {
         type: Sequelize.STRING(191),
+        comment: '각 언어의 영칭',
       },
       description: {
         type: Sequelize.STRING(191),
