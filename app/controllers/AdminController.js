@@ -8,12 +8,13 @@ const csrf = require('./../utils/csrf');
 
 const initializeParams = async req => {
   const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
-  // console.log(authInfo);
+  const a = await MenuController.menuList(1, req.i18n.language);
+
   return {
     title: process.env.APP_NAME,
     auth: authInfo,
     csrfToken: csrf.token(req),
-    menus: await MenuController.menuList(1),
+    menus: await MenuController.menuList(1, req.i18n.language),
   };
 };
 

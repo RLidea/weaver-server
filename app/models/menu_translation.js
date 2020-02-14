@@ -12,7 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   menu_translation.associate = function(models) {
-    // associations can be defined here
+    menu_translation.belongsTo(models.menu, {
+      foreignKey: 'menus_id',
+    });
+    menu_translation.belongsTo(models.language, {
+      foreignKey: 'languages_id',
+    });
   };
   return menu_translation;
 };

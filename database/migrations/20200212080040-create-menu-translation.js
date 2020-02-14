@@ -13,9 +13,21 @@ module.exports = {
       },
       menus_id: {
         type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'menus',
+          },
+          key: 'id',
+        },
       },
       languages_id: {
         type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'languages',
+          },
+          key: 'id',
+        },
       },
       created_at: {
         allowNull: false,

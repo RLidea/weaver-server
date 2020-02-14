@@ -3,64 +3,54 @@ const MenuModel = Model.menu;
 const MenuTranslationModel = Model.menu_translation;
 const formatter = require('./../utils/formatter');
 // const AuthorityMenuRelationModel = Model.authority_menu_relation;
+const LanguageController = require('./LanguageController');
 
 /**
  * 메뉴 카테고리에 해당하는 메뉴를 트리 구조로 출력한다.
- * @param menus_id
+ * @param menu_categories_id
  * @returns {Promise<number[]|SamplingHeapProfileNode[]|NodeModule[]|NodeJS.Module[]|{enumerable: boolean}|HTMLCollection|*>}
  */
-module.exports.menuList = async menus_id => {
-  const menus = await getAllMenuList();
-  return getOneMenuList(formatter.list_to_tree(menus), menus_id).children;
+module.exports.menuList = async (menu_categories_id, language_code) => {
+  const menus = await getMenuList(menu_categories_id, language_code);
+  return formatter.list_to_tree(menus);
 };
 
 /**
- * 리스트의 모든 정보를 order 순으로 정렬해서 리스트로 가져온다.
+ * 특정 카테고리의 메뉴들을 order ASC 순으로 정렬해서 리스트로 가져온다.
+ * @param menu_categories_id
  * @returns {Promise<T>}
  */
-const getAllMenuList = async () => {
+const getMenuList = async (menu_categories_id, language_code) => {
   // TODO: user 정보 받아서 권한이 있는 메뉴만 출력
+
+  const languages_id = await LanguageController.getLanguagesId(language_code);
+
   const menus = await MenuModel.findAll({
+    include: [
+      {
+        model: MenuTranslationModel,
+        where: {
+          languages_id,
+        },
+      },
+    ],
+    where: { menu_categories_id },
     order: [['order', 'ASC']],
   }).then(menus =>
     menus.map(menu => {
-      return menu.dataValues;
+      return {
+        id: menu.dataValues.id,
+        name: menu.dataValues.menu_translations[0].name,
+        parent_id: menu.dataValues.parent_id,
+        menu_categories_id: menu.dataValues.menu_categories_id,
+        uri: menu.dataValues.uri,
+        depth: menu.dataValues.depth,
+        order: menu.dataValues.order,
+        description: menu.dataValues.description,
+        is_use: menu.dataValues.description,
+      };
     }),
   );
 
-  console.log('#getAllMenuList:');
-  console.log(menus);
   return menus;
-};
-
-/**
- * 최상단 parent_id 아래로 저장된 메뉴 리스트 하나를 가져온다.
- * @param menus
- * @param category_menu_id
- * @returns {*}
- */
-const getOneMenuList = (menus, category_menu_id) => {
-  console.log('#getOneMenuList:');
-  console.log(menus);
-  let result;
-  for (let i = 0, l = menus.length; i < l; i += 1) {
-    const data = menus[i];
-    if (data.id !== category_menu_id) {
-      continue;
-    }
-    result = data;
-  }
-
-  console.log('#getOneMenuList result:');
-  console.log(result);
-  return result;
-};
-
-const getTranslation = async menus_id => {
-  const translate = MenuTranslationModel.findOne({
-    where: {
-      menus_id,
-    },
-  }).then(t => t.dataValues.name);
-  return translate;
 };

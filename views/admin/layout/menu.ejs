@@ -4,6 +4,7 @@
 
 <script>
     const menus = <%- JSON.stringify(menus) %>;
+    console.log(menus);
 
     document.addEventListener('DOMContentLoaded', function (){
       document.querySelector('#menus').appendChild(createMenu(menus));
