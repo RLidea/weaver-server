@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     menu.hasMany(models.menu_translation, {
       foreignKey: 'menus_id',
     });
+    menu.belongsTo(models.menu_category, {
+      foreignKey: 'menu_categories_id',
+    });
   };
   return menu;
 };

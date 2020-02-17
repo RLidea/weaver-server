@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   menu_category.associate = function(models) {
-    // associations can be defined here
+    menu_category.hasMany(models.menu, {
+      foreignKey: 'menu_categories_id',
+    });
   };
   return menu_category;
 };

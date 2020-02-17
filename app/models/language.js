@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   language.associate = function(models) {
-    // associations can be defined here
+    const arr = ['menu_translation'];
+    for (let i = 0, l = arr.length; i < l; i += 1) {
+      language.hasMany(models[arr[i]], {
+        foreignKey: 'languages_id',
+      });
+    }
   };
   return language;
 };
