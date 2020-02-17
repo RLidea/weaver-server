@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING(191),
       phone: DataTypes.CHAR(13),
       files_id: DataTypes.INTEGER.UNSIGNED,
+      profile_image_url: DataTypes.TEXT,
+      profile_thumbnail_url: DataTypes.TEXT,
       certicifation_data: DataTypes.STRING(191),
       last_login: DataTypes.DATE,
       salt: DataTypes.STRING(191),
@@ -21,9 +23,6 @@ module.exports = (sequelize, DataTypes) => {
   user.associate = function(models) {
     user.hasMany(models.user_authority_relation, {
       foreignKey: 'users_id',
-    });
-    user.belongsTo(models.file, {
-      foreignKey: 'files_id',
     });
   };
   return user;

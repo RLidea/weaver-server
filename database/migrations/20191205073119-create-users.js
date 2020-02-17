@@ -28,15 +28,25 @@ module.exports = {
         type: Sequelize.STRING(191),
         comment: '사용자 이름',
       },
-      files_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        references: {
-          model: {
-            tableName: 'files',
-          },
-          key: 'id',
-        },
-        comment: '프로필 이미',
+      // files_id: {
+      //   type: Sequelize.INTEGER.UNSIGNED,
+      //   references: {
+      //     model: {
+      //       tableName: 'files',
+      //     },
+      //     key: 'id',
+      //   },
+      //   comment: '프로필 이미지',
+      // },
+      profile_url: {
+        allowNull: false,
+        type: Sequelize.TEXT,
+        defaultValue: '/',
+        comment: '프로필 이미지 파일의 url',
+      },
+      profile_thumbnail_url: {
+        type: Sequelize.TEXT,
+        comment: '썸네일 이미지의 url',
       },
       phone: {
         type: Sequelize.CHAR(13),
