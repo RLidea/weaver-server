@@ -35,6 +35,16 @@ module.exports = {
           menus_id: 3,
           languages_id: 2,
         },
+        {
+          name: 'Boards',
+          menus_id: 4,
+          languages_id: 1,
+        },
+        {
+          name: '보드 관리',
+          menus_id: 4,
+          languages_id: 2,
+        },
       ],
       {},
     );

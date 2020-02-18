@@ -38,6 +38,16 @@ module.exports = {
           description: 'Admin Page User Management',
           is_use: true,
         },
+        {
+          id: 4,
+          parent_id: 0,
+          uri: '/admin/boards',
+          menu_categories_id: 1,
+          depth: 1,
+          order: 3,
+          description: 'Boards List',
+          is_use: true,
+        },
       ],
       {},
     );
