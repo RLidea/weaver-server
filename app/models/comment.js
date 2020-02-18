@@ -3,11 +3,12 @@ module.exports = (sequelize, DataTypes) => {
   const comment = sequelize.define(
     'comment',
     {
-      users_id: DataTypes.INTEGER,
-      documents_id: DataTypes.INTEGER,
-      parent_id: DataTypes.INTEGER,
-      depth: DataTypes.INTEGER,
-      content: DataTypes.STRING,
+      users_id: DataTypes.INTEGER.UNSIGNED,
+      documents_id: DataTypes.INTEGER.UNSIGNED,
+      parent_id: DataTypes.INTEGER.UNSIGNED,
+      depth: DataTypes.INTEGER.UNSIGNED,
+      content: DataTypes.STRING(191),
+      deleted_at: DataTypes.DATE,
     },
     {
       underscored: true,

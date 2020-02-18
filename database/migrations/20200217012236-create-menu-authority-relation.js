@@ -6,17 +6,32 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
       },
       menus_id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'menus',
+          },
+          key: 'id',
+        },
       },
       authorities_id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'authorities',
+          },
+          key: 'id',
+        },
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('NOW()'),
       },
       updated_at: {
         allowNull: false,

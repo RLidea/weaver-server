@@ -18,13 +18,16 @@ module.exports = {
         },
       },
       parent_id: {
+        allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0,
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING(191),
       },
       data: {
+        allowNull: false,
         type: Sequelize.TEXT,
       },
       description: {

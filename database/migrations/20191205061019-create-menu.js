@@ -46,8 +46,8 @@ module.exports = {
       },
       is_use: {
         allowNull: false,
-        type: Sequelize.ENUM('Y', 'N'),
-        defaultValue: 'N',
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       created_at: {
         allowNull: false,

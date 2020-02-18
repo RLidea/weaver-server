@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING(191),
       description: DataTypes.STRING(191),
-      is_use: DataTypes.ENUM('Y', 'N'),
+      is_use: DataTypes.BOOLEAN,
     },
     {
       underscored: true,

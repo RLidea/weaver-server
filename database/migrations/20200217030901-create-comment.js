@@ -6,29 +6,52 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
       },
       users_id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'users',
+          },
+          key: 'id',
+        },
       },
       documents_id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'documents',
+          },
+          key: 'id',
+        },
       },
       parent_id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        defaultValue: 0,
       },
       depth: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        defaultValue: 0,
       },
       content: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(191),
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('NOW()'),
       },
       updated_at: {
-        allowNull: false,
+        allowNull: true,
+        type: Sequelize.DATE,
+      },
+      deleted_at: {
+        allowNull: true,
         type: Sequelize.DATE,
       },
     });

@@ -6,34 +6,34 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER.UNSIGNED
+        type: Sequelize.INTEGER.UNSIGNED,
       },
       name: {
         allowNull: false,
         unique: true,
         type: Sequelize.STRING(191),
-        comment: '권한의 이름'
+        comment: '권한의 이름',
       },
       description: {
-        type: Sequelize.STRING(191)
+        type: Sequelize.STRING(191),
       },
       is_use: {
         allowNull: false,
-        type: Sequelize.ENUM('Y', 'N'),
-        defaultValue: 'N'
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('NOW()')
+        defaultValue: Sequelize.literal('NOW()'),
       },
       updated_at: {
         allowNull: true,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('authorities');
-  }
+  },
 };

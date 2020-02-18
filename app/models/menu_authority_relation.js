@@ -3,8 +3,8 @@ module.exports = (sequelize, DataTypes) => {
   const menu_authority_relation = sequelize.define(
     'menu_authority_relation',
     {
-      menus_id: DataTypes.INTEGER,
-      authorities_id: DataTypes.INTEGER,
+      menus_id: DataTypes.INTEGER.UNSIGNED,
+      authorities_id: DataTypes.INTEGER.UNSIGNED,
     },
     {
       underscored: true,

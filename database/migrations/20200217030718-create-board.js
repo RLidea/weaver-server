@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('menu_translations', {
+    return queryInterface.createTable('boards', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,25 +12,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING(191),
       },
-      menus_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER.UNSIGNED,
-        references: {
-          model: {
-            tableName: 'menus',
-          },
-          key: 'id',
-        },
+      description: {
+        type: Sequelize.STRING(191),
       },
-      languages_id: {
+      is_use: {
         allowNull: false,
-        type: Sequelize.INTEGER.UNSIGNED,
-        references: {
-          model: {
-            tableName: 'languages',
-          },
-          key: 'id',
-        },
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       created_at: {
         allowNull: false,
@@ -38,12 +26,12 @@ module.exports = {
         defaultValue: Sequelize.literal('NOW()'),
       },
       updated_at: {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.DATE,
       },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('menu_translations');
+    return queryInterface.dropTable('boards');
   },
 };

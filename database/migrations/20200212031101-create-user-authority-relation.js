@@ -9,6 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
       },
       authorities_id: {
+        allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
         references: {
           model: {
@@ -18,6 +19,7 @@ module.exports = {
         },
       },
       users_id: {
+        allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
         references: {
           model: {

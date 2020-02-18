@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       depth: DataTypes.INTEGER.UNSIGNED,
       order: DataTypes.INTEGER.UNSIGNED,
       description: DataTypes.STRING(191),
-      is_use: DataTypes.ENUM('Y', 'N'),
+      is_use: DataTypes.BOOLEAN,
     },
     {
       underscored: true,

@@ -14,7 +14,7 @@ module.exports = {
           depth: 1,
           order: 99,
           description: 'Admin Page Default Setting Page',
-          is_use: 'Y',
+          is_use: true,
         },
         {
           id: 2,
@@ -25,7 +25,7 @@ module.exports = {
           depth: 1,
           order: 1,
           description: 'Admin Page Dashboard',
-          is_use: 'Y',
+          is_use: true,
         },
         {
           id: 3,
@@ -36,7 +36,7 @@ module.exports = {
           depth: 1,
           order: 2,
           description: 'Admin Page User Management',
-          is_use: 'Y',
+          is_use: true,
         },
       ],
       {},
