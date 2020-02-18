@@ -21,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     user.hasMany(models.user_authority_relation, {
       foreignKey: 'users_id',
     });
+    user.hasMany(models.document, {
+      foreignKey: 'users_id',
+    });
+    user.hasMany(models.comment, {
+      foreignKey: 'users_id',
+    });
   };
   return user;
 };

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   file.associate = function(models) {
-    file.hasMany(models.document, {
+    file.belongsTo(models.document, {
       foreignKey: 'documents_id',
     });
   };

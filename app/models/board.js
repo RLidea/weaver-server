@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   board.associate = function(models) {
-    // associations can be defined here
+    board.hasMany(models.document, {
+      foreignKey: 'boards_id',
+    });
   };
   return board;
 };

@@ -18,7 +18,18 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   document.associate = function(models) {
-    // associations can be defined here
+    document.belongsTo(models.board, {
+      foreignKey: 'boards_id',
+    });
+    document.belongsTo(models.user, {
+      foreignKey: 'users_id',
+    });
+    document.hasMany(models.file, {
+      foreignKey: 'documents_id',
+    });
+    document.hasMany(models.comment, {
+      foreignKey: 'documents_id',
+    });
   };
   return document;
 };
