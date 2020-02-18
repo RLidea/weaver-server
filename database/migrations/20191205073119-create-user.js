@@ -8,10 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED,
       },
-      // authorities_id: {
-      //   allowNull: false,
-      //   type: Sequelize.INTEGER.UNSIGNED,
-      // },
       email: {
         allowNull: false,
         unique: true,
@@ -28,20 +24,8 @@ module.exports = {
         type: Sequelize.STRING(191),
         comment: '사용자 이름',
       },
-      // files_id: {
-      //   type: Sequelize.INTEGER.UNSIGNED,
-      //   references: {
-      //     model: {
-      //       tableName: 'files',
-      //     },
-      //     key: 'id',
-      //   },
-      //   comment: '프로필 이미지',
-      // },
-      profile_url: {
-        allowNull: false,
+      profile_image_url: {
         type: Sequelize.TEXT,
-        defaultValue: '/',
         comment: '프로필 이미지 파일의 url',
       },
       profile_thumbnail_url: {
@@ -61,6 +45,7 @@ module.exports = {
         comment: '최종 로그인 날짜',
       },
       salt: {
+        allowNull: false,
         type: Sequelize.STRING(191),
         comment: '암호화 보안을 위한 salt',
       },

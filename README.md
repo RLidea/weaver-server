@@ -29,6 +29,7 @@
 
 ### 기타
 - 국제화 기능(i18n)
+- validate schema 이용
 
 updated_at: 2020-01-09
 
