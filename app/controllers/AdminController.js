@@ -1,10 +1,11 @@
-const AuthController = require('./auth/AuthController');
+const csrf = require('./../utils/csrf');
+const Schema = require('validate');
 const Model = require('./../../app/models');
 const CommonCodeModel = Model.common_code;
-const Schema = require('validate');
-const MenuController = require('./../controllers/MenuController');
+const AuthController = require('./auth/AuthController');
+const MenuController = require('./MenuController');
 const UserController = require('./UserController');
-const csrf = require('./../utils/csrf');
+const BoardController = require('./BoardController');
 
 const initializeParams = async req => {
   const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
@@ -18,7 +19,7 @@ const initializeParams = async req => {
 };
 
 /**
- * DashBoard
+ * Admin DashBoard View
  * @param req
  * @param res
  * @param next
@@ -47,7 +48,7 @@ const dashboardData = async () => {
 };
 
 /**
- * Settings
+ * Admin System Settings View
  * @param req
  * @param res
  * @param next
@@ -76,7 +77,7 @@ const viewSetting = async (req, res, next) => {
 };
 
 /**
- * d
+ *
  * @param req
  * @param res
  * @param next
@@ -132,7 +133,7 @@ const updateSettings = async (req, res, next) => {
 };
 
 /**
- * User Management
+ * User Management View
  * @param req
  * @param res
  * @param next
@@ -150,6 +151,25 @@ const viewUsers = async (req, res, next) => {
   });
 };
 
+/**
+ * Admin Board Setting View
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const viewBoards = async (req, res, next) => {
+  const init = await initializeParams(req);
+  const boards = await BoardController.boardList();
+
+  console.log(boards);
+
+  res.render('admin/boards', {
+    ...init,
+    data: boards,
+  });
+};
+
 module.exports = Object.assign(
   {},
   {
@@ -157,5 +177,6 @@ module.exports = Object.assign(
     viewSetting,
     updateSettings,
     viewUsers,
+    viewBoards,
   },
 );

@@ -7,6 +7,10 @@ module.exports.boardList = async () => {
     where: {
       is_use: true,
     },
-  });
+  }).then(board =>
+    board.map(item => {
+      return item.dataValues;
+    }),
+  );
   return boards;
 };

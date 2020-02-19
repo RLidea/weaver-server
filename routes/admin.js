@@ -10,6 +10,7 @@ router.get('/', function(req, res) {
 router.route('/dashboard').get(AdminController.viewDashboard);
 
 router.route('/users').get(AdminController.viewUsers);
+router.route('/boards').get(AdminController.viewBoards);
 
 router
   .route('/settings')
