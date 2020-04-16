@@ -1,6 +1,6 @@
 {
-  "name": "onepressnp-server",
-  "version": "0.0.0",
+  "name": "weaver-server",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "npm-run-all --parallel start:**",
@@ -82,7 +82,9 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "sequelize": "^5.21.2",
-    "validate": "^5.1.0"
+    "acorn": ">=7.1.1",
+    "validate": "^5.1.0",
+    "minimist": ">=0.2.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
