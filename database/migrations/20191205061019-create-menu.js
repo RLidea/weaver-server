@@ -13,6 +13,12 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
         comment: '카테고리',
         defaultValue: 0,
+        references: {
+          model: {
+            tableName: 'menu_categories',
+          },
+          key: 'id',
+        },
       },
       parent_id: {
         allowNull: false,
@@ -20,11 +26,11 @@ module.exports = {
         comment: '상위 메뉴',
         defaultValue: 0,
       },
-      // name: {
-      //   allowNull: false,
-      //   type: Sequelize.STRING(191),
-      //   comment: '메뉴 이름',
-      // },
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING(191),
+        comment: '메뉴 이름',
+      },
       uri: {
         type: Sequelize.STRING(191),
         comment: '메뉴의 uri',

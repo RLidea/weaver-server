@@ -8,7 +8,7 @@ module.exports = {
         {
           id: 1,
           parent_id: 0,
-          // name: 'Admin Settings',
+          name: 'Admin Settings',
           uri: '/admin/settings',
           menu_categories_id: 1,
           depth: 1,
@@ -19,7 +19,7 @@ module.exports = {
         {
           id: 2,
           parent_id: 0,
-          // name: 'Dashboard',
+          name: 'Dashboard',
           uri: '/admin/dashboard',
           menu_categories_id: 1,
           depth: 1,
@@ -30,7 +30,7 @@ module.exports = {
         {
           id: 3,
           parent_id: 0,
-          // name: 'Manage Users',
+          name: 'Manage Users',
           uri: '/admin/users',
           menu_categories_id: 1,
           depth: 1,
@@ -41,6 +41,7 @@ module.exports = {
         {
           id: 4,
           parent_id: 0,
+          name: 'Manage Boards',
           uri: '/admin/boards',
           menu_categories_id: 1,
           depth: 1,
