@@ -2,9 +2,11 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const crypto = require('crypto');
 const Schema = require('validate');
+const axios = require('axios');
 const Model = require('@models');
 const regex = require('@utils/regex');
 const csrf = require('@utils/csrf');
+const validation = require('@utils/validation');
 const CommonCodeController = require('@controllers/CommonCodeController');
 
 const UserModel = Model.user;
@@ -50,17 +52,16 @@ const doLogin = async (req, res, next) => {
       match: regex.password,
     },
   });
+
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return res
-      .status(400)
-      .json({ error: true, message: validationError[0].message });
+    return res.json({ error: true, message: validationError[0].message });
   }
 
   // Login
   passport.authenticate('local', { session: false }, (err, user, message) => {
     if (err || !user) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message,
         err,
@@ -79,12 +80,23 @@ const doLogin = async (req, res, next) => {
 
       const expiresIn = 1000 * 60 * 60 * 24 * period; // date
       createToken(payload)
-        .then((token) => {
-          res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
-          res.redirect(redirectUrl);
+        .then(token => {
+          // res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
+          // res.redirect(redirectUrl);
+          res.json({
+            cookie: {
+              name: 'jwt',
+              value: token,
+              maxAge: expiresIn,
+              message,
+            },
+          });
         })
         .catch(() => {
-          res.redirect(redirectUrl);
+          // res.redirect(redirectUrl);
+          res.json({
+            redirect: redirectUrl,
+          });
         });
     });
   })(req, res, redirectUrl, period);
@@ -110,32 +122,32 @@ const doRegister = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   const defaultAuthorities = await CommonCodeController.defaultAuthorities();
-  const redirectUriAfterRegister = await CommonCodeController.redirectUriAfterRegister();
+  // const redirectUriAfterRegister = await CommonCodeController.redirectUriAfterRegister();
 
   // Validation Check
   const reqBodySchema = new Schema({
-    name: {
-      type: String,
-      required: true,
-      length: { min: 1 },
-    },
-    email: {
-      type: String,
-      required: true,
-      match: regex.email,
-      length: { min: 5 },
-    },
-    password: {
-      type: String,
-      required: true,
-      match: regex.password,
-    },
+    name: validation.check.auth.name,
+    email: validation.check.auth.email,
+    password: validation.check.auth.password,
   });
+
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return res
-      .status(400)
-      .json({ error: true, message: validationError[0].message });
+    return res.json({ error: true, message: validationError[0].message });
+  }
+
+  const existUser = await Model.user.findOne({
+    where: {
+      email,
+    },
+  }).then(d => d.dataValues)
+    .catch(() => { /* do nothing */ });
+
+  if (existUser) {
+    return res.json({
+      error: true,
+      message: 'user_exist',
+    });
   }
 
   // salt and hash
@@ -146,25 +158,45 @@ const doRegister = async (req, res, next) => {
     .digest('hex');
   const authorities_id = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
 
-  UserModel.create({
+  // Create User
+  const user = await UserModel.create({
     name,
     email,
     password: hashPassword,
     salt,
   })
-    .then((user) => {
-      console.log(user.dataValues);
-
-      UserAuthorityRelationModel.create({
-        users_id: user.dataValues.id,
-        authorities_id,
-      }).then((r) => {
-        console.log(r.dataValues);
-        res.redirect(redirectUriAfterRegister);
+    .then(d => d.dataValues)
+    .catch(() => {
+      return res.json({
+        error: true,
+        message: 'fail_to_create_user',
       });
+    });
+
+  console.log('#######');
+  console.log(user);
+  // Create user-auth relations
+  await UserAuthorityRelationModel.create({
+    users_id: user.id,
+    authorities_id,
+  }).then(() => { /* do nothing */ })
+    .catch(() => {
+      return res.json({
+        error: true,
+        message: 'fail_to_create_relations',
+      });
+    });
+
+  await axios
+    .post(`${process.env.DOMAIN}:${process.env.PORT}/auth/login`, { email, password })
+    .then(r => {
+      return res.json(r.data);
     })
     .catch(() => {
-      res.redirect('back');
+      return res.json({
+        error: true,
+        message: 'fail_to_logged_in',
+      });
     });
 };
 
