@@ -2,19 +2,20 @@
  * Modules
  */
 require('dotenv').config();
+require('module-alias/register');
 
 const express = require('express');
 // const middleware = require('./app/middleware');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
-const passportConfig = require('./app/controllers/auth/passport');
 const csrf = require('csurf');
 const cors = require('cors');
 const ejsLocals = require('ejs-locals');
 const i18next = require('i18next');
 const i18nextMiddleware = require('i18next-express-middleware');
 const i18nextFsBackend = require('i18next-node-fs-backend');
+const passportConfig = require('./app/controllers/auth/passport');
 
 /*
  * Environment Configurations
@@ -45,8 +46,9 @@ app.use(cors(require('./app/middleware/CORS')));
 
 // logger
 const logger = require('./app/middleware/Logger');
+
 app.use(logger.printTerminalDev);
-app.use(process.env.NODE_ENV == 'development' ? logger.saveFileDev : logger.saveFileDefault);
+app.use(process.env.NODE_ENV === 'development' ? logger.saveFileDev : logger.saveFileDefault);
 
 // i18next
 i18next
@@ -54,8 +56,8 @@ i18next
   .use(i18nextMiddleware.LanguageDetector)
   .init({
     backend: {
-      loadPath: __dirname + '/locales/{{lng}}.json',
-      addPath: __dirname + '/locales/{{lng}}.missing.json',
+      loadPath: `${__dirname}/locales/{{lng}}.json`,
+      addPath: `${__dirname}/locales/{{lng}}.missing.json`,
     },
     fallbackLng: 'en',
     preload: ['en', 'ko'],
@@ -77,7 +79,7 @@ app.all('*', (req, res, next) => {
   }
 
   // Query String
-  const lng = req.query.lng;
+  const { lng } = req.query;
   if (typeof lng !== 'undefined') {
     req.i18n.changeLanguage(lng);
   }
@@ -103,6 +105,7 @@ app.use('/admin', require('./routes/admin'));
  * Error
  */
 const error = require('./app/middleware/Error');
+
 app.use(error.notFoundError);
 app.use(error.errorMessage);
 

@@ -1,4 +1,4 @@
-# Weaver Framework
+# Weaver Framework: Server
 
 ## 주 기능
 
@@ -29,6 +29,7 @@
 ### 기타
 - 국제화 기능(i18n)
 - validate schema 이용
+- Alias
 
 updated_at: 2020-01-09
 
@@ -89,12 +90,12 @@ $ docker exec -it <CONTAINER ID> /bin/bash // docker 이미지로 진입
 
 이제 `Migration Script`를 실행합니다. 이때, 도커 컨테이너 실행 등으로 `.env`환경에 맞는 디비가 존재해야 합니다. 
 ```shell script
-$ ./node_modules/.bin/sequelize db:migrate
+$ npm run migrate
 ```
 
 기본 데이터들을 `Seeder`를 실행하여 DB에 저장합니다.
 ```shell script
-$ ./node_modules/.bin/sequelize db:seed:all
+$ npm run seed
 ```
 
 `exit`명령어로 도커 프로세스에서 벗어날 수 있습니다.
@@ -102,8 +103,7 @@ $ ./node_modules/.bin/sequelize db:seed:all
 이제 프로젝트를 시작할 준비가 되었습니다. 매번 작업을 시작하기 전에 `docker-compose up -d`로 프로젝트고 환경을 시작하고, `docker-compose down`으로 종료합니다.
 
 
-### eslint & Prettier
-`eslint` 및 `Prettier`를 적용하여 일부 코드 스타일을 강제하고 있습니다.
+### eslint
+`eslint`를 적용하여 코드 스타일을 강제하고 있습니다.
 각자가 사용하는 편집기에서 `eslint`실시간으로 체크하도록 플러그인을 설치해서 사용하시길 권합니다.
-또한 `Prettier`를 지원하는 플러그인으로 코드를 계속 자동으로 고쳐나가며 개발하실 수 있으며
-git 커밋시에 `Staged`된 파일이 자동으로 `Prettier`를 거치도록 되어 있습니다. 
+git 커밋시에 `Staged`된 파일이 자동으로 `eslint`를 거치도록 되어 있습니다. 

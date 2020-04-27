@@ -17,14 +17,12 @@ const errorMessage = function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error', {
-    title: '::' + err.status,
+    title: `::${err.status}`,
   });
 };
 
-module.exports = Object.assign(
-  {},
-  {
-    notFoundError,
-    errorMessage,
-  },
-);
+module.exports = {
+
+  notFoundError,
+  errorMessage,
+};

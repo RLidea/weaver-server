@@ -1,3 +1,4 @@
 app/models
 database/migrations
 database/seeders
+webStorm.config.js

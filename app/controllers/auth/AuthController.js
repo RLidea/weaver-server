@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const crypto = require('crypto');
-const Model = require('./../../models');
-const UserModel = Model.user;
-const CommonCodeController = require('./../CommonCodeController');
-const UserAuthorityRelationModel = Model.user_authority_relation;
 const Schema = require('validate');
-const regex = require('./../../utils/regex');
-const csrf = require('./../../utils/csrf');
+const Model = require('@models');
+const regex = require('@utils/regex');
+const csrf = require('@utils/csrf');
+const CommonCodeController = require('@controllers/CommonCodeController');
 
+const UserModel = Model.user;
+const UserAuthorityRelationModel = Model.user_authority_relation;
 require('dotenv').config();
 
 /*
@@ -20,7 +20,12 @@ const viewLogin = async (req, res, next) => {
   if (authInfo.isLogin) {
     return res.redirect('/');
   }
-  res.render('auth', { title: 'Login', page: 'login', csrfToken: csrf.token(req) });
+
+  return res.render('auth', {
+    title: 'Login',
+    page: 'login',
+    csrfToken: csrf.token(req),
+  });
 };
 
 const doLogin = async (req, res, next) => {
@@ -29,7 +34,7 @@ const doLogin = async (req, res, next) => {
   const redirectUriAfterLogin = await CommonCodeController.redirectUriAfterLogin();
 
   const redirectUrl = `${redirectUriAfterLogin}`;
-  const period = authPeriod | 0;
+  const period = authPeriod || 0;
 
   // Validation Check
   const reqBodySchema = new Schema({
@@ -47,7 +52,9 @@ const doLogin = async (req, res, next) => {
   });
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return res.status(400).json({ error: true, message: validationError[0].message });
+    return res
+      .status(400)
+      .json({ error: true, message: validationError[0].message });
   }
 
   // Login
@@ -64,15 +71,15 @@ const doLogin = async (req, res, next) => {
       email: user.email,
     };
 
-    req.login(payload, { session: false }, err => {
-      if (err) {
-        console.error(err);
-        res.json(err);
+    req.login(payload, { session: false }, (loginError) => {
+      if (loginError) {
+        console.error(loginError);
+        res.json(loginError);
       }
 
       const expiresIn = 1000 * 60 * 60 * 24 * period; // date
       createToken(payload)
-        .then(token => {
+        .then((token) => {
           res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
           res.redirect(redirectUrl);
         })
@@ -91,7 +98,11 @@ const viewRegister = async (req, res, next) => {
   if (authInfo.isLogin) {
     res.redirect('/');
   }
-  res.render('auth', { title: 'Register', page: 'register', csrfToken: csrf.token(req) });
+  res.render('auth', {
+    title: 'Register',
+    page: 'register',
+    csrfToken: csrf.token(req),
+  });
 };
 
 const doRegister = async (req, res, next) => {
@@ -122,16 +133,18 @@ const doRegister = async (req, res, next) => {
   });
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return res.status(400).json({ error: true, message: validationError[0].message });
+    return res
+      .status(400)
+      .json({ error: true, message: validationError[0].message });
   }
 
   // salt and hash
-  const salt = Math.round(new Date().valueOf() * Math.random()) + '';
+  const salt = `${Math.round(new Date().valueOf() * Math.random())}`;
   const hashPassword = crypto
     .createHash('sha512')
     .update(password + salt)
     .digest('hex');
-  const authorities_id = (defaultAuthorities | 0) !== 0 ? defaultAuthorities | 0 : 3;
+  const authorities_id = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
 
   UserModel.create({
     name,
@@ -139,13 +152,13 @@ const doRegister = async (req, res, next) => {
     password: hashPassword,
     salt,
   })
-    .then(user => {
+    .then((user) => {
       console.log(user.dataValues);
 
       UserAuthorityRelationModel.create({
         users_id: user.dataValues.id,
         authorities_id,
-      }).then(r => {
+      }).then((r) => {
         console.log(r.dataValues);
         res.redirect(redirectUriAfterRegister);
       });
@@ -163,26 +176,29 @@ const doLogout = async (req, res, next) => {
   if (authInfo.isLogin) {
     res.clearCookie('jwt');
     return res.redirect('/');
-  } else {
-    return res.send('Not Logged In');
   }
+  return res.send('Not Logged In');
 };
 
 /*
   Authentication
  */
-const createToken = async payload => {
+const createToken = async (payload) => {
   const authPeriod = await CommonCodeController.authPeriod();
-  return jwt.sign({ ...payload, access: 'authenticated' }, process.env.JWT_SECRET_KEY, {
-    algorithm: 'HS256',
-    expiresIn: `${authPeriod}d`,
-    issuer: process.env.APP_NAME,
-  });
+  return jwt.sign(
+    { ...payload, access: 'authenticated' },
+    process.env.JWT_SECRET_KEY,
+    {
+      algorithm: 'HS256',
+      expiresIn: `${authPeriod}d`,
+      issuer: process.env.APP_NAME,
+    },
+  );
 };
 
-const getLoginInfo = req => {
+const getLoginInfo = (req) => {
   // Validation
-  const token = req.cookies['jwt'];
+  const token = req.cookies.jwt;
   const sign = process.env.JWT_SECRET_KEY;
 
   const objResult = (isLogin, message, decoded = null) => {
@@ -193,26 +209,28 @@ const getLoginInfo = req => {
     };
   };
 
-  return jwt.verify(token, sign, function(err, decoded) {
+  return jwt.verify(token, sign, (err, decoded) => {
     if (err || !decoded) {
       console.log('invalid token');
       return objResult(false, 'invalid token');
-    } else if (decoded && (!decoded.access || decoded.access == 'unauthenticated')) {
+    } if (
+      decoded
+      && (!decoded.access || decoded.access === 'unauthenticated')
+    ) {
       console.log('unauthenticated token');
       return objResult(false, 'unauthenticated token');
-    } else if (decoded && decoded.access == 'authenticated') {
+    } if (decoded && decoded.access === 'authenticated') {
       console.log('valid token');
       return objResult(true, 'login Succeed', decoded);
-    } else {
-      console.log('something suspicious');
-      return objResult(false, 'something suspicious');
     }
+    console.log('something suspicious');
+    return objResult(false, 'something suspicious');
   });
 };
 
 const getAuthInfo = async (req, authorities_ids = []) => {
   const loginInfo = getLoginInfo(req);
-  const objResult = isAllowed => {
+  const objResult = (isAllowed) => {
     return {
       isAllowed,
       ...loginInfo,
@@ -223,9 +241,8 @@ const getAuthInfo = async (req, authorities_ids = []) => {
   if (!loginInfo.decoded) {
     if (authorities_ids.length !== 0) {
       return objResult(false);
-    } else {
-      return objResult(true);
     }
+    return objResult(true);
   }
 
   // logged in
@@ -233,19 +250,18 @@ const getAuthInfo = async (req, authorities_ids = []) => {
     where: {
       email: loginInfo.decoded.email,
     },
-  }).then(user => user.dataValues.id);
+  }).then((user) => user.dataValues.id);
 
   const authorities_id = await UserAuthorityRelationModel.findOne({
     where: {
       users_id,
     },
-  }).then(auth => auth.dataValues.authorities_id);
+  }).then((auth) => auth.dataValues.authorities_id);
 
   if (authorities_ids.includes(authorities_id)) {
     return objResult(true);
-  } else {
-    return objResult(false);
   }
+  return objResult(false);
 };
 
 const forgotPassword = (req, res, next) => {
@@ -253,16 +269,13 @@ const forgotPassword = (req, res, next) => {
   console.log(req.body);
 };
 
-module.exports = Object.assign(
-  {},
-  {
-    viewLogin,
-    doLogin,
-    viewRegister,
-    doRegister,
-    doLogout,
-    getAuthInfo,
-    createToken,
-    forgotPassword,
-  },
-);
+module.exports = {
+  viewLogin,
+  doLogin,
+  viewRegister,
+  doRegister,
+  doLogout,
+  getAuthInfo,
+  createToken,
+  forgotPassword,
+};

@@ -1,4 +1,4 @@
-const Model = require('./../models');
+const Model = require('@models');
 
 const BoardModel = Model.board;
 
@@ -7,10 +7,8 @@ module.exports.boardList = async () => {
     where: {
       is_use: true,
     },
-  }).then(board =>
-    board.map(item => {
-      return item.dataValues;
-    }),
-  );
+  }).then((board) => board.map((item) => {
+    return item.dataValues;
+  }));
   return boards;
 };

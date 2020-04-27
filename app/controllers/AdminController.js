@@ -1,13 +1,14 @@
-const csrf = require('./../utils/csrf');
 const Schema = require('validate');
-const Model = require('./../../app/models');
-const CommonCodeModel = Model.common_code;
-const AuthController = require('./auth/AuthController');
-const MenuController = require('./MenuController');
-const UserController = require('./UserController');
-const BoardController = require('./BoardController');
+const csrf = require('@utils/csrf');
+const Model = require('@models');
 
-const initializeParams = async req => {
+const CommonCodeModel = Model.common_code;
+const AuthController = require('@controllers/auth/AuthController');
+const MenuController = require('@controllers/MenuController');
+const UserController = require('@controllers/UserController');
+const BoardController = require('@controllers/BoardController');
+
+const initializeParams = async (req) => {
   const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
 
   return {
@@ -60,19 +61,17 @@ const viewSetting = async (req, res, next) => {
     where: {
       group_codes_id: 1,
     },
-  }).then(r =>
-    r.map(data => {
-      return {
-        name: data.dataValues.name,
-        data: data.dataValues.data,
-        description: data.dataValues.description,
-      };
-    }),
-  );
+  }).then((r) => r.map((data) => {
+    return {
+      name: data.dataValues.name,
+      data: data.dataValues.data,
+      description: data.dataValues.description,
+    };
+  }));
 
   res.render('admin/settings', {
     ...init,
-    systemMetadata: systemMetadata,
+    systemMetadata,
   });
 };
 
@@ -122,8 +121,10 @@ const updateSettings = async (req, res, next) => {
 
   // Update
   const keys = Object.keys(parameters);
-  for (let i in keys) {
-    await CommonCodeModel.findOne({ where: { name: keys[i] } }).then(metadata => {
+  // eslint-disable-next-line guard-for-in
+  for (const i in keys) {
+    // eslint-disable-next-line no-await-in-loop
+    await CommonCodeModel.findOne({ where: { name: keys[i] } }).then((metadata) => {
       if (!metadata) return false;
       metadata.update({ data: parameters[keys[i]] });
     });
@@ -170,13 +171,11 @@ const viewBoards = async (req, res, next) => {
   });
 };
 
-module.exports = Object.assign(
-  {},
-  {
-    viewDashboard,
-    viewSetting,
-    updateSettings,
-    viewUsers,
-    viewBoards,
-  },
-);
+module.exports = {
+
+  viewDashboard,
+  viewSetting,
+  updateSettings,
+  viewUsers,
+  viewBoards,
+};

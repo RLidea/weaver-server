@@ -10,6 +10,7 @@ module.exports.list_to_tree = list => {
   // initialize
   for (let i = 0, l = list.length; i < l; i += 1) {
     map[list[i].id] = list[i];
+    // eslint-disable-next-line no-param-reassign
     list[i].children = [];
   }
 

@@ -1,7 +1,8 @@
-const Model = require('./../../app/models');
+const Model = require('@models');
+
 const MenuModel = Model.menu;
 const MenuTranslationModel = Model.menu_translation;
-const formatter = require('./../utils/formatter');
+const formatter = require('@utils/formatter');
 // const AuthorityMenuRelationModel = Model.authority_menu_relation;
 const LanguageController = require('./LanguageController');
 
@@ -36,21 +37,19 @@ const getMenuList = async (menu_categories_id, language_code) => {
     ],
     where: { menu_categories_id },
     order: [['order', 'ASC']],
-  }).then(menus =>
-    menus.map(menu => {
-      return {
-        id: menu.dataValues.id,
-        name: menu.dataValues.menu_translations[0].name,
-        parent_id: menu.dataValues.parent_id,
-        menu_categories_id: menu.dataValues.menu_categories_id,
-        uri: menu.dataValues.uri,
-        depth: menu.dataValues.depth,
-        order: menu.dataValues.order,
-        description: menu.dataValues.description,
-        is_use: menu.dataValues.description,
-      };
-    }),
-  );
+  }).then((menuData) => menuData.map((menu) => {
+    return {
+      id: menu.dataValues.id,
+      name: menu.dataValues.menu_translations[0].name,
+      parent_id: menu.dataValues.parent_id,
+      menu_categories_id: menu.dataValues.menu_categories_id,
+      uri: menu.dataValues.uri,
+      depth: menu.dataValues.depth,
+      order: menu.dataValues.order,
+      description: menu.dataValues.description,
+      is_use: menu.dataValues.description,
+    };
+  }));
 
   return menus;
 };

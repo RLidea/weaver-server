@@ -6,12 +6,13 @@ require('dotenv').config();
 
 const passport = require('passport');
 const passportJwt = require('passport-jwt');
+
 const JWTStrategy = passportJwt.Strategy;
 const ExtractJWT = passportJwt.ExtractJwt;
 const crypto = require('crypto');
 const LocalStrategy = require('passport-local').Strategy;
 
-const UserModel = require('../../models').user;
+const UserModel = require('@models').user;
 
 module.exports = () => {
   // Local Strategy
@@ -21,16 +22,16 @@ module.exports = () => {
         usernameField: 'email',
         passwordField: 'password',
       },
-      function(email, password, done) {
+      ((email, password, done) => {
         return UserModel.findOne({ where: { email } })
-          .then(user => {
+          .then((user) => {
             if (!user) {
               return done(null, false, { message: 'Incorrect email' });
             }
-            const salt = user.dataValues.salt;
+            const { salt } = user.dataValues;
             const dbPassword = user.dataValues.password;
 
-            let hashPassword = crypto
+            const hashPassword = crypto
               .createHash('sha512')
               .update(password + salt)
               .digest('hex');
@@ -40,12 +41,11 @@ module.exports = () => {
                 last_login: new Date(),
               });
               return done(null, user, { message: 'Logged In Successfully' });
-            } else {
-              return done(null, false, { message: 'Incorrect password' });
             }
+            return done(null, false, { message: 'Incorrect password' });
           })
-          .catch(err => done(err));
-      },
+          .catch((err) => done(err));
+      }),
     ),
   );
 
@@ -56,15 +56,15 @@ module.exports = () => {
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.JWT_SECRET_KEY,
       },
-      function(jwtPayload, done) {
+      ((jwtPayload, done) => {
         return UserModel.findOne({
           where: {
             id: jwtPayload.id,
           },
         })
-          .then(user => done(null, user))
-          .catch(err => done(err));
-      },
+          .then((user) => done(null, user))
+          .catch((err) => done(err));
+      }),
     ),
   );
 };
