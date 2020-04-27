@@ -10,11 +10,11 @@ services:
       - .:/usr/src/service
     environment:
       - NODE_ENV=${NODE_ENV}
-    command: npm start
+    command: npm run dev
     expose:
       - ${PORT}
     ports:
-      - 3000:${PORT}
+      - ${PORT}:${PORT}
     restart: always
 
 
