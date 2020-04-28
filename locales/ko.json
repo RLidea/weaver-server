@@ -1,4 +1,7 @@
 {
+  "common": {
+    "hello": "안녕"
+  },
   "auth": {
     "login": "로그인"
   },

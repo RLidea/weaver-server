@@ -234,6 +234,8 @@ const createToken = async (payload) => {
 const getLoginInfo = (req) => {
   // Validation
   const token = req.cookies.jwt;
+  console.log(req);
+  console.log(req.cookies);
   const sign = process.env.JWT_SECRET_KEY;
 
   const objResult = (isLogin, message, decoded = null) => {

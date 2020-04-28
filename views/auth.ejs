@@ -71,7 +71,7 @@
       return false;
     }
     const { name, value, maxAge } = cookie;
-    document.cookie = `${name}=${value};max-age=${maxAge};SameSite=strict;`
+    document.cookie = `${name}=${value};max-age=${maxAge};SameSite=None;path=/;`
   }
 
   const passwordHashing = password => {

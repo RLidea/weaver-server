@@ -7,6 +7,7 @@ const AuthController = require('@controllers/auth/AuthController');
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   const authInfo = await AuthController.getAuthInfo(req);
+  console.log(authInfo);
   // console.log(req.i18n);
   res.render('production/index', { title: process.env.APP_NAME, auth: authInfo, text: {} });
 });

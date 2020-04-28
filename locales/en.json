@@ -1,4 +1,7 @@
 {
+  "common": {
+    "hello": "Hello"
+  },
   "auth": {
     "login": "Login"
   },
