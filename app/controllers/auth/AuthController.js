@@ -9,8 +9,6 @@ const csrf = require('@utils/csrf');
 const validation = require('@utils/validation');
 const CommonCodeController = require('@controllers/CommonCodeController');
 
-const UserModel = Model.user;
-const UserAuthorityRelationModel = Model.user_authority_relation;
 require('dotenv').config();
 
 /*
@@ -162,7 +160,7 @@ const doRegister = async (req, res, next) => {
   const authorities_id = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
 
   // Create User
-  const user = await UserModel.create({
+  const user = await Model.user.create({
     name,
     email,
     password: hashPassword,
@@ -179,7 +177,7 @@ const doRegister = async (req, res, next) => {
   console.log('#######');
   console.log(user);
   // Create user-auth relations
-  await UserAuthorityRelationModel.create({
+  await Model.user_authority_relation.create({
     users_id: user.id,
     authorities_id,
   }).then(() => { /* do nothing */ })
@@ -250,16 +248,21 @@ const getLoginInfo = (req) => {
     if (err || !decoded) {
       console.log('invalid token');
       return objResult(false, 'invalid token');
-    } if (
+    }
+
+    if (
       decoded
       && (!decoded.access || decoded.access === 'unauthenticated')
     ) {
       console.log('unauthenticated token');
       return objResult(false, 'unauthenticated token');
-    } if (decoded && decoded.access === 'authenticated') {
+    }
+
+    if (decoded && decoded.access === 'authenticated') {
       console.log('valid token');
       return objResult(true, 'login Succeed', decoded);
     }
+
     console.log('something suspicious');
     return objResult(false, 'something suspicious');
   });
@@ -283,13 +286,13 @@ const getAuthInfo = async (req, authorities_ids = []) => {
   }
 
   // logged in
-  const users_id = await UserModel.findOne({
+  const users_id = await Model.user.findOne({
     where: {
       email: loginInfo.decoded.email,
     },
   }).then((user) => user.dataValues.id);
 
-  const authorities_id = await UserAuthorityRelationModel.findOne({
+  const authorities_id = await Model.user_authority_relation.findOne({
     where: {
       users_id,
     },
