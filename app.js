@@ -91,7 +91,14 @@ app.all('*', (req, res, next) => {
  * Routers
  */
 
-app.use(csrf({ cookie: true }));
+app.use(csrf({
+  cookie: {
+    key: '_csrf-token',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 3600, // 1-hour
+  },
+}));
 
 app.use('/api', require('./routes/apis'));
 

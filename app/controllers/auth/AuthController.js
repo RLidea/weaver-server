@@ -62,7 +62,7 @@ const doLogin = async (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, user, message) => {
     if (err || !user) {
       return res.json({
-        success: false,
+        error: true,
         message,
         err,
       });
@@ -84,18 +84,21 @@ const doLogin = async (req, res, next) => {
           // res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
           // res.redirect(redirectUrl);
           res.json({
+            error: false,
             cookie: {
               name: 'jwt',
               value: token,
               maxAge: expiresIn,
               message,
             },
+            redirectUrl,
           });
         })
         .catch(() => {
           // res.redirect(redirectUrl);
           res.json({
-            redirect: redirectUrl,
+            error: true,
+            message: 'login_failed',
           });
         });
     });

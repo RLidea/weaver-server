@@ -11,29 +11,75 @@
 <body>
 <div class="flex-center position-ref full-height">
     <div class="content">
-        <form action="/auth/<%= page %>" method="post" onsubmit="passwordHashing()">
-            <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+        <form id="auth" action="/auth/<%= page %>" method="post">
+            <input type="hidden" name="_csrf-token" value="<%=csrfToken%>" />
             <h1><%= title %></h1>
             <%if(page == 'register'){%>
                 <input id="name" type="text" name="name" placeholder="name">
             <%}%>
             <input id="email" type="email" name="email" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
             <input id="password" type="password" name="password" placeholder="password" pattern="(.{6,})">
-            <button type="submit">Submit</button>
+            <button id="submit" type="submit">Submit</button>
         </form>
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-function passwordHashing() {
-  const elPassword = document.querySelector('#password');
-  const objHash = new jsSHA("SHA-512", "TEXT", {numRounds: 1});
-  objHash.update(elPassword.value);
-  const hash = objHash.getHash("HEX");
-  elPassword.value = hash;
-  console.log(hash);
-}
+  document.addEventListener('DOMContentLoaded', function (){
+    window.axios = axios;
+    window.axios.defaults.headers.common = {
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-CSRF-TOKEN' : document.querySelector('input[name="_csrf-token"]').value,
+    };
+
+    document.querySelector('#submit').addEventListener('click', function(e) {
+      e.preventDefault();
+      auth();
+    })
+  });
+
+  const auth = () => {
+    const sendData = {
+      name: document.querySelector('#name') ? document.querySelector('#name').value : null,
+      email: document.querySelector('#email').value,
+      password: passwordHashing(document.querySelector('#password').value),
+    };
+
+    axios.post('/auth/<%= page %>', sendData)
+      .then(res => {
+        console.log('success:');
+
+        console.log(res.data);
+        if (!!res.data.error) {
+          return false;
+        }
+        setCookie(res.data.cookie)
+
+        window.location.href = res.data.redirectUrl;
+        return res;
+      })
+      .catch(err => {
+        console.log(err);
+        console.log(Error(err.response.data.message));
+      });
+  }
+
+  const setCookie = cookie => {
+    if (!cookie) {
+      return false;
+    }
+    const { name, value, maxAge } = cookie;
+    document.cookie = `${name}=${value};max-age=${maxAge};SameSite=strict;`
+  }
+
+  const passwordHashing = password => {
+    const objHash = new jsSHA("SHA-512", "TEXT", {numRounds: 1});
+    objHash.update(password);
+
+    return objHash.getHash("HEX");
+  }
 </script>
 
 </body>
