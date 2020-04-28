@@ -8,13 +8,16 @@ module.exports = (sequelize, DataTypes) => {
       users_id: DataTypes.INTEGER.UNSIGNED,
       title: DataTypes.STRING,
       contents: DataTypes.TEXT,
-      order: DataTypes.INTEGER.UNSIGNED,
+      order: DataTypes.INTEGER,
       is_notice: DataTypes.BOOLEAN,
       view_count: DataTypes.INTEGER.UNSIGNED,
       deleted_at: DataTypes.DATE,
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   document.associate = function(models) {

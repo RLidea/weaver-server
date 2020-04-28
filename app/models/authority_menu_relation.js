@@ -4,7 +4,10 @@ module.exports = (sequelize, DataTypes) => {
     authorities_id: DataTypes.INTEGER.UNSIGNED,
     menus_id: DataTypes.INTEGER.UNSIGNED
   }, {
-    underscored: true,
+    createdAt   : 'created_at',
+    updatedAt   : 'updated_at',
+    timestamps  : true,
+    underscored : true,
   });
   authority_menu_relation.associate = function(models) {
     // associations can be defined here

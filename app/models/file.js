@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       deleted_at: DataTypes.DATE,
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   file.associate = function(models) {

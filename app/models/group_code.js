@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.STRING(191),
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   group_code.associate = function(models) {

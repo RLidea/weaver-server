@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       authorities_id: DataTypes.INTEGER.UNSIGNED,
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   menu_authority_relation.associate = function(models) {

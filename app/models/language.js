@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       is_use: DataTypes.BOOLEAN,
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   language.associate = function(models) {

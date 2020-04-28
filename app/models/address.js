@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       mobile: DataTypes.CHAR(13),
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   address.associate = function(models) {};

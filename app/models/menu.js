@@ -8,12 +8,15 @@ module.exports = (sequelize, DataTypes) => {
       menu_categories_id: DataTypes.INTEGER.UNSIGNED,
       uri: DataTypes.STRING(191),
       depth: DataTypes.INTEGER.UNSIGNED,
-      order: DataTypes.INTEGER.UNSIGNED,
+      order: DataTypes.INTEGER,
       description: DataTypes.STRING(191),
       is_use: DataTypes.BOOLEAN,
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   menu.associate = function(models) {

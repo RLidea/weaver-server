@@ -43,7 +43,7 @@ module.exports = {
       },
       order: {
         allowNull: false,
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         comment: '메뉴의 순서',
         defaultValue: 0,
       },

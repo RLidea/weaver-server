@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) => {
       languages_id: DataTypes.INTEGER.UNSIGNED,
     },
     {
-      underscored: true,
+      createdAt   : 'created_at',
+      updatedAt   : 'updated_at',
+      timestamps  : true,
+      underscored : true,
     },
   );
   menu_translation.associate = function(models) {

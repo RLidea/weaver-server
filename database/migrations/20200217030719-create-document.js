@@ -41,7 +41,7 @@ module.exports = {
       },
       order: {
         allowNull: false,
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         defaultValue: 0,
       },
       is_notice: {
