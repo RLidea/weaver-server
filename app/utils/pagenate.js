@@ -1,31 +1,33 @@
-const Model = require('@models');
+module.exports = async (options, currentPageNum, limit) => {
+  const { model, select, where, order, include } = options;
 
-module.exports = async (model, currentPageNum, limit, select = [], where = {}) => {
-  const pageNum = currentPageNum < 1 ? 1 : currentPageNum;
-  const offset = limit * (pageNum - 1);
+  const pageNum = Number(currentPageNum) > 0 ? currentPageNum : 1;
+  const pageLimit = Number(limit) > 0 ? limit : 10;
+  const offset = pageLimit * (pageNum - 1);
 
-  const TargetModel = Model[model];
-  const list = await TargetModel.findAll({
+  const list = await model.findAll({
     offset,
-    limit,
-    attributes: select,
-    where,
+    limit: pageLimit,
+    attributes: select !== undefined ? select : null,
+    where: where !== undefined ? where : null,
+    include: include !== undefined ? include : null,
+    order: order !== undefined ? order : null,
   }).then(data => data.map(item => {
     return item.dataValues;
   }));
 
-  const total_count = await TargetModel.count({
+  const totalCount = await model.count({
     where,
   });
 
-  const lastPageNum = Math.ceil(total_count / limit);
+  const lastPageNum = Math.ceil(totalCount / limit);
 
   return {
     currentPageNum: pageNum,
     lastPageNum,
     offset,
-    limit, // count
-    total_count,
+    limit: pageLimit, // count
+    totalCount,
     list,
   };
 };

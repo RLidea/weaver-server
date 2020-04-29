@@ -1,9 +1,7 @@
 const Model = require('@models');
 
 const MenuModel = Model.menu;
-const MenuTranslationModel = Model.menu_translation;
 const formatter = require('@utils/formatter');
-// const AuthorityMenuRelationModel = Model.authority_menu_relation;
 const LanguageController = require('./LanguageController');
 
 /**
@@ -29,7 +27,7 @@ const getMenuList = async (menu_categories_id, language_code) => {
   const menus = await MenuModel.findAll({
     include: [
       {
-        model: MenuTranslationModel,
+        model: Model.menu_translation,
         where: {
           languages_id,
         },

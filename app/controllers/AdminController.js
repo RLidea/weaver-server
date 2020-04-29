@@ -2,7 +2,6 @@ const Schema = require('validate');
 const csrf = require('@utils/csrf');
 const Model = require('@models');
 
-const CommonCodeModel = Model.common_code;
 const AuthController = require('@controllers/auth/AuthController');
 const MenuController = require('@controllers/MenuController');
 const UserController = require('@controllers/UserController');
@@ -21,9 +20,6 @@ const initializeParams = async (req) => {
 
 /**
  * Admin DashBoard View
- * @param req
- * @param res
- * @param next
  * @returns {Promise<void>}
  */
 const viewDashboard = async (req, res, next) => {
@@ -50,14 +46,11 @@ const dashboardData = async () => {
 
 /**
  * Admin System Settings View
- * @param req
- * @param res
- * @param next
  * @returns {Promise<void>}
  */
 const viewSetting = async (req, res, next) => {
   const init = await initializeParams(req);
-  const systemMetadata = await CommonCodeModel.findAll({
+  const systemMetadata = await Model.common_code.findAll({
     where: {
       group_codes_id: 1,
     },
@@ -76,10 +69,6 @@ const viewSetting = async (req, res, next) => {
 };
 
 /**
- *
- * @param req
- * @param res
- * @param next
  * @returns {Promise<Json|any>}
  */
 const updateSettings = async (req, res, next) => {
@@ -124,7 +113,7 @@ const updateSettings = async (req, res, next) => {
   // eslint-disable-next-line guard-for-in
   for (const i in keys) {
     // eslint-disable-next-line no-await-in-loop
-    await CommonCodeModel.findOne({ where: { name: keys[i] } }).then((metadata) => {
+    await Model.common_code.findOne({ where: { name: keys[i] } }).then((metadata) => {
       if (!metadata) return false;
       metadata.update({ data: parameters[keys[i]] });
     });
@@ -135,9 +124,6 @@ const updateSettings = async (req, res, next) => {
 
 /**
  * User Management View
- * @param req
- * @param res
- * @param next
  * @returns {Promise<void>}
  */
 const viewUsers = async (req, res, next) => {
@@ -154,9 +140,6 @@ const viewUsers = async (req, res, next) => {
 
 /**
  * Admin Board Setting View
- * @param req
- * @param res
- * @param next
  * @returns {Promise<void>}
  */
 const viewBoards = async (req, res, next) => {
