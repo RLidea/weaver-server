@@ -5,7 +5,6 @@ const Schema = require('validate');
 const axios = require('axios');
 const Model = require('@models');
 const regex = require('@utils/regex');
-const csrf = require('@utils/csrf');
 const validation = require('@utils/validation');
 const CommonCodeController = require('@controllers/CommonCodeController');
 
@@ -14,6 +13,19 @@ require('dotenv').config();
 /*
   Login
  */
+const getCsrfToken = async (req, res, next) => {
+  if (req.headers.secret !== process.env.CSRF_SECRET) {
+    return res.json({
+      error: true,
+      token: {},
+    });
+  }
+  return res.json({
+    error: false,
+    token: req.csrfToken(),
+  });
+};
+
 const viewLogin = async (req, res, next) => {
   const authInfo = await getAuthInfo(req);
 
@@ -24,7 +36,7 @@ const viewLogin = async (req, res, next) => {
   return res.render('auth', {
     title: 'Login',
     page: 'login',
-    csrfToken: csrf.token(req),
+    csrfToken: req.csrfToken(),
   });
 };
 
@@ -114,7 +126,7 @@ const viewRegister = async (req, res, next) => {
   res.render('auth', {
     title: 'Register',
     page: 'register',
-    csrfToken: csrf.token(req),
+    csrfToken: req.csrfToken(),
   });
 };
 
@@ -310,6 +322,7 @@ const forgotPassword = (req, res, next) => {
 };
 
 module.exports = {
+  getCsrfToken,
   viewLogin,
   doLogin,
   viewRegister,

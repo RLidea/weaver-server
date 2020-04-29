@@ -1,5 +1,4 @@
 const Schema = require('validate');
-const csrf = require('@utils/csrf');
 const Model = require('@models');
 
 const AuthController = require('@controllers/auth/AuthController');
@@ -13,7 +12,7 @@ const initializeParams = async (req) => {
   return {
     title: process.env.APP_NAME,
     auth: authInfo,
-    csrfToken: csrf.token(req),
+    csrfToken: req.csrfToken(),
     menus: await MenuController.menuList(1, req.i18n.language),
   };
 };
