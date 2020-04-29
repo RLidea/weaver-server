@@ -4,7 +4,7 @@ const Model = require('@models');
 const AuthController = require('@controllers/auth/AuthController');
 const MenuController = require('@controllers/MenuController');
 const UserController = require('@controllers/UserController');
-const BoardController = require('@controllers/BoardController');
+// const BoardController = require('@controllers/BoardController');
 
 const initializeParams = async (req) => {
   const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
@@ -23,7 +23,6 @@ const initializeParams = async (req) => {
  */
 const viewDashboard = async (req, res, next) => {
   const init = await initializeParams(req);
-  // console.log(init);
   if (init.auth.isAllowed) {
     res.render('admin/dashboard', { ...init, data: await dashboardData() });
   } else {
@@ -143,18 +142,16 @@ const viewUsers = async (req, res, next) => {
  */
 const viewBoards = async (req, res, next) => {
   const init = await initializeParams(req);
-  const boards = await BoardController.boardList();
-
-  console.log(boards);
+  // TODO: get board data
+  // const boards = await BoardController.boardList();
 
   res.render('admin/boards', {
     ...init,
-    data: boards,
+    data: {},
   });
 };
 
 module.exports = {
-
   viewDashboard,
   viewSetting,
   updateSettings,

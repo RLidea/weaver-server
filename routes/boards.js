@@ -3,13 +3,22 @@ const BoardController = require('@controllers/BoardController');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('api!');
-});
+router
+  .route('/')
+  .get(BoardController.boardList);
 
-router.route('/list/:id').get(BoardController.documentList);
-router.route('/docs/:id').get(BoardController.documentDetail);
+router
+  .route('/:boards_id/docs')
+  .get(BoardController.documentList);
 
-router.route('/comment/:id').get(BoardController.commentList);
+router
+  .route('/:boards_id/docs/:documents_id')
+  .get(BoardController.documentDetail)
+  .post(BoardController.writeDocument);
+
+router
+  .route('/:boards_id/docs/:documents_id/comment')
+  .get(BoardController.commentList)
+  .post(BoardController.writeComment);
 
 module.exports = router;
