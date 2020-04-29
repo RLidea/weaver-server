@@ -1,6 +1,6 @@
 const Model = require('@models');
 const join = require('@utils/join');
-const pagenate = require('@utils/pagenate');
+const paginate = require('@utils/paginate');
 
 const boardList = async () => {
   return Model.board.findAll({
@@ -16,7 +16,7 @@ const documentList = async (req, res, next) => {
   const { id } = req.params;
   const { page, limit } = req.query;
 
-  const result = await pagenate({
+  const result = await paginate({
     model: Model.document,
     where: {
       boards_id: id,
@@ -50,7 +50,7 @@ const commentList = async (req, res, next) => {
   const { id } = req.params;
   const { page, limit } = req.query;
 
-  const list = await pagenate({
+  const list = await paginate({
     model: Model.comment,
     where: {
       documents_id: id,

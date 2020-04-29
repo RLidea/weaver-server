@@ -1,5 +1,5 @@
 const Model = require('@models');
-const paginate = require('@utils/pagenate');
+const paginate = require('@utils/paginate');
 
 module.exports.allUsers = async (pageNum, limit) => {
   const result = await paginate({
