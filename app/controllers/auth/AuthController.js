@@ -4,7 +4,6 @@ const crypto = require('crypto');
 const Schema = require('validate');
 const axios = require('axios');
 const Model = require('@models');
-const regex = require('@utils/regex');
 const validation = require('@utils/validation');
 const CommonCodeController = require('@controllers/CommonCodeController');
 
@@ -50,17 +49,8 @@ const doLogin = async (req, res, next) => {
 
   // Validation Check
   const reqBodySchema = new Schema({
-    email: {
-      type: String,
-      required: true,
-      match: regex.email,
-      length: { min: 5 },
-    },
-    password: {
-      type: String,
-      required: true,
-      match: regex.password,
-    },
+    email: validation.check.auth.email,
+    password: validation.check.auth.password,
   });
 
   const validationError = reqBodySchema.validate(req.body);

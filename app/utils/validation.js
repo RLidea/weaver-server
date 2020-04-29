@@ -37,6 +37,10 @@ const check = {
       type: String,
       required: false,
     },
+    integer: {
+      type: Number,
+      required: false,
+    },
     reqInteger: {
       type: Number,
       required: true,
@@ -48,6 +52,11 @@ const check = {
     reqBoolean: {
       type: Boolean,
       required: true,
+    },
+    reqPositiveInteger: {
+      type: Number,
+      required: true,
+      match: regex.positiveNumber,
     },
   },
 };
