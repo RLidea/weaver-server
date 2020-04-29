@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       parent_id: DataTypes.INTEGER.UNSIGNED,
       depth: DataTypes.INTEGER.UNSIGNED,
       content: DataTypes.STRING(191),
+      order: DataTypes.INTEGER,
       deleted_at: DataTypes.DATE,
     },
     {
