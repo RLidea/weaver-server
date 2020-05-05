@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   board.associate = function(models) {
-    board.hasMany(models.document, {
+    board.hasMany(models.article, {
       foreignKey: 'boards_id',
     });
   };

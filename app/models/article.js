@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const document = sequelize.define(
-    'document',
+  const article = sequelize.define(
+    'article',
     {
       boards_id: DataTypes.INTEGER.UNSIGNED,
       parent_id: DataTypes.INTEGER.UNSIGNED,
@@ -20,19 +20,19 @@ module.exports = (sequelize, DataTypes) => {
       underscored : true,
     },
   );
-  document.associate = function(models) {
-    document.belongsTo(models.board, {
+  article.associate = function(models) {
+    article.belongsTo(models.board, {
       foreignKey: 'boards_id',
     });
-    document.belongsTo(models.user, {
+    article.belongsTo(models.user, {
       foreignKey: 'users_id',
     });
-    document.hasMany(models.file, {
-      foreignKey: 'documents_id',
+    article.hasMany(models.file, {
+      foreignKey: 'articles_id',
     });
-    document.hasMany(models.comment, {
-      foreignKey: 'documents_id',
+    article.hasMany(models.comment, {
+      foreignKey: 'articles_id',
     });
   };
-  return document;
+  return article;
 };

@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const file = sequelize.define(
     'file',
     {
-      documents_id: DataTypes.INTEGER.UNSIGNED,
+      articles_id: DataTypes.INTEGER.UNSIGNED,
       comments_id: DataTypes.INTEGER.UNSIGNED,
       type: DataTypes.ENUM('IMAGE', 'ETC'),
       url: DataTypes.TEXT,
@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   file.associate = function(models) {
-    file.belongsTo(models.document, {
-      foreignKey: 'documents_id',
+    file.belongsTo(models.article, {
+      foreignKey: 'articles_id',
     });
   };
   return file;

@@ -18,12 +18,12 @@ module.exports = {
           key: 'id',
         },
       },
-      documents_id: {
+      articles_id: {
         allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
         references: {
           model: {
-            tableName: 'documents',
+            tableName: 'articles',
           },
           key: 'id',
         },

@@ -7,6 +7,6 @@ router.get('/', (req, res) => {
   return res.send('api!');
 });
 
-router.route('/board').get(BoardController.documentList);
+router.route('/board').get(BoardController.articleList());
 
 module.exports = router;

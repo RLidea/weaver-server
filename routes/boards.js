@@ -8,16 +8,16 @@ router
   .get(BoardController.boardList);
 
 router
-  .route('/:boards_id/docs')
-  .get(BoardController.documentList);
+  .route('/:boards_id/article')
+  .get(BoardController.articleList());
 
 router
-  .route('/:boards_id/docs/:documents_id')
-  .get(BoardController.documentDetail)
-  .post(BoardController.writeDocument);
+  .route('/:boards_id/article/:articles_id')
+  .get(BoardController.articleDetail())
+  .post(BoardController.writeArticle());
 
 router
-  .route('/:boards_id/docs/:documents_id/comment')
+  .route('/:boards_id/article/:articles_id/comment')
   .get(BoardController.commentList)
   .post(BoardController.writeComment);
 

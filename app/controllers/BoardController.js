@@ -4,6 +4,9 @@ const paginate = require('@utils/paginate');
 const Schema = require('validate');
 const validation = require('@utils/validation');
 
+/*
+  Boards
+ */
 const boardList = async (req, res, next) => {
   const list = await Model.board.findAll({
     where: {
@@ -16,12 +19,15 @@ const boardList = async (req, res, next) => {
   return res.json(list);
 };
 
-const documentList = async (req, res, next) => {
+/*
+  Articles
+ */
+const articleList = async (req, res, next) => {
   const { boards_id } = req.params;
   const { page, limit } = req.query;
 
   const result = await paginate({
-    model: Model.document,
+    model: Model.article,
     where: {
       boards_id,
       deleted_at: null,
@@ -35,41 +41,22 @@ const documentList = async (req, res, next) => {
   return res.json(result);
 };
 
-const documentDetail = async (req, res, next) => {
-  const { documents_id } = req.params;
+const articleDetail = async (req, res, next) => {
+  const { articles_id } = req.params;
 
-  const doc = await Model.document.findOne({
+  const article = await Model.article.findOne({
     where: {
-      id: documents_id,
+      id: articles_id,
     },
     include: join.user(Model.user),
   })
     .then(d => d)
     .catch(e => e);
 
-  return res.json(doc);
+  return res.json(article);
 };
 
-const commentList = async (req, res, next) => {
-  const { documents_id } = req.params;
-  const { page, limit } = req.query;
-
-  const list = await paginate({
-    model: Model.comment,
-    where: {
-      documents_id,
-      deleted_at: null,
-    },
-    order: [
-      ['id', 'DESC'],
-    ],
-    include: join.user(Model.user),
-  }, Number(page), Number(limit));
-
-  return res.json(list);
-};
-
-const writeDocument = async (req, res, next) => {
+const writeArticle = async (req, res, next) => {
   // Parameters
   const { boards_id } = req.params;
   const { users_id, title, contents, is_notice } = req.body;
@@ -95,8 +82,8 @@ const writeDocument = async (req, res, next) => {
     return res.json({ error: true, message: validationError[0].message });
   }
 
-  // Create Document
-  await Model.document.create(params)
+  // Create Article
+  await Model.article.create(params)
     .then(d => d)
     .catch(e => {
       return res.json({
@@ -110,25 +97,45 @@ const writeDocument = async (req, res, next) => {
   });
 };
 
+/*
+  Comment
+ */
+const commentList = async (req, res, next) => {
+  const { articles_id } = req.params;
+  const { page, limit } = req.query;
+
+  const list = await paginate({
+    model: Model.comment,
+    where: {
+      articles_id,
+      deleted_at: null,
+    },
+    order: [
+      ['id', 'DESC'],
+    ],
+    include: join.user(Model.user),
+  }, Number(page), Number(limit));
+
+  return res.json(list);
+};
+
 const writeComment = async (req, res, next) => {
   // Parameters
-  const { documents_id } = req.params;
-  const { users_id, parent_id, depth, content } = req.body;
+  const { articles_id } = req.params;
+  const { users_id, parent_id, content } = req.body;
 
   const params = {
     users_id: Number(users_id),
-    documents_id: Number(documents_id),
+    articles_id: Number(articles_id),
     parent_id: Number(parent_id) || 0,
-    depth: Number(depth) || 0,
     content,
   };
 
   // Validation Check
   const reqBodySchema = new Schema({
     users_id: validation.check.common.reqPositiveInteger,
-    documents_id: validation.check.common.reqPositiveInteger,
+    articles_id: validation.check.common.reqPositiveInteger,
     parent_id: validation.check.common.integer,
-    depth: validation.check.common.integer,
     content: validation.check.common.reqString,
   });
   const validationError = reqBodySchema.validate(params);
@@ -136,19 +143,71 @@ const writeComment = async (req, res, next) => {
     return res.json({ error: true, message: validationError[0].message });
   }
 
+  // Check DB
+  const isUser = await Model.user.count({
+    where: {
+      id: users_id,
+    },
+  })
+    .then(d => d)
+    .catch(e => e);
+
+  if (isUser === 0) {
+    return res.json({
+      error: true,
+      message: 'user_not_found',
+    });
+  }
+
+  const isArticle = await Model.article.count({
+    where: {
+      id: articles_id,
+    },
+  })
+    .then(d => d)
+    .catch(e => e);
+
+  if (isArticle === 0) {
+    return res.json({
+      error: true,
+      message: 'article_not_found',
+    });
+  }
+
+  const parentComment = await Model.comment.findOne({
+    where: {
+      id: parent_id,
+    },
+  })
+    .then(d => d)
+    .catch(e => {
+      return res.json({
+        error: true,
+        message: e,
+      });
+    });
+
+  if (parentComment === null) {
+    return res.json({
+      error: true,
+      message: 'comment_not_found',
+    });
+  }
+
   // Create Comment
   await Model.comment.create(params);
 
   return res.json({
     error: false,
+    message: 'comment_created',
   });
 };
 
 module.exports = {
   boardList,
-  documentList,
-  documentDetail,
+  articleList,
+  articleDetail,
   commentList,
-  writeDocument,
+  writeArticle,
   writeComment,
 };
