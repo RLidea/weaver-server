@@ -107,7 +107,7 @@ app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'));
 app.use('/admin', require('./routes/admin'));
-app.use('/board', require('./routes/boards'));
+app.use('/boards', require('./routes/boards'));
 
 /*
  * Error

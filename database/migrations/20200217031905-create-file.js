@@ -8,11 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED,
       },
-      documents_id: {
+      articles_id: {
         type: Sequelize.INTEGER.UNSIGNED,
         references: {
           model: {
-            tableName: 'documents',
+            tableName: 'articles',
           },
           key: 'id',
         },

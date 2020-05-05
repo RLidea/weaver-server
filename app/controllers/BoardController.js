@@ -122,13 +122,13 @@ const commentList = async (req, res, next) => {
 const writeComment = async (req, res, next) => {
   // Parameters
   const { articles_id } = req.params;
-  const { users_id, parent_id, content } = req.body;
+  const { users_id, parent_id, contents } = req.body;
 
   const params = {
     users_id: Number(users_id),
     articles_id: Number(articles_id),
     parent_id: Number(parent_id) || 0,
-    content,
+    contents,
   };
 
   // Validation Check
@@ -136,7 +136,7 @@ const writeComment = async (req, res, next) => {
     users_id: validation.check.common.reqPositiveInteger,
     articles_id: validation.check.common.reqPositiveInteger,
     parent_id: validation.check.common.integer,
-    content: validation.check.common.reqString,
+    contents: validation.check.common.reqString,
   });
   const validationError = reqBodySchema.validate(params);
   if (validationError.length > 0) {
@@ -144,13 +144,10 @@ const writeComment = async (req, res, next) => {
   }
 
   // Check DB
-  const isUser = await Model.user.count({
-    where: {
-      id: users_id,
-    },
-  })
-    .then(d => d)
-    .catch(e => e);
+  const [isUser, isArticle] = await Promise.all([
+    Model.user.count({ where: { id: users_id } }).then(d => d).catch(e => e),
+    Model.article.count({ where: { id: articles_id } }).then(d => d).catch(e => e),
+  ]);
 
   if (isUser === 0) {
     return res.json({
@@ -159,14 +156,6 @@ const writeComment = async (req, res, next) => {
     });
   }
 
-  const isArticle = await Model.article.count({
-    where: {
-      id: articles_id,
-    },
-  })
-    .then(d => d)
-    .catch(e => e);
-
   if (isArticle === 0) {
     return res.json({
       error: true,
@@ -174,25 +163,28 @@ const writeComment = async (req, res, next) => {
     });
   }
 
-  const parentComment = await Model.comment.findOne({
-    where: {
-      id: parent_id,
-    },
-  })
-    .then(d => d)
-    .catch(e => {
+  if (Number(parent_id) !== 0) {
+    const parentComment = await Model.comment.findOne({
+      where: {
+        id: parent_id,
+      },
+    })
+      .then(d => d)
+      .catch(e => {
+        return res.json({
+          error: true,
+          message: e,
+        });
+      });
+
+    if (parentComment === null) {
       return res.json({
         error: true,
-        message: e,
+        message: 'comment_not_found',
       });
-    });
-
-  if (parentComment === null) {
-    return res.json({
-      error: true,
-      message: 'comment_not_found',
-    });
+    }
   }
+
 
   // Create Comment
   await Model.comment.create(params);
