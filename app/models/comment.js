@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
     comment.belongsTo(models.user, {
       foreignKey: 'articles_id',
     });
+    comment.hasMany(models.comment, {
+      as: 'children',
+      foreignKey: 'parent_id',
+    });
   };
   return comment;
 };

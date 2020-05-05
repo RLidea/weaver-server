@@ -36,7 +36,7 @@ const articleList = async (req, res, next) => {
       ['order', 'DESC'],
       ['id', 'DESC'],
     ],
-    include: join.user(Model.user),
+    include: [join.user(Model.user)],
   }, Number(page), Number(limit));
   return res.json(result);
 };
@@ -48,7 +48,7 @@ const articleDetail = async (req, res, next) => {
     where: {
       id: articles_id,
     },
-    include: join.user(Model.user),
+    include: [join.user(Model.user)],
   })
     .then(d => d)
     .catch(e => e);
@@ -94,6 +94,7 @@ const writeArticle = async (req, res, next) => {
 
   return res.json({
     error: false,
+    message: 'article_created',
   });
 };
 
@@ -109,11 +110,20 @@ const commentList = async (req, res, next) => {
     where: {
       articles_id,
       deleted_at: null,
+      parent_id: 0,
     },
     order: [
       ['id', 'DESC'],
     ],
-    include: join.user(Model.user),
+    include: [
+      join.user(Model.user),
+      {
+        model: Model.comment,
+        attributes: ['id', 'users_id'],
+        as: 'children',
+        include: [join.user(Model.user)],
+      },
+    ],
   }, Number(page), Number(limit));
 
   return res.json(list);
@@ -145,8 +155,8 @@ const writeComment = async (req, res, next) => {
 
   // Check DB
   const [isUser, isArticle] = await Promise.all([
-    Model.user.count({ where: { id: users_id } }).then(d => d).catch(e => e),
-    Model.article.count({ where: { id: articles_id } }).then(d => d).catch(e => e),
+    Model.user.count({ where: { id: params.users_id } }).then(d => d).catch(e => e),
+    Model.article.count({ where: { id: params.articles_id } }).then(d => d).catch(e => e),
   ]);
 
   if (isUser === 0) {
@@ -163,7 +173,7 @@ const writeComment = async (req, res, next) => {
     });
   }
 
-  if (Number(parent_id) !== 0) {
+  if (params.parent_id !== 0) {
     const parentComment = await Model.comment.findOne({
       where: {
         id: parent_id,
