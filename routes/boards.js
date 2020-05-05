@@ -9,12 +9,12 @@ router
 
 router
   .route('/:boards_id/article')
-  .get(BoardController.articleList());
+  .get(BoardController.articleList);
 
 router
   .route('/:boards_id/article/:articles_id')
-  .get(BoardController.articleDetail())
-  .post(BoardController.writeArticle());
+  .get(BoardController.articleDetail)
+  .post(BoardController.writeArticle);
 
 router
   .route('/:boards_id/article/:articles_id/comment')
