@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   authority.associate = function(models) {
-    authority.hasMany(models.menu_authority_relation, {
+    authority.hasMany(models.authority_menu_relation, {
       foreignKey: 'authorities_id',
     });
     authority.hasMany(models.user_authority_relation, {
