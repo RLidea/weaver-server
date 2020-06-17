@@ -55,8 +55,7 @@
         if (!!res.data.error) {
           return false;
         }
-        setCookie(res.data.cookie)
-
+        setCookie(res.data.cookie);
         window.location.href = res.data.redirectUrl;
         return res;
       })

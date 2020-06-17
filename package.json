@@ -19,6 +19,7 @@
     "@controllers": "./app/controllers",
     "@middleware": "./app/middleware",
     "@models": "./app/models",
+    "@services": "./app/services",
     "@utils": "./app/utils"
   },
   "husky": {

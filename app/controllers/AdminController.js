@@ -1,13 +1,14 @@
 const Schema = require('validate');
 const Model = require('@models');
 
-const AuthController = require('@controllers/auth/AuthController');
+// const AuthController = require('@controllers/auth/AuthController');
 const MenuController = require('@controllers/MenuController');
 const UserController = require('@controllers/UserController');
+const AuthService = require('@services/AuthService');
 // const BoardController = require('@controllers/BoardController');
 
 const initializeParams = async (req) => {
-  const authInfo = await AuthController.getAuthInfo(req, [1, 2]);
+  const authInfo = await AuthService.getAuthInfo(req, [1, 2]);
 
   return {
     title: process.env.APP_NAME,

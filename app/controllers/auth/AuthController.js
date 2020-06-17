@@ -1,11 +1,9 @@
-const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const crypto = require('crypto');
 const Schema = require('validate');
-const axios = require('axios');
 const Model = require('@models');
 const validation = require('@utils/validation');
 const CommonCodeController = require('@controllers/CommonCodeController');
+const AuthService = require('@services/AuthService');
 
 require('dotenv').config();
 
@@ -26,7 +24,7 @@ const getCsrfToken = async (req, res, next) => {
 };
 
 const viewLogin = async (req, res, next) => {
-  const authInfo = await getAuthInfo(req);
+  const authInfo = await AuthService.getAuthInfo(req);
 
   if (authInfo.isLogin) {
     return res.redirect('/');
@@ -41,11 +39,7 @@ const viewLogin = async (req, res, next) => {
 
 const doLogin = async (req, res, next) => {
   // System config Parameters
-  const authPeriod = await CommonCodeController.authPeriod();
-  const redirectUriAfterLogin = await CommonCodeController.redirectUriAfterLogin();
-
-  const redirectUrl = `${redirectUriAfterLogin}`;
-  const period = authPeriod || 0;
+  const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   // Validation Check
   const reqBodySchema = new Schema({
@@ -59,57 +53,38 @@ const doLogin = async (req, res, next) => {
   }
 
   // Login
-  passport.authenticate('local', { session: false }, (err, user, message) => {
-    if (err || !user) {
-      return res.json({
-        error: true,
-        message,
-        err,
-      });
-    }
-
-    const payload = {
-      email: user.email,
-    };
-
-    req.login(payload, { session: false }, (loginError) => {
-      if (loginError) {
-        console.error(loginError);
-        res.json(loginError);
+  passport.authenticate(
+    'local',
+    { session: false },
+    (err, user, message) => {
+      if (err || !user) {
+        console.log(err);
+        return res.json({
+          error: true,
+          message,
+          err,
+        });
       }
 
-      const expiresIn = 1000 * 60 * 60 * 24 * period; // date
-      createToken(payload)
-        .then(token => {
-          // res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
-          // res.redirect(redirectUrl);
-          res.json({
-            error: false,
-            cookie: {
-              name: 'jwt',
-              value: token,
-              maxAge: expiresIn,
-              message,
-            },
-            redirectUrl,
-          });
-        })
-        .catch(() => {
-          // res.redirect(redirectUrl);
-          res.json({
-            error: true,
-            message: 'login_failed',
-          });
-        });
-    });
-  })(req, res, redirectUrl, period);
+      const payload = {
+        email: user.email,
+      };
+
+      AuthService.login(req, res, {
+        payload,
+        period,
+        redirectUrl,
+        message,
+      });
+    },
+  )(req, res, redirectUrl, period);
 };
 
 /*
   Register
  */
 const viewRegister = async (req, res, next) => {
-  const authInfo = await getAuthInfo(req);
+  const authInfo = await AuthService.getAuthInfo(req);
   if (authInfo.isLogin) {
     res.redirect('/');
   }
@@ -123,6 +98,7 @@ const viewRegister = async (req, res, next) => {
 const doRegister = async (req, res, next) => {
   // Parameters
   const { name, email, password } = req.body;
+  const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   const defaultAuthorities = await CommonCodeController.defaultAuthorities();
   // const redirectUriAfterRegister = await CommonCodeController.redirectUriAfterRegister();
@@ -154,11 +130,7 @@ const doRegister = async (req, res, next) => {
   }
 
   // salt and hash
-  const salt = `${Math.round(new Date().valueOf() * Math.random())}`;
-  const hashPassword = crypto
-    .createHash('sha512')
-    .update(password + salt)
-    .digest('hex');
+  const { salt, hashPassword } = AuthService.createSaltAndHash(password);
   const authorities_id = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
 
   // Create User
@@ -188,24 +160,26 @@ const doRegister = async (req, res, next) => {
       });
     });
 
-  await axios
-    .post(`${process.env.DOMAIN}:${process.env.PORT}/auth/login`, { email, password })
-    .then(r => {
-      return res.json(r.data);
-    })
-    .catch(() => {
-      return res.json({
-        error: true,
-        message: 'fail_to_logged_in',
-      });
-    });
+  // Login
+  const reqLogin = {
+    body: {
+      email,
+      password,
+    },
+    login: req.login,
+  };
+  const payload = {
+    email,
+  };
+  const message = 'login with register';
+  await doLogin(reqLogin, res, { payload, period, redirectUrl, message });
 };
 
 /*
   Logout
  */
 const doLogout = async (req, res, next) => {
-  const authInfo = await getAuthInfo(req);
+  const authInfo = await AuthService.getAuthInfo(req);
   if (authInfo.isLogin) {
     res.clearCookie('jwt');
     return res.redirect('/');
@@ -216,92 +190,6 @@ const doLogout = async (req, res, next) => {
 /*
   Authentication
  */
-const createToken = async (payload) => {
-  const authPeriod = await CommonCodeController.authPeriod();
-  return jwt.sign(
-    { ...payload, access: 'authenticated' },
-    process.env.JWT_SECRET_KEY,
-    {
-      algorithm: 'HS256',
-      expiresIn: `${authPeriod}d`,
-      issuer: process.env.APP_NAME,
-    },
-  );
-};
-
-const getLoginInfo = (req) => {
-  // Validation
-  const token = req.cookies.jwt;
-  const sign = process.env.JWT_SECRET_KEY;
-
-  const objResult = (isLogin, message, decoded = null) => {
-    return {
-      isLogin,
-      message,
-      decoded,
-    };
-  };
-
-  return jwt.verify(token, sign, (err, decoded) => {
-    if (err || !decoded) {
-      console.log('invalid token');
-      return objResult(false, 'invalid token');
-    }
-
-    if (
-      decoded
-      && (!decoded.access || decoded.access === 'unauthenticated')
-    ) {
-      console.log('unauthenticated token');
-      return objResult(false, 'unauthenticated token');
-    }
-
-    if (decoded && decoded.access === 'authenticated') {
-      console.log('valid token');
-      return objResult(true, 'login Succeed', decoded);
-    }
-
-    console.log('something suspicious');
-    return objResult(false, 'something suspicious');
-  });
-};
-
-const getAuthInfo = async (req, authorities_ids = []) => {
-  const loginInfo = getLoginInfo(req);
-  const objResult = (isAllowed) => {
-    return {
-      isAllowed,
-      ...loginInfo,
-    };
-  };
-
-  // not logged in
-  if (!loginInfo.decoded) {
-    if (authorities_ids.length !== 0) {
-      return objResult(false);
-    }
-    return objResult(true);
-  }
-
-  // logged in
-  const users_id = await Model.user.findOne({
-    where: {
-      email: loginInfo.decoded.email,
-    },
-  }).then((user) => user.dataValues.id);
-
-  const authorities_id = await Model.user_authority_relation.findOne({
-    where: {
-      users_id,
-    },
-  }).then((auth) => auth.dataValues.authorities_id);
-
-  if (authorities_ids.includes(authorities_id)) {
-    return objResult(true);
-  }
-  return objResult(false);
-};
-
 const forgotPassword = (req, res, next) => {
   // TODO
   console.log(req.body);
@@ -314,7 +202,5 @@ module.exports = {
   viewRegister,
   doRegister,
   doLogout,
-  getAuthInfo,
-  createToken,
   forgotPassword,
 };
