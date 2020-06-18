@@ -7,30 +7,23 @@
 
   <title><%= title %> :: Admin</title>
   <link rel="stylesheet" href="/stylesheets/admin/style.css">
+  <link rel="stylesheet" href="/stylesheets/normalize.css">
 </head>
-<body class="layouts">
-
-<div class="flex flex-col">
-  <header id="header">
-    <hgroup class="flex">
-      <div class="logo">
-        <img src="/images/weaver-logo.png" alt="logo" height="30px">
+<body>
+  <div style="display: flex; height: 100vh;">
+    <div style="padding: 16px 40px 16px 16px;">
+      <div style="height: 100px; display: flex; align-items: center">
+        <img src="/images/weaver-logo.png" alt="logo" height="72px">
+        <div style="font-size: 48px; padding-left: 8px"><%= title %></div>
       </div>
-      <div class="title">
-        <%= title %>
+      <div style="overflow: auto; padding: 0px 16px">
+        <% include ./menu %>
       </div>
-    </hgroup>
-  </header>
-
-  <container id="container" class="flex full-height">
-    <div class="menu-container">
-      <% include ./menu %>
     </div>
-    <div class="content-container">
+    <div style="width: 1px; background: rgba(0,0,0,0.37)"/>
+    <div style="padding: 32px 40px">
       <%- body %>
     </div>
-  </container>
-</div>
-
+  </div>
 </body>
 </html>
