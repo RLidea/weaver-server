@@ -3,6 +3,7 @@
  */
 require('dotenv').config();
 require('module-alias/register');
+const AuthService = require('@services/AuthService');
 
 const express = require('express');
 // const middleware = require('./app/middleware');
@@ -84,6 +85,19 @@ app.all('*', (req, res, next) => {
     req.i18n.changeLanguage(lng);
   }
 
+  next();
+});
+
+// Auth middleware
+app.use(async (req, res, next) => {
+  // not require jwt verification
+  if (req.path === '/auth/login') return next();
+  if (req.path === '/auth/register') return next();
+
+  const loginInfo = AuthService.getLoginInfo(req);
+  if (!loginInfo.isLogin) {
+    return res.status(401).json({ message: 'access denied' });
+  }
   next();
 });
 
