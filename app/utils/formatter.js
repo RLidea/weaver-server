@@ -3,7 +3,8 @@
  * @param list
  * @returns {[]}
  */
-module.exports.list_to_tree = list => {
+
+const list_to_tree = list => {
   const map = {};
   const roots = [];
 
@@ -24,4 +25,14 @@ module.exports.list_to_tree = list => {
   }
 
   return roots;
+};
+
+const onlyNumber = value => {
+  const result = value ? Number(value) : undefined;
+  return result;
+};
+
+module.exports = {
+  list_to_tree,
+  onlyNumber,
 };
