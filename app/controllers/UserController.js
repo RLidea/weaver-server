@@ -1,7 +1,7 @@
 const Model = require('@models');
 const paginate = require('@utils/paginate');
 
-module.exports.allUsers = async (pageNum, limit) => {
+const allUsers = async (pageNum, limit) => {
   const result = await paginate({
     model: Model.user,
     select: ['id', 'email', 'name', 'last_login'],
@@ -12,7 +12,12 @@ module.exports.allUsers = async (pageNum, limit) => {
   return result;
 };
 
-module.exports.userCount = async () => {
+const userCount = async () => {
   const result = await Model.user.findAll().then(d => d);
   return result.length;
+};
+
+module.exports = {
+  allUsers,
+  userCount,
 };
