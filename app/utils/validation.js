@@ -1,3 +1,4 @@
+const Schema = require('validate');
 const regex = require('@utils/regex');
 
 const check = {
@@ -65,7 +66,16 @@ const errorMessage = validationError => {
   return { error: true, message: validationError[0].message };
 };
 
+const validator = (res, params, definition) => {
+  const reqBodySchema = new Schema(definition);
+  const validationError = reqBodySchema.validate(params);
+  if (validationError.length > 0) {
+    return res.json({ error: true, message: validationError[0].message });
+  }
+};
+
 module.exports = {
   check,
   errorMessage,
+  validator,
 };
