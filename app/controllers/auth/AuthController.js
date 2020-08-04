@@ -61,8 +61,10 @@ const doLogin = async (req, res, next) => {
         console.log(err);
         return res.json({
           error: true,
-          message,
-          err,
+          message: message.message,
+          data: {
+            err,
+          }
         });
       }
 
@@ -84,7 +86,7 @@ const doLogin = async (req, res, next) => {
         payload,
         period,
         redirectUrl,
-        message,
+        message: message.message,
       });
     },
   )(req, res, redirectUrl, period);

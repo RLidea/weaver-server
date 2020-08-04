@@ -21,14 +21,16 @@ const login = (req, res, params) => {
         // res.redirect('/auth/login');
         res.json({
           error: false,
-          cookie: {
-            name: 'jwt',
-            value: token,
-            maxAge: expiresIn,
-            message,
-          },
-          redirectUrl,
-          payload,
+          message,
+          data: {
+            cookie: {
+              name: 'jwt',
+              value: token,
+              maxAge: expiresIn,
+            },
+            redirectUrl,
+            payload,
+          }
         });
       })
       .catch(() => {
@@ -36,6 +38,7 @@ const login = (req, res, params) => {
         res.json({
           error: true,
           message: 'login_failed',
+          data: null,
         });
       });
   });
