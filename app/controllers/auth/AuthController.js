@@ -70,6 +70,16 @@ const doLogin = async (req, res, next) => {
         email: user.email,
       };
 
+      // update last login
+      Model.user.update({
+        last_login: new Date(),
+      }, {
+        where: {
+          email: payload.email,
+        },
+      });
+
+      // login
       AuthService.login(req, res, {
         payload,
         period,
