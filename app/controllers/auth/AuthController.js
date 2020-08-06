@@ -64,7 +64,7 @@ const doLogin = async (req, res, next) => {
           message: message.message,
           data: {
             err,
-          }
+          },
         });
       }
 

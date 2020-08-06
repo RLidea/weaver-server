@@ -30,7 +30,7 @@ const login = (req, res, params) => {
             },
             redirectUrl,
             payload,
-          }
+          },
         });
       })
       .catch(() => {
@@ -166,6 +166,28 @@ const getAuthInfo = async (req, authorities_ids = []) => {
   return objResult(false);
 };
 
+const getLoginUser = async (req) => {
+  const email = await getLoginInfo(req).decoded.email;
+  const user = Model.user.findOne({
+    attributes: {
+      exclude: [
+        'password',
+        'salt',
+      ],
+    },
+    where: {
+      email,
+    },
+  })
+    .then(d => d.dataValues)
+    .catch(e => {
+      console.log(e);
+      return 0;
+    });
+
+  return user;
+};
+
 module.exports = {
   login,
   initialParamsForLogin,
@@ -173,4 +195,5 @@ module.exports = {
   createToken,
   getLoginInfo,
   getAuthInfo,
+  getLoginUser,
 };
