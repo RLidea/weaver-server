@@ -22,7 +22,7 @@ const config = async (req, res) => {
 
   const where = { is_use: 1 };
   if (apiVersion !== undefined) {
-    where.version = apiVersion;
+    where.id = apiVersion;
   }
 
   const data = await Model.api_document.findOne({

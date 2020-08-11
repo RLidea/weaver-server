@@ -32,8 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // set cookie for selected version of document
       selectHistory.addEventListener('change', () => {
-        const version = selectHistory.options[selectHistory.selectedIndex].value;
-        setCookie('api_version', version, { secure: true, 'max-age': 3600 });
+        const apiDocumentsId = selectHistory.options[selectHistory.selectedIndex].value;
+        setCookie('api_version', apiDocumentsId, { secure: true, 'max-age': 3600 });
+        // eslint-disable-next-line no-restricted-globals
+        location.reload();
       });
 
       optionData.forEach(i => {
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectHistory.appendChild(option);
       });
       divHistory.appendChild(selectHistory);
+      selectHistory.value = getCookie('api_version');
 
       // append container
       try {
@@ -64,13 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
   observer.observe(target, config);
 });
 
-// function getCookie(name) {
-//   const matches = document.cookie.match(new RegExp(
-//     `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`,
-//     // `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`,
-//   ));
-//   return matches ? decodeURIComponent(matches[1]) : undefined;
-// }
+function getCookie(name) {
+  const matches = document.cookie.match(new RegExp(
+    `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`,
+    // `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`,
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
 
 function setCookie(name, value, options = {}) {
   const opts = {
