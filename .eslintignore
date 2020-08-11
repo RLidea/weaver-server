@@ -2,3 +2,4 @@ app/models
 database/migrations
 database/seeders
 webStorm.config.js
+public/bundle.js

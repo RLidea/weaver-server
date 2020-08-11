@@ -91,8 +91,18 @@ app.all('*', (req, res, next) => {
 // Auth middleware
 app.use(async (req, res, next) => {
   // not require jwt verification
-  if (req.path === '/auth/login') return next();
-  if (req.path === '/auth/register') return next();
+  const allowedUrls = [
+    '/',
+    '/auth/login',
+    '/auth/register',
+    '/docs',
+    '/api_history',
+    '/insomnia.json',
+  ];
+
+  for (let i = 0, l = allowedUrls.length; i < l; i += 1) {
+    if (req.path === allowedUrls[i]) return next();
+  }
 
   const loginInfo = AuthService.getLoginInfo(req);
   if (!loginInfo.isLogin) {
