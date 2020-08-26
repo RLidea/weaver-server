@@ -2,7 +2,6 @@ const passport = require('passport');
 const Schema = require('validate');
 const Model = require('@models');
 const validation = require('@utils/validation');
-const CommonCodeController = require('@controllers/CommonCodeController');
 const AuthService = require('@services/AuthService');
 
 require('dotenv').config();
@@ -10,19 +9,6 @@ require('dotenv').config();
 /*
   Login
  */
-const getCsrfToken = async (req, res, next) => {
-  if (req.headers.secret !== process.env.CSRF_SECRET) {
-    return res.json({
-      error: true,
-      token: {},
-    });
-  }
-  return res.json({
-    error: false,
-    token: req.csrfToken(),
-  });
-};
-
 const viewLogin = async (req, res, next) => {
   const authInfo = await AuthService.getAuthInfo(req);
 
@@ -33,7 +19,6 @@ const viewLogin = async (req, res, next) => {
   return res.render('auth', {
     title: 'Login',
     page: 'login',
-    csrfToken: req.csrfToken(),
   });
 };
 
@@ -103,7 +88,6 @@ const viewRegister = async (req, res, next) => {
   res.render('auth', {
     title: 'Register',
     page: 'register',
-    csrfToken: req.csrfToken(),
   });
 };
 
@@ -112,8 +96,7 @@ const doRegister = async (req, res, next) => {
   const { name, email, password } = req.body;
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
-  const defaultAuthorities = await CommonCodeController.defaultAuthorities();
-  // const redirectUriAfterRegister = await CommonCodeController.redirectUriAfterRegister();
+  const defaultAuthorities = process.env.DEFAULT_AUTHORITIES_ID;
 
   // Validation Check
   const reqBodySchema = new Schema({
@@ -208,7 +191,6 @@ const forgotPassword = (req, res, next) => {
 };
 
 module.exports = {
-  getCsrfToken,
   viewLogin,
   doLogin,
   viewRegister,

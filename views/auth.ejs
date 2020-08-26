@@ -12,7 +12,6 @@
 <div class="flex-center position-ref full-height">
     <div class="content">
         <form id="auth" action="/auth/<%= page %>" method="post">
-            <input type="hidden" name="_csrf-token" value="<%=csrfToken%>" />
             <h1><%= title %></h1>
             <%if(page == 'register'){%>
                 <input id="name" type="text" name="name" placeholder="name">
@@ -31,7 +30,6 @@
     window.axios = axios;
     window.axios.defaults.headers.common = {
       'X-Requested-With': 'XMLHttpRequest',
-      'X-CSRF-TOKEN' : document.querySelector('input[name="_csrf-token"]').value,
     };
 
     document.querySelector('#submit').addEventListener('click', function(e) {
@@ -56,7 +54,8 @@
           return false;
         }
         setCookie(res.data.cookie);
-        window.location.href = res.data.redirectUrl;
+        alert(res.data)
+        window.location.href = res.data.data.redirectUrl;
         return res;
       })
       .catch(err => {

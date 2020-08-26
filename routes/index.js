@@ -1,7 +1,6 @@
 const express = require('express');
 
 const router = express.Router();
-const AuthController = require('@controllers/auth/AuthController');
 const ApiDocumentController = require('@controllers/ApiDocumentController');
 const AuthService = require('@services/AuthService');
 
@@ -18,8 +17,5 @@ router.get('/not_allowed', (req, res, next) => {
 router.get('/docs', ApiDocumentController.docs);
 router.get('/api_history', ApiDocumentController.history);
 router.get('/insomnia.json', ApiDocumentController.config);
-
-
-router.get('/csrf', AuthController.getCsrfToken);
 
 module.exports = router;

@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const Model = require('@models');
-const CommonCodeController = require('@controllers/CommonCodeController');
 
 /*
   Login
@@ -17,8 +16,6 @@ const login = (req, res, params) => {
     createToken(payload)
       .then(token => {
         res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
-        // res.send('??');
-        // res.redirect('/auth/login');
         res.json({
           error: false,
           message,
@@ -34,7 +31,6 @@ const login = (req, res, params) => {
         });
       })
       .catch(() => {
-        // res.redirect('/auth/login');
         res.json({
           error: true,
           message: 'login_failed',
@@ -45,8 +41,8 @@ const login = (req, res, params) => {
 };
 
 const initialParamsForLogin = async () => {
-  const authPeriod = await CommonCodeController.authPeriod();
-  const redirectUriAfterLogin = await CommonCodeController.redirectUriAfterLogin();
+  const authPeriod = '3';
+  const redirectUriAfterLogin = '/';
 
   const period = authPeriod || 0;
   const redirectUrl = `${redirectUriAfterLogin}`;
@@ -73,7 +69,7 @@ const createSaltAndHash = (password) => {
   Authentication
  */
 const createToken = async (payload) => {
-  const authPeriod = await CommonCodeController.authPeriod();
+  const authPeriod = 3;
   return jwt.sign(
     { ...payload, access: 'authenticated' },
     process.env.JWT_SECRET_KEY,
