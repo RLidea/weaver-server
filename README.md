@@ -39,7 +39,7 @@ updated_at: 2020-01-09
 ### 환경변수
 `.env` 복사 후 필요시 자신의 환경에 맞게 수정
 ```shell script
-$ cp .env-sample .env
+$ cp .env-example .env
 ```
 `JWT_SECRET_KEY`값을 생성해줍니다.
 ```shell script
@@ -77,7 +77,6 @@ $ docker rmi $(docker images -a -q) # 모든 도커 이미지 삭제
 ### npm
 프로젝트에 필요한 npm 패키지들을 설치할 때는 버전을 통일하기 위해 도커에 접속해서 실행하는 것이 권장되지만, 크리티컬하진 않습니다.
 ```shell script
-$ docker exec -it <CONTAINER ID> /bin/bash  # 특정 컨테이너에 접속
 $ npm i
 ```
 
