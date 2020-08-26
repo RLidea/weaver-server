@@ -89,8 +89,8 @@ function setCookie(name, value, options = {}) {
 
   for (const optionKey in opts) {
     if (optionKey !== '') {
-      console.log('opt key!');
-      console.log(optionKey);
+      // console.log('opt key!');
+      // console.log(optionKey);
       updatedCookie += `; ${optionKey}`;
       const optionValue = opts[optionKey];
       if (optionValue !== true) {
