@@ -32,6 +32,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0,
+        references: {
+          model: {
+            tableName: 'comments',
+          },
+          key: 'id',
+        },
       },
       depth: {
         allowNull: false,
