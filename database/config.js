@@ -11,6 +11,8 @@ module.exports = {
     dialect: 'mysql',
     timezone: '+09:00',
     seederStorage: 'sequelize',
+    migrationStorageTableName: 'sequelize_meta',
+    seederStorageTableName: 'sequelize_data',
     define: {
       charset: 'utf8mb4',
       dialectOptions: {
@@ -29,6 +31,8 @@ module.exports = {
     dialect: 'mysql',
     timezone: '+09:00',
     seederStorage: 'sequelize',
+    migrationStorageTableName: 'sequelize_meta',
+    seederStorageTableName: 'sequelize_data',
     define: {
       charset: 'utf8mb4',
       dialectOptions: {
@@ -47,6 +51,8 @@ module.exports = {
     dialect: 'mysql',
     timezone: '+09:00',
     seederStorage: 'sequelize',
+    migrationStorageTableName: 'sequelize_meta',
+    seederStorageTableName: 'sequelize_data',
     define: {
       charset: 'utf8mb4',
       dialectOptions: {
