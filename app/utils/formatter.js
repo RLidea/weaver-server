@@ -28,7 +28,10 @@ const list_to_tree = list => {
 };
 
 const onlyNumber = value => {
-  const result = value ? Number(value) : undefined;
+  let result = 0;
+  if (value !== 0) {
+    result = value ? Number(value) : undefined;
+  }
   if (Number.isNaN(result)) {
     return undefined;
   }
