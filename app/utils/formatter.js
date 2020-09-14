@@ -27,18 +27,14 @@ const list_to_tree = list => {
   return roots;
 };
 
-const onlyNumber = value => {
-  let result = 0;
-  if (value !== 0) {
-    result = value ? Number(value) : undefined;
-  }
-  if (Number.isNaN(result)) {
-    return undefined;
-  }
+const toNumber = value => {
+  const result = Number(value);
+  if (value === null) return null;
+  if (Number.isNaN(result)) return undefined;
   return result;
 };
 
 module.exports = {
   list_to_tree,
-  onlyNumber,
+  toNumber,
 };
