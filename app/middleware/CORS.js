@@ -1,4 +1,4 @@
 module.exports = {
-  origin: '*',
-  credential: true,
+  origin: process.env.CLIENT_DOMAIN,
+  credentials: true,
 };
