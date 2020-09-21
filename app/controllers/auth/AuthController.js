@@ -190,7 +190,7 @@ const showResetUserPassword = async (req, res, next) => {
   return res.render('reset_password', {
     email_regex: regex.email,
     password_regex: regex.password,
-    email_alert: 'Couldn\'t find your account',
+    email_alert: 'Could not find your account',
     password_alert: 'Please write longer than 6 digits.',
     password_does_not_match_alert: 'Password verification does not match.',
   });

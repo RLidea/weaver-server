@@ -53,4 +53,9 @@ html, body {
   display: none;
 }
 
+#message {
+  margin-top: 10px;
+  color: #e53935;
+}
+
 /*# sourceMappingURL=style.css.map */
