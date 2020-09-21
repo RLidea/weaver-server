@@ -47,14 +47,12 @@
 
     axios.post('/auth/<%= page %>', sendData)
       .then(res => {
-        console.log('success:');
-
-        console.log(res.data);
-        if (!!res.data.error) {
+        if (!!res.data.data.error) {
           return false;
         }
-        setCookie(res.data.cookie);
-        alert(res.data)
+        console.log(res.data.data);
+        setCookie(res.data.data.cookie);
+        alert(res.data.message)
         window.location.href = res.data.data.redirectUrl;
         return res;
       })

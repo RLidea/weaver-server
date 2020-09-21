@@ -143,7 +143,15 @@ const getAuthInfo = async (req, authorities_ids = []) => {
       email: loginInfo.decoded.email,
     },
   })
-    .then((user) => user.dataValues.id)
+    .then((user) => {
+      if (user === null) {
+        return {
+          error: true,
+          message: 'user_not_found',
+        };
+      }
+      return user.dataValues.id;
+    })
     .catch(e => {
       console.log(e);
       return {
