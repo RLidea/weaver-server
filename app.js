@@ -57,6 +57,7 @@ app.use(async (req, res, next) => {
     '/docs',
     '/api_history',
     '/insomnia.json',
+    '/auth/reset/password',
   ];
 
   for (let i = 0, l = allowedUrls.length; i < l; i += 1) {

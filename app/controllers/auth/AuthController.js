@@ -3,6 +3,7 @@ const Schema = require('validate');
 const Model = require('@models');
 const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
+const regex = require('@utils/regex');
 
 require('dotenv').config();
 
@@ -183,11 +184,58 @@ const doLogout = async (req, res, next) => {
 };
 
 /*
-  Authentication
+  Find or Reset Authentication Information
  */
-const forgotPassword = (req, res, next) => {
-  // TODO
-  console.log(req.body);
+const showResetUserPassword = async (req, res, next) => {
+  return res.render('reset_password', {
+    email_regex: regex.email,
+    password_regex: regex.password,
+    email_alert: 'Couldn\'t find your account',
+    password_alert: 'Please write longer than 6 digits.',
+    password_does_not_match_alert: 'Password verification does not match.',
+  });
+};
+
+const resetUserPassword = async (req, res) => {
+  // Parameters
+  const { email, password } = req.body;
+  const params = {
+    email,
+    password,
+  };
+
+  // Validation
+  validation.validator(res, params, {
+    email: validation.check.common.reqString,
+    password: validation.check.common.reqString,
+  });
+
+  // salt and hash
+  const { salt, hashPassword } = AuthService.createSaltAndHash(params.password);
+
+  // Service
+  const result = await Model.user.update({
+    password: hashPassword,
+    salt,
+  }, {
+    where: {
+      email: params.email,
+    },
+  });
+
+  if (result[0]) {
+    return res.json({
+      error: false,
+      message: 'success',
+      data: {
+        email,
+      },
+    });
+  }
+  return res.json({
+    error: true,
+    message: 'password_reset_failed',
+  });
 };
 
 module.exports = {
@@ -196,5 +244,6 @@ module.exports = {
   viewRegister,
   doRegister,
   doLogout,
-  forgotPassword,
+  showResetUserPassword,
+  resetUserPassword,
 };
