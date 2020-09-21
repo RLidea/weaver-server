@@ -15,7 +15,7 @@ const login = (req, res, params) => {
     const expiresIn = 1000 * 60 * 60 * 24 * period; // date
     createToken(payload)
       .then(token => {
-        res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
+        // res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
         res.json({
           error: false,
           message,
@@ -24,6 +24,8 @@ const login = (req, res, params) => {
               name: 'jwt',
               value: token,
               maxAge: expiresIn,
+              sameSite: true,
+              secure: true,
             },
             redirectUrl,
             payload,
