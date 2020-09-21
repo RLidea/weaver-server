@@ -156,7 +156,15 @@ const getAuthInfo = async (req, authorities_ids = []) => {
     where: {
       users_id,
     },
-  }).then((auth) => auth.dataValues.authorities_id);
+  })
+    .then((auth) => auth.dataValues.authorities_id)
+    .catch(e => {
+      console.log(e);
+      return {
+        error: true,
+        message: 'auth_not_found',
+      };
+    });
 
   if (authorities_ids.includes(authorities_id)) {
     return objResult(true);
