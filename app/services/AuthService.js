@@ -130,6 +130,7 @@ const getAuthInfo = async (token, authorities_ids = []) => {
     return {
       isAllowed,
       ...loginInfo,
+      message: isAllowed ? 'Access Allowed' : loginInfo.message,
     };
   };
 
@@ -185,6 +186,8 @@ const getAuthInfo = async (token, authorities_ids = []) => {
 };
 
 const getLoginUser = async (token) => {
+  if (token === undefined) return null;
+
   const email = await getLoginInfo(token).decoded.email;
   const user = Model.user.findOne({
     attributes: {
@@ -200,7 +203,7 @@ const getLoginUser = async (token) => {
     .then(d => d.dataValues)
     .catch(e => {
       console.log(e);
-      return 0;
+      return false;
     });
 
   return user;

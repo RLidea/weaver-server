@@ -62,7 +62,7 @@ app.use(async (req, res, next) => {
     /^\/auth\/login$/i,
     /^\/auth\/register$/i,
     /^\/auth\/reset\/password$/i,
-    // /^\/docs$/i,
+    /^\/docs$/i,
     /^\/api_history$/i,
     /^\/insomnia.json$/i,
     /^\/robots.txt$/i,
