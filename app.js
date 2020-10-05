@@ -56,20 +56,20 @@ app.get('/robots.txt', (req, res) => {
 
 // Auth middleware
 app.use(async (req, res, next) => {
-  // not require jwt verification
-  const allowedUrls = [
-    '/',
-    '/auth/login',
-    '/auth/register',
-    '/docs',
-    '/api_history',
-    '/insomnia.json',
-    '/auth/reset/password',
-    '/robots.txt',
+  // not require jwt verification url list
+  const allowedUrlPatterns = [
+    /^\/$/,
+    /^\/auth\/login$/i,
+    /^\/auth\/register$/i,
+    /^\/auth\/reset\/password$/i,
+    /^\/docs$/i,
+    /^\/api_history$/i,
+    /^\/insomnia.json$/i,
+    /^\/robots.txt$/i,
   ];
 
-  for (let i = 0, l = allowedUrls.length; i < l; i += 1) {
-    if (req.path === allowedUrls[i]) return next();
+  for (let i = 0, l = allowedUrlPatterns.length; i < l; i += 1) {
+    if (allowedUrlPatterns[i].exec(req.path) !== null) return next();
   }
 
   const loginInfo = AuthService.getLoginInfo(req);
