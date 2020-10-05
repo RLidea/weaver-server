@@ -6,13 +6,13 @@ require('module-alias/register');
 const AuthService = require('@services/AuthService');
 
 const express = require('express');
-// const middleware = require('./app/middleware');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const cors = require('cors');
 const ejsLocals = require('ejs-locals');
-const passportConfig = require('./app/controllers/auth/passport');
+const passportConfig = require('@controllers/auth/passport');
+const requestHandler = require('@utils/requestHandler');
 
 /*
  * Environment Configurations
@@ -62,7 +62,7 @@ app.use(async (req, res, next) => {
     /^\/auth\/login$/i,
     /^\/auth\/register$/i,
     /^\/auth\/reset\/password$/i,
-    /^\/docs$/i,
+    // /^\/docs$/i,
     /^\/api_history$/i,
     /^\/insomnia.json$/i,
     /^\/robots.txt$/i,
@@ -72,7 +72,8 @@ app.use(async (req, res, next) => {
     if (allowedUrlPatterns[i].exec(req.path) !== null) return next();
   }
 
-  const loginInfo = AuthService.getLoginInfo(req);
+  const token = requestHandler.getJwt(req);
+  const loginInfo = AuthService.getLoginInfo(token);
   if (!loginInfo.isLogin) {
     return res.status(401).json({ message: 'access denied' });
   }

@@ -15,7 +15,11 @@ const login = (req, res, params) => {
     const expiresIn = 1000 * 60 * 60 * 24 * period; // date
     createToken(payload)
       .then(token => {
-        // res.cookie('jwt', token, { sameSite: true, maxAge: expiresIn });
+        const cookieOptions = {
+          maxAge: expiresIn,
+          sameSite: 'Lax',
+        };
+        res.cookie('jwt', token, cookieOptions);
         res.json({
           error: false,
           message,
@@ -23,9 +27,7 @@ const login = (req, res, params) => {
             cookie: {
               name: 'jwt',
               value: token,
-              maxAge: expiresIn,
-              sameSite: true,
-              secure: true,
+              ...cookieOptions,
             },
             redirectUrl,
             payload,
@@ -83,9 +85,11 @@ const createToken = async (payload) => {
   );
 };
 
-const getLoginInfo = (req) => {
+/*
+  Check Authentication
+ */
+const getLoginInfo = (token) => {
   // Validation
-  const token = req.cookies.jwt;
   const sign = process.env.JWT_SECRET_KEY;
 
   const objResult = (isLogin, message, decoded = null) => {
@@ -120,8 +124,8 @@ const getLoginInfo = (req) => {
   });
 };
 
-const getAuthInfo = async (req, authorities_ids = []) => {
-  const loginInfo = getLoginInfo(req);
+const getAuthInfo = async (token, authorities_ids = []) => {
+  const loginInfo = getLoginInfo(token);
   const objResult = (isAllowed) => {
     return {
       isAllowed,
@@ -180,8 +184,8 @@ const getAuthInfo = async (req, authorities_ids = []) => {
   return objResult(false);
 };
 
-const getLoginUser = async (req) => {
-  const email = await getLoginInfo(req).decoded.email;
+const getLoginUser = async (token) => {
+  const email = await getLoginInfo(token).decoded.email;
   const user = Model.user.findOne({
     attributes: {
       exclude: [
