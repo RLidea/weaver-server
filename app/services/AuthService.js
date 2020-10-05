@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const Model = require('@models');
+const requestHandler = require('@utils/requestHandler');
 
 /*
   Login
@@ -88,8 +89,9 @@ const createToken = async (payload) => {
 /*
   Check Authentication
  */
-const getLoginInfo = (token) => {
+const getLoginInfo = (req) => {
   // Validation
+  const token = requestHandler.getJwt(req);
   const sign = process.env.JWT_SECRET_KEY;
 
   const objResult = (isLogin, message, decoded = null) => {
@@ -124,8 +126,8 @@ const getLoginInfo = (token) => {
   });
 };
 
-const getAuthInfo = async (token, authorities_ids = []) => {
-  const loginInfo = getLoginInfo(token);
+const getAuthInfo = async (req, authorities_ids = []) => {
+  const loginInfo = getLoginInfo(req);
   const objResult = (isAllowed) => {
     return {
       isAllowed,
@@ -185,10 +187,11 @@ const getAuthInfo = async (token, authorities_ids = []) => {
   return objResult(false);
 };
 
-const getLoginUser = async (token) => {
+const getLoginUser = async (req) => {
+  const token = requestHandler.getJwt(req);
   if (token === undefined) return null;
 
-  const email = await getLoginInfo(token).decoded.email;
+  const email = await getLoginInfo(req).decoded.email;
   const user = Model.user.findOne({
     attributes: {
       exclude: [

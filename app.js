@@ -12,7 +12,6 @@ const passport = require('passport');
 const cors = require('cors');
 const ejsLocals = require('ejs-locals');
 const passportConfig = require('@controllers/auth/passport');
-const requestHandler = require('@utils/requestHandler');
 
 /*
  * Environment Configurations
@@ -72,8 +71,7 @@ app.use(async (req, res, next) => {
     if (allowedUrlPatterns[i].exec(req.path) !== null) return next();
   }
 
-  const token = requestHandler.getJwt(req);
-  const loginInfo = AuthService.getLoginInfo(token);
+  const loginInfo = AuthService.getLoginInfo(req);
   if (!loginInfo.isLogin) {
     return res.status(401).json({ message: 'access denied' });
   }

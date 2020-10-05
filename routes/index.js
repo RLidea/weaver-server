@@ -3,12 +3,10 @@ const express = require('express');
 const router = express.Router();
 const ApiDocumentController = require('@controllers/ApiDocumentController');
 const AuthService = require('@services/AuthService');
-const requestHandler = require('@utils/requestHandler');
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
-  const token = requestHandler.getJwt(req);
-  const authInfo = await AuthService.getAuthInfo(token);
+  const authInfo = await AuthService.getAuthInfo(req);
   res.render('production/index', { title: process.env.APP_NAME, auth: authInfo, text: {} });
 });
 

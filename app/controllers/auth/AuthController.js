@@ -4,7 +4,6 @@ const Model = require('@models');
 const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
 const regex = require('@utils/regex');
-const requestHandler = require('@utils/requestHandler');
 
 require('dotenv').config();
 
@@ -12,8 +11,7 @@ require('dotenv').config();
   Login
  */
 const viewLogin = async (req, res, next) => {
-  const token = requestHandler.getJwt(req);
-  const authInfo = await AuthService.getAuthInfo(token);
+  const authInfo = await AuthService.getAuthInfo(req);
 
   if (authInfo.isLogin) {
     return res.redirect('/');
@@ -84,8 +82,7 @@ const doLogin = async (req, res, next) => {
   Register
  */
 const viewRegister = async (req, res, next) => {
-  const token = requestHandler.getJwt(req);
-  const authInfo = await AuthService.getAuthInfo(token);
+  const authInfo = await AuthService.getAuthInfo(req);
   if (authInfo.isLogin) {
     res.redirect('/');
   }
@@ -178,8 +175,7 @@ const doRegister = async (req, res, next) => {
   Logout
  */
 const doLogout = async (req, res, next) => {
-  const token = requestHandler.getJwt(req);
-  const authInfo = await AuthService.getAuthInfo(token);
+  const authInfo = await AuthService.getAuthInfo(req);
   if (authInfo.isLogin) {
     res.clearCookie('jwt');
     return res.redirect('/');
