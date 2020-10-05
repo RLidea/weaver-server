@@ -47,6 +47,13 @@ const logger = require('./app/middleware/Logger');
 app.use(logger.printTerminalDev);
 app.use(process.env.NODE_ENV === 'development' ? logger.saveFileDev : logger.saveFileDefault);
 
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(
+    'User-agent: *\nDisallow: /',
+  );
+});
+
 // Auth middleware
 app.use(async (req, res, next) => {
   // not require jwt verification
@@ -58,6 +65,7 @@ app.use(async (req, res, next) => {
     '/api_history',
     '/insomnia.json',
     '/auth/reset/password',
+    '/robots.txt',
   ];
 
   for (let i = 0, l = allowedUrls.length; i < l; i += 1) {
