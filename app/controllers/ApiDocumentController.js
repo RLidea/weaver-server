@@ -20,16 +20,25 @@ const history = async (req, res) => {
 const config = async (req, res) => {
   const apiVersion = req.cookies.api_version;
 
-  const where = { is_use: 1 };
-  if (apiVersion !== undefined) {
-    where.id = apiVersion;
-  }
+  const where = {
+    is_use: 1,
+    id: apiVersion,
+  };
 
   const data = await Model.api_document.findOne({
     where,
     order: [['id', 'desc']],
   })
-    .then(r => r.dataValues.content);
+    .then(r => r.dataValues.content)
+    .catch(async () => {
+      const recent = await Model.api_document.findOne({
+        where: {
+          is_use: 1,
+        },
+        order: [['created_at', 'DESC']],
+      });
+      return recent.dataValues.content;
+    });
   return res.json(JSON.parse(data));
 };
 

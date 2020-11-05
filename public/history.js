@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
         location.reload();
       });
 
+      // create options
+      const recentOption = document.createElement('option');
+      recentOption.value = '0';
+      recentOption.innerText = 'Recent Version';
+      selectHistory.appendChild(recentOption);
+
       optionData.forEach(i => {
         const option = document.createElement('option');
         option.value = i.id;
@@ -45,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectHistory.appendChild(option);
       });
       divHistory.appendChild(selectHistory);
-      selectHistory.value = getCookie('api_version');
+      selectHistory.value = getCookie('api_version') || 0;
 
       // append container
       try {
@@ -70,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function getCookie(name) {
   const matches = document.cookie.match(new RegExp(
     `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`,
-    // `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`,
   ));
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
@@ -89,8 +94,6 @@ function setCookie(name, value, options = {}) {
 
   for (const optionKey in opts) {
     if (optionKey !== '') {
-      // console.log('opt key!');
-      // console.log(optionKey);
       updatedCookie += `; ${optionKey}`;
       const optionValue = opts[optionKey];
       if (optionValue !== true) {
