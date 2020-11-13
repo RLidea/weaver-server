@@ -9,6 +9,7 @@ const docs = (req, res, next) => {
 
 const history = async (req, res) => {
   const data = await Model.api_document.findAll({
+    is_use: 1,
     order: [['id', 'desc']],
   })
     .then(r => r.map(i => {
@@ -18,8 +19,7 @@ const history = async (req, res) => {
 };
 
 const config = async (req, res) => {
-  const apiVersion = req.cookies.api_version;
-
+  const apiVersion = String(req.cookies.api_version);
   const where = {
     is_use: 1,
     id: apiVersion,
