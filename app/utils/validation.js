@@ -57,7 +57,7 @@ const check = {
     reqPositiveInteger: {
       type: Number,
       required: true,
-      match: regex.positiveNumber,
+      match: regex.positiveInteger,
     },
   },
 };
