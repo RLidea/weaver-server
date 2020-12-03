@@ -3,7 +3,7 @@ services:
 
   # App Environment: node.js
   app:
-    image: node:12.13.1
+    image: node:14.15.1
     container_name: ${APP_NAME}-server
     working_dir: /usr/src/service
     volumes:
