@@ -34,23 +34,46 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 passportConfig();
-app.use(cors(require('./app/middleware/CORS')));
 
 /*
  * Middleware
  */
 
+// CORS
+app.use(cors(require('./app/middleware/CORS')));
+
 // logger
 const logger = require('./app/middleware/Logger');
 
-app.use(logger.printTerminalDev);
+if (process.env.NODE_ENV === 'development') app.use(logger.printTerminalDev);
 app.use(process.env.NODE_ENV === 'development' ? logger.saveFileDev : logger.saveFileDefault);
 
+// robot.txt
 app.get('/robots.txt', (req, res) => {
   res.type('text/plain');
   res.send(
     'User-agent: *\nDisallow: /',
   );
+});
+
+// redirect https
+app.all('*', (req, res, next) => {
+  // redirect HTTP to HTTPS
+  if (['development', 'test'].includes(process.env.NODE_ENV)) {
+    next();
+  } else {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    if (protocol === 'https') {
+      next();
+    } else {
+      const from = `${protocol}://${req.hostname}${req.url}`;
+      const to = `https://'${req.hostname}${req.url}`;
+
+      // log and redirect
+      console.log(`[${req.method}]: ${from} -> ${to}`);
+      res.redirect(to);
+    }
+  }
 });
 
 // Auth middleware

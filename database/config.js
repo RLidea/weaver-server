@@ -17,6 +17,7 @@ module.exports = {
         collate: 'utf8mb4_general_ci',
       },
     },
+    logging: true,
     // operatorsAliases: false,
   },
   test: {
@@ -35,6 +36,7 @@ module.exports = {
         collate: 'utf8mb4_general_ci',
       },
     },
+    logging: false,
     // operatorsAliases: false,
   },
   production: {
@@ -53,6 +55,7 @@ module.exports = {
         collate: 'utf8mb4_general_ci',
       },
     },
+    logging: false,
     // operatorsAliases: false,
   },
 };
