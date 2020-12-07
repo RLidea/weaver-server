@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const Model = require('@models');
 const requestHandler = require('@utils/requestHandler');
+const messageHandler = require('@utils/messageHandler');
 
 /*
   Login
@@ -104,7 +105,7 @@ const getLoginInfo = (req) => {
 
   return jwt.verify(token, sign, (err, decoded) => {
     if (err || !decoded) {
-      console.log('invalid token');
+      messageHandler.devLog('invalid token');
       return objResult(false, 'invalid token');
     }
 
@@ -112,16 +113,16 @@ const getLoginInfo = (req) => {
       decoded
       && (!decoded.access || decoded.access === 'unauthenticated')
     ) {
-      console.log('unauthenticated token');
+      messageHandler.devLog('unauthenticated token');
       return objResult(false, 'unauthenticated token');
     }
 
     if (decoded && decoded.access === 'authenticated') {
-      console.log('valid token');
+      messageHandler.devLog('valid token');
       return objResult(true, 'login Succeed', decoded);
     }
 
-    console.log('something suspicious');
+    messageHandler.devLog('something suspicious');
     return objResult(false, 'something suspicious');
   });
 };
