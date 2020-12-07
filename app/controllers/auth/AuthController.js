@@ -4,6 +4,7 @@ const Model = require('@models');
 const validation = require('@utils/validationHandler');
 const AuthService = require('@services/AuthService');
 const regex = require('@utils/regexHandler');
+const messageHandler = require('@utils/messageHandler');
 
 require('dotenv').config();
 
@@ -44,10 +45,10 @@ const doLogin = async (req, res, next) => {
     { session: false },
     (err, user, message) => {
       if (err || !user) {
-        console.log(err);
+        messageHandler.devLog(err);
         return res.json({
           error: true,
-          message: message.message,
+          message: message?.message,
           data: {
             err,
           },

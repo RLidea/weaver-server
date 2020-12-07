@@ -17,7 +17,6 @@ module.exports = {
         collate: 'utf8mb4_general_ci',
       },
     },
-    logging: true,
     // operatorsAliases: false,
   },
   test: {
