@@ -1,11 +1,12 @@
 System.config({
   paths: {
     '@root/*': './*',
-    '@controllers/*': 'app/controllers/*',
-    '@middleware/*': 'app/middleware/*',
-    '@models': 'app/models',
-    '@models/*': 'app/models/*',
-    '@services/*': 'app/services/*',
-    '@utils/*': 'app/utils/*',
+    '@src/*': 'src/*',
+    '@controllers/*': 'src/app/controllers/*',
+    '@middleware/*': 'src/app/middleware/*',
+    '@models': 'src/app/models',
+    '@models/*': 'src/app/models/*',
+    '@services/*': 'src/app/services/*',
+    '@utils/*': 'src/app/utils/*',
   },
 });

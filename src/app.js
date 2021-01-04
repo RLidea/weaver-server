@@ -40,10 +40,10 @@ passportConfig();
  */
 
 // CORS
-app.use(cors(require('./app/middleware/CORS')));
+app.use(cors(require('@middleware/CORS')));
 
 // logger
-const logger = require('./app/middleware/Logger');
+const logger = require('@middleware/Logger');
 
 if (process.env.NODE_ENV === 'development') app.use(logger.printTerminalDev);
 app.use(process.env.NODE_ENV === 'development' ? logger.saveFileDev : logger.saveFileDefault);
@@ -110,7 +110,7 @@ app.use('/auth', require('./routes/auth'));
 /*
  * Error
  */
-const error = require('./app/middleware/Error');
+const error = require('@middleware/Error');
 
 app.use(error.notFoundError);
 app.use(error.errorMessage);

@@ -16,11 +16,11 @@
   },
   "_moduleAliases": {
     "@root": ".",
-    "@controllers": "./app/controllers",
-    "@middleware": "./app/middleware",
-    "@models": "./app/models",
-    "@services": "./app/services",
-    "@utils": "./app/utils"
+    "@controllers": "./src/app/controllers",
+    "@middleware": "./src/app/middleware",
+    "@models": "./src/app/models",
+    "@services": "./src/app/services",
+    "@utils": "./src/app/utils"
   },
   "husky": {
     "hooks": {
@@ -29,10 +29,6 @@
   },
   "lint-staged": {
     "*.js": [
-      "./node_modules/eslint/bin/eslint.js --fix 'app/controllers/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'app/middleware/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'app/utils/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'app/services/**/*.js'",
       "git add"
     ]
   },
