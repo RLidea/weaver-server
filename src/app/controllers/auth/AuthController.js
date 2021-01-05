@@ -1,9 +1,9 @@
 const passport = require('passport');
 const Schema = require('validate');
 const Model = require('@models');
-const validation = require('@utils/validationHandler');
+const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
-const regex = require('@utils/regexHandler');
+const regex = require('@utils/regex');
 const messageHandler = require('@utils/messageHandler');
 
 require('dotenv').config();

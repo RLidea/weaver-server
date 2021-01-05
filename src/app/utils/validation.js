@@ -1,5 +1,5 @@
 const Schema = require('validate');
-const regex = require('@utils/regexHandler');
+const regex = require('@utils/regex');
 
 const check = {
   auth: {
