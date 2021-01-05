@@ -1,5 +1,5 @@
-app/models
-database/migrations
-database/seeders
+src/app/models
+src/database/migrations
+src/database/seeders
 webStorm.config.js
-public/bundle.js
+src/public/bundle.js

@@ -38,15 +38,14 @@ passportConfig();
 /*
  * Middleware
  */
-
-// CORS
-app.use(cors(require('@middleware/CORS')));
-
-// logger
+const corsConfig = require('@middleware/CORS');
 const logger = require('@middleware/Logger');
 
-if (process.env.NODE_ENV === 'development') app.use(logger.printTerminalDev);
-app.use(process.env.NODE_ENV === 'development' ? logger.saveFileDev : logger.saveFileDefault);
+// CORS
+app.use(cors(corsConfig[process.env.NODE_ENV]));
+
+// logger
+app.use(logger[process.env.NODE_ENV]);
 
 // robot.txt
 app.get('/robots.txt', (req, res) => {

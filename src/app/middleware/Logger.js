@@ -1,19 +1,9 @@
 const morgan = require('morgan');
-const fs = require('fs');
+const { stream } = require('@utils/logger');
 
-const writeStream = fs.createWriteStream('app.log', { flags: 'w' });
+const middleware = {};
 
-const printTerminalDev = morgan('dev');
-const saveFileDev = morgan('dev', {
-  stream: writeStream,
-});
-const saveFileDefault = morgan('combined', {
-  stream: writeStream,
-});
+middleware.development = morgan('dev', { stream });
+middleware.production = morgan('combined', { stream });
 
-module.exports = {
-
-  printTerminalDev,
-  saveFileDev,
-  saveFileDefault,
-};
+module.exports = middleware;

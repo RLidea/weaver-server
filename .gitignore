@@ -151,11 +151,6 @@ $RECYCLE.BIN/
 ### Jetbrains ###
 .idea
 
-### Environments ###
-.env
-app/controllers/auth/jwtPrivate
-app/controllers/auth/jwtPrivate.pub
-
 ### Docker ###
 docker/mariadb
 
