@@ -11,6 +11,10 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const cors = require('cors');
 const ejsLocals = require('ejs-locals');
+const helmet = require('helmet');
+const corsConfig = require('@middleware/CORS');
+const systemLogger = require('@middleware/Logger');
+const { logger } = require('@utils/logger');
 const passportConfig = require('@controllers/auth/passport');
 
 /*
@@ -33,19 +37,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
+app.use(helmet());
 passportConfig();
 
 /*
  * Middleware
  */
-const corsConfig = require('@middleware/CORS');
-const logger = require('@middleware/Logger');
 
 // CORS
 app.use(cors(corsConfig[process.env.NODE_ENV]));
 
 // logger
-app.use(logger[process.env.NODE_ENV]);
+app.use(systemLogger[process.env.NODE_ENV]);
 
 // robot.txt
 app.get('/robots.txt', (req, res) => {
@@ -114,6 +117,6 @@ const error = require('@middleware/Error');
 app.use(error.notFoundError);
 app.use(error.errorMessage);
 
-console.log(`[System] ${process.env.APP_NAME} is ready`);
+logger.info(`${process.env.APP_NAME} is ready on ${process.env.PORT}`);
 
 module.exports = app;
