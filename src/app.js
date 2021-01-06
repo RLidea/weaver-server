@@ -117,6 +117,6 @@ const error = require('@middleware/Error');
 app.use(error.notFoundError);
 app.use(error.errorMessage);
 
-logger.info(`${process.env.APP_NAME} is ready on ${process.env.PORT}`);
+logger.info(`🚀 ${process.env.APP_NAME} is ready on ${process.env.PORT}`);
 
 module.exports = app;

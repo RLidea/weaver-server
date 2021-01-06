@@ -3,9 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+const { logger } = require('@utils/logger')
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../../database/config.js')[env];
+
+// Database schema
 const db = {
   config: undefined,
   api_document: undefined,
@@ -14,13 +17,39 @@ const db = {
   user_authority_relation: undefined,
 }; // db 안에 model 이름을 미리 안 넣어도 동작하지만 있으면 개발할때 자동완성이 되서 편하다!
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+// Sequelize settings
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  { ...config,
+    timezone: '+09:00',
+    seederStorage: 'sequelize',
+    migrationStorageTableName: 'sequelize_meta',
+    seederStorageTableName: 'sequelize_data',
+    define: {
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_general_ci',
+      underscored: true,
+    },
+    benchmark: true,
+    logging: (query, time) => {
+      if (query !== 'Executed (default): SELECT 1+1 AS result') {
+        logger.info(time + 'ms' + ' ' + query);
+      }
+    },
+  },
+);
+
+// Database access alert
+try {
+  sequelize.authenticate();
+  logger.info('🟢 The database is connected.');
+} catch (error) {
+  logger.error(`🔴 Unable to connect to the database: ${error}.`);
 }
 
+// get models
 fs.readdirSync(__dirname)
   .filter(file => {
     return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';

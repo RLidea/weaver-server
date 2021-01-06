@@ -8,16 +8,8 @@ module.exports = {
     database: process.env.MYSQL_DATABASE,
     host: process.env.MYSQL_HOST,
     port: process.env.MYSQL_PORT,
-    dialect: 'mysql',
-    timezone: '+09:00',
-    seederStorage: 'sequelize',
-    define: {
-      charset: 'utf8mb4',
-      dialectOptions: {
-        collate: 'utf8mb4_general_ci',
-      },
-    },
-    // operatorsAliases: false,
+    dialect: process.env.DATABASE_DIALECT,
+    logQueryParameters: true,
   },
   test: {
     user: process.env.MYSQL_TEST_USER,
@@ -26,17 +18,8 @@ module.exports = {
     database: process.env.MYSQL_TEST_DATABASE,
     host: process.env.MYSQL_TEST_HOST,
     port: process.env.MYSQL_TEST_PORT,
-    dialect: 'mysql',
-    timezone: '+09:00',
-    seederStorage: 'sequelize',
-    define: {
-      charset: 'utf8mb4',
-      dialectOptions: {
-        collate: 'utf8mb4_general_ci',
-      },
-    },
+    dialect: process.env.DATABASE_DIALECT,
     logging: false,
-    // operatorsAliases: false,
   },
   production: {
     user: process.env.MYSQL_PRODUCTION_USER,
@@ -45,16 +28,7 @@ module.exports = {
     database: process.env.MYSQL_PRODUCTION_DATABASE,
     host: process.env.MYSQL_PRODUCTION_HOST,
     port: process.env.MYSQL_PRODUCTION_PORT,
-    dialect: 'mysql',
-    timezone: '+09:00',
-    seederStorage: 'sequelize',
-    define: {
-      charset: 'utf8mb4',
-      dialectOptions: {
-        collate: 'utf8mb4_general_ci',
-      },
-    },
+    dialect: process.env.DATABASE_DIALECT,
     logging: false,
-    // operatorsAliases: false,
   },
 };
