@@ -173,7 +173,7 @@ const getAuthInfo = async (req, authorities_ids = []) => {
       users_id,
     },
   })
-    .then((auth) => auth.dataValues.authorities_id)
+    .then((auth) => auth?.dataValues?.authorities_id)
     .catch(e => {
       console.log(e);
       return {
