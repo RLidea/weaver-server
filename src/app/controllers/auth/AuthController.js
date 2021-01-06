@@ -3,6 +3,7 @@ const Schema = require('validate');
 const Model = require('@models');
 const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
+const ConfigService = require('@services/ConfigService');
 const regex = require('@utils/regex');
 const messageHandler = require('@utils/messageHandler');
 
@@ -98,7 +99,7 @@ const doRegister = async (req, res, next) => {
   const { name, email, password } = req.body;
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
-  const defaultAuthorities = process.env.DEFAULT_AUTHORITIES_ID;
+  const defaultAuthorities = await ConfigService.get('DEFAULT_AUTHORITIES_ID');
 
   // Validation Check
   const reqBodySchema = new Schema({
