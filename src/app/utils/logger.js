@@ -4,7 +4,9 @@ const winston = require('winston');
 const winstonDaily = require('winston-daily-rotate-file');
 
 // log directory
-const logDir = `${__dirname}/../../../logs`;
+const varDir = `${__dirname}/../../../var`;
+const logDir = `${varDir}/logs`;
+if (!fs.existsSync(varDir)) fs.mkdirSync(varDir);
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
 
 // winston format
