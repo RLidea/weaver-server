@@ -9,10 +9,11 @@ const messageHandler = require('@utils/messageHandler');
 
 require('dotenv').config();
 
+const controller = {};
 /*
   Login
  */
-const viewLogin = async (req, res, next) => {
+controller.viewLogin = async (req, res, next) => {
   const authInfo = await AuthService.getAuthInfo(req);
 
   if (authInfo.isLogin) {
@@ -25,7 +26,7 @@ const viewLogin = async (req, res, next) => {
   });
 };
 
-const doLogin = async (req, res, next) => {
+controller.doLogin = async (req, res, next) => {
   // System config Parameters
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
@@ -83,7 +84,7 @@ const doLogin = async (req, res, next) => {
 /*
   Register
  */
-const viewRegister = async (req, res, next) => {
+controller.viewRegister = async (req, res, next) => {
   const authInfo = await AuthService.getAuthInfo(req);
   if (authInfo.isLogin) {
     res.redirect('/');
@@ -94,12 +95,12 @@ const viewRegister = async (req, res, next) => {
   });
 };
 
-const doRegister = async (req, res, next) => {
+controller.doRegister = async (req, res, next) => {
   // Parameters
   const { name, email, password } = req.body;
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
-  const defaultAuthorities = await ConfigService.get('DEFAULT_AUTHORITIES_ID');
+  const defaultAuthorities = (await ConfigService.get('DEFAULT_AUTHORITIES_ID'))?.value;
 
   // Validation Check
   const reqBodySchema = new Schema({
@@ -170,13 +171,13 @@ const doRegister = async (req, res, next) => {
     email,
   };
   const message = 'login with register';
-  await doLogin(reqLogin, res, { payload, period, redirectUrl, message });
+  await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
 };
 
 /*
   Logout
  */
-const doLogout = async (req, res, next) => {
+controller.doLogout = async (req, res, next) => {
   const authInfo = await AuthService.getAuthInfo(req);
   if (authInfo.isLogin) {
     res.clearCookie('jwt');
@@ -188,7 +189,7 @@ const doLogout = async (req, res, next) => {
 /*
   Find or Reset Authentication Information
  */
-const showResetUserPassword = async (req, res, next) => {
+controller.showResetUserPassword = async (req, res, next) => {
   return res.render('reset_password', {
     email_regex: regex.email,
     password_regex: regex.password,
@@ -198,7 +199,7 @@ const showResetUserPassword = async (req, res, next) => {
   });
 };
 
-const resetUserPassword = async (req, res) => {
+controller.resetUserPassword = async (req, res) => {
   // Parameters
   const { email, password } = req.body;
   const params = {
@@ -240,12 +241,4 @@ const resetUserPassword = async (req, res) => {
   });
 };
 
-module.exports = {
-  viewLogin,
-  doLogin,
-  viewRegister,
-  doRegister,
-  doLogout,
-  showResetUserPassword,
-  resetUserPassword,
-};
+module.exports = controller;

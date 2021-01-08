@@ -4,7 +4,8 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('configs', [{
       key: 'DEFAULT_AUTHORITIES_ID',
-      value: '3'
+      value: '3',
+      comment: 'Permissions when first signed up',
     }], {});
   },
 
