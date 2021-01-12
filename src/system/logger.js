@@ -3,7 +3,7 @@ const winston = require('winston');
 const WinstonDaily = require('winston-daily-rotate-file');
 
 // log directory
-const varDir = `${__dirname}/../../../var`;
+const varDir = `${__dirname}/../../var`;
 const logDir = `${varDir}/logs`;
 if (!fs.existsSync(varDir)) fs.mkdirSync(varDir);
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
@@ -14,12 +14,12 @@ const { combine, timestamp, printf } = winston.format;
 
 // Define log format
 const logFormat = printf(info => `[${info.timestamp}] ${info.level} - ${info.message}`);
-const customLevels = {
+const logLevels = {
   levels: {
     error: 0,
     warn: 1,
     info: 2,
-    http: 3,
+    sql: 3,
     system: 4,
     debug: 5,
     silly: 6,
@@ -28,17 +28,12 @@ const customLevels = {
     error: process.env.LOG_COLOR_ERROR,
     warn: process.env.LOG_COLOR_WARN,
     info: process.env.LOG_COLOR_INFO,
-    http: process.env.LOG_COLOR_VERBOSE,
+    sql: process.env.LOG_COLOR_VERBOSE,
     system: process.env.LOG_COLOR_SQL,
     debug: process.env.LOG_COLOR_DEBUG,
     silly: process.env.LOG_COLOR_SILLY,
   },
 };
-
-/*
- * Log Level
- * error: 0, warn: 1, info: 2, http: 3, system: 4, debug: 5, silly: 6
- */
 
 utils.logger = winston.createLogger({
   format: combine(
@@ -47,7 +42,7 @@ utils.logger = winston.createLogger({
     }),
     logFormat,
   ),
-  levels: customLevels.levels,
+  levels: logLevels.levels,
   transports: [
     new WinstonDaily({
       level: 'info',
@@ -83,7 +78,7 @@ utils.logger = winston.createLogger({
 });
 
 // colors https://www.npmjs.com/package/colors
-winston.addColors(customLevels.colors);
+winston.addColors(logLevels.colors);
 
 utils.logger.add(
   new winston.transports.Console({

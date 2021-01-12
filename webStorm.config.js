@@ -2,6 +2,7 @@ System.config({
   paths: {
     '@root/*': './*',
     '@src/*': 'src/*',
+    '@system/*': 'src/system/*',
     '@controllers/*': 'src/app/controllers/*',
     '@middleware/*': 'src/app/middleware/*',
     '@models': 'src/app/models',

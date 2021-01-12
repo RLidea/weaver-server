@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const Model = require('@models');
 const requestHandler = require('@utils/requestHandler');
-const messageHandler = require('@utils/messageHandler');
+const messageHandler = require('@system/message');
 
 /*
   Login

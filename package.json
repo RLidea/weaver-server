@@ -27,6 +27,7 @@
   },
   "_moduleAliases": {
     "@root": ".",
+    "@system": "./src/system",
     "@controllers": "./src/app/controllers",
     "@middleware": "./src/app/middleware",
     "@models": "./src/app/models",

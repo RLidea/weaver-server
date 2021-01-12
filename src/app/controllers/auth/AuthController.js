@@ -5,7 +5,7 @@ const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
 const ConfigService = require('@services/ConfigService');
 const regex = require('@utils/regex');
-const messageHandler = require('@utils/messageHandler');
+// const messageHandler = require('@system/message');
 
 require('dotenv').config();
 
@@ -47,7 +47,7 @@ controller.doLogin = async (req, res, next) => {
     { session: false },
     (err, user, message) => {
       if (err || !user) {
-        messageHandler.devLog(err);
+        global.logger.error(err);
         return res.json({
           error: true,
           message: message?.message,

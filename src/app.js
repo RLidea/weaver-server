@@ -14,7 +14,7 @@ const ejsLocals = require('ejs-locals');
 const helmet = require('helmet');
 const corsConfig = require('@middleware/CORS');
 const systemLogger = require('@middleware/Logger');
-const { logger } = require('@utils/logger');
+const { logger } = require('@system/logger');
 const passportConfig = require('@controllers/auth/passport');
 
 /*
@@ -118,5 +118,10 @@ app.use(error.notFoundError);
 app.use(error.errorMessage);
 
 logger.system(`🚀 ${process.env.APP_NAME} is ready on ${process.env.PORT}`);
+
+/*
+ * Global
+ */
+global.logger = logger;
 
 module.exports = app;
