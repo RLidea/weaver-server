@@ -45,7 +45,7 @@ const sequelize = new Sequelize(
 // Database access alert
 try {
   sequelize.authenticate();
-  logger.info('🟢 The database is connected.');
+  logger.system('🟢 The database is connected.');
 } catch (error) {
   logger.error(`🔴 Unable to connect to the database: ${error}.`);
 }

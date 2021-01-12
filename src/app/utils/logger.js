@@ -1,80 +1,103 @@
 const fs = require('fs');
-
 const winston = require('winston');
-const winstonDaily = require('winston-daily-rotate-file');
+const WinstonDaily = require('winston-daily-rotate-file');
 
 // log directory
 const varDir = `${__dirname}/../../../var`;
 const logDir = `${varDir}/logs`;
 if (!fs.existsSync(varDir)) fs.mkdirSync(varDir);
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
+const utils = {};
 
 // winston format
 const { combine, timestamp, printf } = winston.format;
 
 // Define log format
-const logFormat = printf((
-  {
-    // eslint-disable-next-line no-shadow
-    timestamp,
-    level,
-    message,
+const logFormat = printf(info => `[${info.timestamp}] ${info.level} - ${info.message}`);
+const customLevels = {
+  levels: {
+    error: 0,
+    warn: 1,
+    info: 2,
+    http: 3,
+    system: 4,
+    debug: 5,
+    silly: 6,
   },
-) => `[${timestamp}] ${level}: ${message}`);
+  colors: {
+    error: process.env.LOG_COLOR_ERROR,
+    warn: process.env.LOG_COLOR_WARN,
+    info: process.env.LOG_COLOR_INFO,
+    http: process.env.LOG_COLOR_VERBOSE,
+    system: process.env.LOG_COLOR_SQL,
+    debug: process.env.LOG_COLOR_DEBUG,
+    silly: process.env.LOG_COLOR_SILLY,
+  },
+};
 
 /*
  * Log Level
- * error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6
+ * error: 0, warn: 1, info: 2, http: 3, system: 4, debug: 5, silly: 6
  */
-const logger = winston.createLogger({
+
+utils.logger = winston.createLogger({
   format: combine(
     timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
     logFormat,
   ),
+  levels: customLevels.levels,
   transports: [
-    // info log setting
-    // eslint-disable-next-line new-cap
-    new winstonDaily({
+    new WinstonDaily({
       level: 'info',
       datePattern: 'YYYY-MM-DD',
       dirname: `${logDir}/info`, // log file /logs/info/*.log in save
       filename: '%DATE%.log',
-      maxFiles: 14, // Days saved
+      maxFiles: process.env.LOG_INFO_SAVED_UNTIL, // Days saved
       json: false,
       zippedArchive: true,
       colorize: true,
     }),
-    // error log setting
-    // eslint-disable-next-line new-cap
-    new winstonDaily({
+    new WinstonDaily({
       level: 'error',
       datePattern: 'YYYY-MM-DD',
       dirname: `${logDir}/error`, // log file /logs/error/*.log in save
       filename: '%DATE%.error.log',
-      maxFiles: 14, // Days saved
+      maxFiles: process.env.LOG_ERROR_SAVED_UNTIL, // Days saved
       handleExceptions: true,
-      json: false,
+      json: true,
+      zippedArchive: true,
+    }),
+    new WinstonDaily({
+      level: 'system',
+      datePattern: 'YYYY-MM-DD',
+      dirname: `${logDir}/system`, // log file /logs/system/*.log in save
+      filename: '%DATE%.system.log',
+      maxFiles: process.env.LOG_SYSTEM_SAVED_UNTIL, // Days saved
+      handleExceptions: true,
+      json: true,
       zippedArchive: true,
     }),
   ],
 });
 
-logger.add(
+// colors https://www.npmjs.com/package/colors
+winston.addColors(customLevels.colors);
+
+utils.logger.add(
   new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.splat(),
-      // winston.format.colorize(),
-      // winston.format.simple(),
+    format: combine(
+      winston.format.colorize(),
+      logFormat,
     ),
-  }),
+    level: 'silly' }),
 );
 
-const stream = {
+utils.stream = {
   write: (message) => {
-    logger.info(message.substring(0, message.lastIndexOf('\n')));
+    utils.logger.info(message.substring(0, message.lastIndexOf('\n')));
   },
 };
 
-module.exports = { logger, stream };
+module.exports = utils;
