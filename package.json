@@ -23,7 +23,8 @@
     "db:undo": "npm-run-all --parallel db:undo:**",
     "db:undo:migrate": "./node_modules/.bin/sequelize db:migrate:undo:all",
     "db:undo:seed": "./node_modules/.bin/sequelize db:seed:undo:all",
-    "install": "./bin/install.sh"
+    "install": "./bin/install.sh",
+    "gitmoji": "./node_modules/.bin/gitmoji -c"
   },
   "_moduleAliases": {
     "@root": ".",
@@ -134,6 +135,7 @@
     "eslint": "^7.17.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
+    "gitmoji-cli": "^3.2.18",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
     "mocha": "^8.2.1",
