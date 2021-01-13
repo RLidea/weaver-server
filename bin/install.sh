@@ -13,3 +13,5 @@ if [ `npm list -g | grep -c pm2` -eq 0 ]; then
 else
   echo "pm2 is already installed"
 fi
+
+npm i
