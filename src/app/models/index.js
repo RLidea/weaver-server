@@ -36,7 +36,7 @@ const sequelize = new Sequelize(
     logging: (query, time) => {
       if (query !== 'Executed (default): SELECT 1+1 AS result') {
         console.log('');
-        logger.info(`${time}ms 🔍\n${query}`);
+        logger.sql(`${time}ms 🔍\n${query}`);
       }
     },
   },

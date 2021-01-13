@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const cors = require('cors');
 const ejsLocals = require('ejs-locals');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const corsConfig = require('@middleware/CORS');
 const systemLogger = require('@middleware/Logger');
 const { logger } = require('@system/logger');
@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
-app.use(helmet());
+// app.use(helmet());
 passportConfig();
 
 /*
