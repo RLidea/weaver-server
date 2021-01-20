@@ -24,7 +24,7 @@
     "db:undo:migrate": "./node_modules/.bin/sequelize db:migrate:undo:all",
     "db:undo:seed": "./node_modules/.bin/sequelize db:seed:undo:all",
     "set": "./bin/install.sh",
-    "gitmoji": "./node_modules/.bin/gitmoji -c"
+    "commit": "./node_modules/.bin/gitmoji -c"
   },
   "_moduleAliases": {
     "@root": ".",
@@ -39,6 +39,14 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "nodemonConfig": {
+    "ext": "js, json",
+    "ignore": [
+      "src/public/*",
+      "var/logs/*/*",
+      "var/session/*"
+    ]
   },
   "lint-staged": {
     "*.js": [
