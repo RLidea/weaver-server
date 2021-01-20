@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const Model = require('@models');
 const requestHandler = require('@utils/requestHandler');
-const messageHandler = require('@system/message');
 
 /*
   Login
@@ -11,7 +10,7 @@ const login = (req, res, params) => {
   const { payload, period, redirectUrl, message } = params;
   req.login(payload, { session: false }, loginError => {
     if (loginError) {
-      console.error(loginError);
+      global.logger.devError(loginError);
       res.json(loginError);
     }
     const expiresIn = 1000 * 60 * 60 * 24 * period; // date
@@ -105,7 +104,7 @@ const getLoginInfo = (req) => {
 
   return jwt.verify(token, sign, (err, decoded) => {
     if (err || !decoded) {
-      messageHandler.devLog('invalid token');
+      global.logger.dev('invalid token');
       return objResult(false, 'invalid token');
     }
 
@@ -113,16 +112,16 @@ const getLoginInfo = (req) => {
       decoded
       && (!decoded.access || decoded.access === 'unauthenticated')
     ) {
-      messageHandler.devLog('unauthenticated token');
+      global.logger.dev('unauthenticated token');
       return objResult(false, 'unauthenticated token');
     }
 
     if (decoded && decoded.access === 'authenticated') {
-      messageHandler.devLog('valid token');
+      global.logger.dev('valid token');
       return objResult(true, 'login Succeed', decoded);
     }
 
-    messageHandler.devLog('something suspicious');
+    global.logger.dev('something suspicious');
     return objResult(false, 'something suspicious');
   });
 };
@@ -161,7 +160,7 @@ const getAuthInfo = async (req, authorities_ids = []) => {
       return user.dataValues.id;
     })
     .catch(e => {
-      console.log(e);
+      global.logger.devError(e);
       return {
         error: true,
         message: 'user_not_found',
@@ -175,7 +174,7 @@ const getAuthInfo = async (req, authorities_ids = []) => {
   })
     .then((auth) => auth?.dataValues?.authorities_id)
     .catch(e => {
-      console.log(e);
+      global.logger.devError(e);
       return {
         error: true,
         message: 'auth_not_found',
@@ -206,7 +205,7 @@ const getLoginUser = async (req) => {
   })
     .then(d => d.dataValues)
     .catch(e => {
-      console.log(e);
+      global.logger.devError(e);
       return false;
     });
 

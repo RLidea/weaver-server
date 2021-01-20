@@ -47,7 +47,7 @@ controller.doLogin = async (req, res, next) => {
     { session: false },
     (err, user, message) => {
       if (err || !user) {
-        global.logger.error(err);
+        global.logger.devError('login failed');
         return res.json({
           error: true,
           message: message?.message,

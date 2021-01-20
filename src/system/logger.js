@@ -55,6 +55,16 @@ utils.logger = winston.createLogger({
       colorize: true,
     }),
     new WinstonDaily({
+      level: 'sql',
+      datePattern: 'YYYY-MM-DD',
+      dirname: `${logDir}/info`, // log file /logs/info/*.log in save
+      filename: '%DATE%.log',
+      maxFiles: process.env.LOG_INFO_SAVED_UNTIL, // Days saved
+      json: false,
+      zippedArchive: true,
+      colorize: true,
+    }),
+    new WinstonDaily({
       level: 'error',
       datePattern: 'YYYY-MM-DD',
       dirname: `${logDir}/error`, // log file /logs/error/*.log in save
@@ -67,8 +77,8 @@ utils.logger = winston.createLogger({
     new WinstonDaily({
       level: 'system',
       datePattern: 'YYYY-MM-DD',
-      dirname: `${logDir}/system`, // log file /logs/system/*.log in save
-      filename: '%DATE%.system.log',
+      dirname: `${logDir}/info`, // log file /logs/info/*.log in save
+      filename: '%DATE%.log',
       maxFiles: process.env.LOG_SYSTEM_SAVED_UNTIL, // Days saved
       handleExceptions: true,
       json: true,
@@ -93,6 +103,16 @@ utils.stream = {
   write: (message) => {
     utils.logger.info(message.substring(0, message.lastIndexOf('\n')));
   },
+};
+
+utils.logger.dev = message => {
+  // eslint-disable-next-line no-console
+  if (process.env.NODE_ENV === 'development') console.log(`${message}`);
+};
+
+utils.logger.devError = message => {
+  // eslint-disable-next-line no-console
+  if (process.env.NODE_ENV === 'development') console.error(`${message}`);
 };
 
 module.exports = utils;
