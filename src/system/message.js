@@ -8,10 +8,13 @@ handler.success = (res, message, data) => {
   });
 };
 
-handler.failed = (res, e) => {
+handler.failed = (res, message, error) => {
   return res.json({
     error: true,
-    message: e,
+    message,
+    data: {
+      error: error && '',
+    },
   });
 };
 

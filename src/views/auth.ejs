@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-    <meta charset="utf-8">
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'/>
-    <meta name="viewport" content="width=device-width"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body>
-<div class="flex-center position-ref full-height">
-    <div class="content">
-        <form id="auth" action="/auth/<%= page %>" method="post">
-            <h1><%= title %></h1>
-            <%if(page == 'register'){%>
-                <input id="name" type="text" name="name" placeholder="name">
-            <%}%>
-            <input id="email" type="email" name="email" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
-            <input id="password" type="password" name="password" placeholder="password" pattern="(.{6,})">
-            <button id="submit" type="submit">Submit</button>
-        </form>
-    </div>
+<div class="flex-center full-height flex-direction-column">
+  <div class="content m-b-md">
+    <form id="auth" action="/auth/<%= page %>" method="post">
+      <h1><%= title %></h1>
+      <% if(page == 'register'){ %>
+        <input id="name" type="text" name="name" placeholder="name">
+      <% } %>
+      <input id="email" type="email" name="email" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
+      <input id="password" type="password" name="password" placeholder="password" pattern="(.{6,})">
+      <button id="submit" type="submit">Submit</button>
+    </form>
+    <div id="message"></div>
+  </div>
+  <div class="links">
+    <a onclick="newWindow('/auth/reset/password', 'Reset password')" target="_blank" class="cursor-pointer">reset password</a>
+  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function (){
+  document.addEventListener('DOMContentLoaded', function () {
     window.axios = axios;
     window.axios.defaults.headers.common = {
       'X-Requested-With': 'XMLHttpRequest',
     };
 
-    document.querySelector('#submit').addEventListener('click', function(e) {
-      e.preventDefault();
-      auth();
-    })
+    document.querySelector('#submit')
+      .addEventListener('click', function (e) {
+        e.preventDefault();
+        auth();
+      })
   });
 
   const auth = () => {
@@ -47,18 +52,18 @@
 
     axios.post('/auth/<%= page %>', sendData)
       .then(res => {
-        if (!!res.data.data.error) {
+        const result = res.data;
+        if (!!result.error) {
+          setMessage(result.message)
           return false;
         }
-        console.log(res.data.data);
-        setCookie(res.data.data.cookie);
-        alert(res.data.message)
-        window.location.href = res.data.data.redirectUrl;
+        setCookie(result.data.cookie);
+        alert(result.message)
+        window.location.href = result.data.redirectUrl;
         return res;
       })
       .catch(err => {
-        console.log(err);
-        console.log(Error(err.response.data.message));
+        console.log(Error(err));
       });
   }
 
@@ -66,15 +71,26 @@
     if (!cookie) {
       return false;
     }
-    const { name, value, maxAge } = cookie;
+    const {
+      name,
+      value,
+      maxAge
+    } = cookie;
     document.cookie = `${name}=${value};max-age=${maxAge};SameSite=None;path=/;`
   }
 
   const passwordHashing = password => {
-    const objHash = new jsSHA("SHA-512", "TEXT", {numRounds: 1});
+    const objHash = new jsSHA("SHA-512", "TEXT", { numRounds: 1 });
     objHash.update(password);
-
     return objHash.getHash("HEX");
+  }
+
+  const setMessage = message => {
+    document.querySelector('#message').innerText = message;
+  }
+
+  function newWindow(url, name) {
+    window.open(url, name, 'width=400,height=350,directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no');
   }
 </script>
 

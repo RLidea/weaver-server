@@ -5,7 +5,7 @@ const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
 const ConfigService = require('@services/ConfigService');
 const regex = require('@utils/regex');
-// const messageHandler = require('@system/message');
+const messageHandler = require('@system/message');
 
 require('dotenv').config();
 
@@ -38,7 +38,7 @@ controller.doLogin = async (req, res, next) => {
 
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return res.json({ error: true, message: validationError[0].message });
+    return messageHandler.failed(res, validationError[0].message);
   }
 
   // Login
@@ -48,13 +48,11 @@ controller.doLogin = async (req, res, next) => {
     (err, user, message) => {
       if (err || !user) {
         global.logger.devError('login failed');
-        return res.json({
-          error: true,
-          message: message?.message,
-          data: {
-            err,
-          },
-        });
+        return messageHandler.failed(
+          res,
+          message?.message,
+          err,
+        );
       }
 
       const payload = {
@@ -111,7 +109,11 @@ controller.doRegister = async (req, res, next) => {
 
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return res.json({ error: true, message: validationError[0].message });
+    const message = validationError[0]?.message;
+    return messageHandler.failed({
+      res,
+      message,
+    });
   }
 
   const existUser = await Model.user.findOne({
@@ -122,15 +124,12 @@ controller.doRegister = async (req, res, next) => {
     .catch(() => { /* do nothing */ });
 
   if (existUser) {
-    return res.json({
-      error: true,
-      message: 'user_exist',
-    });
+    return messageHandler.failed(res, 'user exist');
   }
 
   // salt and hash
   const { salt, hashPassword } = AuthService.createSaltAndHash(password);
-  const authorities_id = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
+  const authoritiesId = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
 
   // Create User
   const user = await Model.user.create({
@@ -141,22 +140,16 @@ controller.doRegister = async (req, res, next) => {
   })
     .then(d => d.dataValues)
     .catch(() => {
-      return res.json({
-        error: true,
-        message: 'fail_to_create_user',
-      });
+      return messageHandler.failed(res, 'fail_to_create_user');
     });
 
   // Create user-auth relations
   await Model.user_authority_relation.create({
-    users_id: user.id,
-    authorities_id,
+    users_id: user?.id,
+    authorities_id: authoritiesId,
   }).then(() => { /* do nothing */ })
     .catch(() => {
-      return res.json({
-        error: true,
-        message: 'fail_to_create_relations',
-      });
+      return messageHandler.failed(res, 'fail_to_create_relations');
     });
 
   // Login
@@ -201,17 +194,23 @@ controller.showResetUserPassword = async (req, res, next) => {
 
 controller.resetUserPassword = async (req, res) => {
   // Parameters
-  const { email, password } = req.body;
+  const { email, password, code } = req.body;
   const params = {
     email,
     password,
+    code,
   };
 
   // Validation
   validation.validator(res, params, {
     email: validation.check.common.reqString,
     password: validation.check.common.reqString,
+    code: validation.check.common.reqString,
   });
+
+  if (req.session.instant !== params.code) {
+    return messageHandler.failed(res, 'failed');
+  }
 
   // salt and hash
   const { salt, hashPassword } = AuthService.createSaltAndHash(params.password);
@@ -227,18 +226,9 @@ controller.resetUserPassword = async (req, res) => {
   });
 
   if (result[0]) {
-    return res.json({
-      error: false,
-      message: 'success',
-      data: {
-        email,
-      },
-    });
+    return messageHandler.success(res, 'success', email);
   }
-  return res.json({
-    error: true,
-    message: 'password_reset_failed',
-  });
+  return messageHandler.failed(res, 'password_reset_failed');
 };
 
 module.exports = controller;

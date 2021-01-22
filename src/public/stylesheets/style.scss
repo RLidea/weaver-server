@@ -12,9 +12,13 @@ html, body {
 }
 
 .flex-center {
-  align-items: center;
   display: flex;
+  align-items: center;
   justify-content: center;
+}
+
+.flex-direction-column {
+  flex-direction: column;
 }
 
 .position-ref {
@@ -51,6 +55,10 @@ html, body {
 
 .d-none {
   display: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 #message {

@@ -12,6 +12,8 @@ const passport = require('passport');
 const cors = require('cors');
 const ejsLocals = require('ejs-locals');
 const helmet = require('helmet');
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const corsConfig = require('@middleware/CORS');
 const systemLogger = require('@middleware/Logger');
 const { logger } = require('@system/logger');
@@ -57,6 +59,17 @@ app.use(cors(corsConfig[process.env.NODE_ENV]));
 // logger
 app.use(systemLogger[process.env.NODE_ENV]);
 
+// session
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: new FileStore({
+    path: './var/session',
+    ttl: process.env.SESSION_TTL,
+  }),
+}));
+
 // robot.txt
 app.get('/robots.txt', (req, res) => {
   res.type('text/plain');
@@ -97,6 +110,9 @@ app.use(async (req, res, next) => {
     /^\/api_history$/i,
     /^\/insomnia.json$/i,
     /^\/robots.txt$/i,
+    /^\/session$/i,
+    /^\/session\/[0-9a-z]*$/i,
+    /^\/expired$/i,
   ];
 
   for (let i = 0, l = allowedUrlPatterns.length; i < l; i += 1) {

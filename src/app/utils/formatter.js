@@ -4,7 +4,7 @@
  * @returns {[]}
  */
 
-const list_to_tree = list => {
+const listToTree = list => {
   const map = {};
   const roots = [];
 
@@ -35,6 +35,6 @@ const toNumber = value => {
 };
 
 module.exports = {
-  list_to_tree,
+  listToTree,
   toNumber,
 };
