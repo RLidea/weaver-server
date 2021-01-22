@@ -129,6 +129,7 @@
     "module-alias": "^2.2.2",
     "morgan": "~1.9.1",
     "mysql2": "^2.2.5",
+    "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

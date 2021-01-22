@@ -17,6 +17,7 @@ const FileStore = require('session-file-store')(session);
 const corsConfig = require('@middleware/CORS');
 const systemLogger = require('@middleware/Logger');
 const { logger } = require('@system/logger');
+const systemMessage = require('@system/message');
 const passportConfig = require('@controllers/auth/passport');
 
 /*
@@ -113,6 +114,7 @@ app.use(async (req, res, next) => {
     /^\/session$/i,
     /^\/session\/[0-9a-z]*$/i,
     /^\/expired$/i,
+    /^\/mail$/i,
   ];
 
   for (let i = 0, l = allowedUrlPatterns.length; i < l; i += 1) {
@@ -146,5 +148,6 @@ logger.system(`🚀 ${process.env.APP_NAME} is ready on ${process.env.PORT}`);
  * Global
  */
 global.logger = logger;
+global.message = systemMessage;
 
 module.exports = app;

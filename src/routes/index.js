@@ -4,6 +4,7 @@ const router = express.Router();
 const ApiDocumentController = require('@controllers/ApiDocumentController');
 const AuthService = require('@services/AuthService');
 const SessionController = require('@controllers/SessionController');
+const MailController = require('@controllers/MailController');
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -16,6 +17,8 @@ router.get('/not_allowed', (req, res, next) => {
 });
 
 router.post('/session/:key', SessionController.session);
+
+router.post('/mail', MailController.send);
 
 router.get('/expired', (req, res, next) => {
   res.render('expired', { title: process.env.APP_NAME });

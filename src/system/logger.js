@@ -107,12 +107,12 @@ utils.stream = {
 
 utils.logger.dev = message => {
   // eslint-disable-next-line no-console
-  if (process.env.NODE_ENV === 'development') console.log(`${message}`);
+  if (process.env.NODE_ENV === 'development') console.log(message);
 };
 
 utils.logger.devError = message => {
   // eslint-disable-next-line no-console
-  if (process.env.NODE_ENV === 'development') console.error(`${message}`);
+  if (process.env.NODE_ENV === 'development') console.error(message);
 };
 
 module.exports = utils;
