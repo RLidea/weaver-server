@@ -18,8 +18,6 @@ router.get('/not_allowed', (req, res, next) => {
 
 router.post('/session/:key', SessionController.session);
 
-router.post('/mail', MailController.send);
-
 router.get('/expired', (req, res, next) => {
   res.render('expired', { title: process.env.APP_NAME });
 });
@@ -27,5 +25,7 @@ router.get('/expired', (req, res, next) => {
 router.get('/docs', ApiDocumentController.docs);
 router.get('/api_history', ApiDocumentController.history);
 router.get('/insomnia.json', ApiDocumentController.config);
+
+router.post('/mail', MailController.send);
 
 module.exports = router;
