@@ -6,7 +6,6 @@
 - Node.js 14 버전 이상 필요
 - express 기반
 - dotenv 를 이용한 환경변수 관리
-- 바로 시작할 수 있는 docker 환경 
 - eslint 적용 및 규칙
 - prettier 규칙
 
