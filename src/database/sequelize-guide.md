@@ -3,5 +3,5 @@
 examples
 
 ```shell script
-$ sequelize model:generate --underscored --name group_code --attributes name:string
+$ sequelize model:generate --name group_code --attributes name:string
 ```

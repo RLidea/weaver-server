@@ -1,29 +1,28 @@
 'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const user = sequelize.define(
-    'user',
-    {
-      email: DataTypes.STRING(191),
-      password: DataTypes.STRING(191),
-      name: DataTypes.STRING(191),
-      phone: DataTypes.CHAR(13),
-      profile_image_url: DataTypes.TEXT,
-      profile_thumbnail_url: DataTypes.TEXT,
-      last_login: DataTypes.DATE,
-      salt: DataTypes.STRING(191),
-      deleted_at: DataTypes.DATE,
-    },
-    {
-      createdAt   : 'created_at',
-      updatedAt   : 'updated_at',
-      timestamps  : true,
-      underscored : true,
-    },
-  );
-  user.associate = function(models) {
-    user.hasMany(models.user_authority_relation, {
-      foreignKey: 'users_id',
-    });
-  };
+  class user extends Model {
+    static associate(models) {
+      user.hasMany(models.userAuthorityRelation, {
+        foreignKey: 'usersId',
+      });
+    }
+  }
+  user.init({
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
+    name: DataTypes.STRING,
+    profileImageUrl: DataTypes.TEXT,
+    profileThumbnailUrl: DataTypes.TEXT,
+    phone: DataTypes.CHAR,
+    certificationDate: DataTypes.DATE,
+    lastLogin: DataTypes.DATE,
+    salt: DataTypes.STRING,
+  }, {
+    sequelize,
+    modelName: 'user',
+    timestamps: true,
+    paranoid: true,
+  });
   return user;
 };

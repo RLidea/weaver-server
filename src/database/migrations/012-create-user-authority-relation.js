@@ -1,14 +1,14 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_authority_relations', {
+    return queryInterface.createTable('userAuthorityRelations', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED,
       },
-      authorities_id: {
+      authoritiesId: {
         allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
         references: {
@@ -18,7 +18,7 @@ module.exports = {
           key: 'id',
         },
       },
-      users_id: {
+      usersId: {
         allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED,
         references: {
@@ -28,18 +28,18 @@ module.exports = {
           key: 'id',
         },
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updated_at: {
+      updatedAt: {
         allowNull: true,
         type: Sequelize.DATE,
       },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('user_authority_relations');
+    return queryInterface.dropTable('userAuthorityRelations');
   },
 };

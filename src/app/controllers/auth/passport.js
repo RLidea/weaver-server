@@ -35,7 +35,7 @@ module.exports = () => {
 
             if (hashPassword === dbPassword) {
               user.update({
-                last_login: new Date(),
+                lastLogin: new Date(),
               });
               return done(null, user, { message: 'Logged In Successfully' });
             }

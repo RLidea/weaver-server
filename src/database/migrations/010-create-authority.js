@@ -17,17 +17,17 @@ module.exports = {
       description: {
         type: Sequelize.STRING(191),
       },
-      is_use: {
+      isUse: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updated_at: {
+      updatedAt: {
         allowNull: true,
         type: Sequelize.DATE,
       },

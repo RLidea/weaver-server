@@ -11,10 +11,10 @@ const config = require(__dirname + '/../../database/config.js')[env];
 // Database schema
 const db = {
   config: undefined,
-  api_document: undefined,
+  apiDocument: undefined,
   authority: undefined,
   user: undefined,
-  user_authority_relation: undefined,
+  userAuthorityRelation: undefined,
 }; // db 안에 model 이름을 미리 안 넣어도 동작하지만 있으면 개발할때 자동완성이 되서 편하다!
 
 // Sequelize settings
@@ -30,7 +30,6 @@ const sequelize = new Sequelize(
     define: {
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci',
-      underscored: true,
     },
     benchmark: true,
     logging: (query, time) => {

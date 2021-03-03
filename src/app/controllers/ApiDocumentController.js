@@ -8,8 +8,8 @@ const docs = (req, res, next) => {
 };
 
 const history = async (req, res) => {
-  const data = await Model.api_document.findAll({
-    is_use: 1,
+  const data = await Model.apiDocument.findAll({
+    isUse: 1,
     order: [['id', 'desc']],
   })
     .then(r => r.map(i => {
@@ -21,21 +21,21 @@ const history = async (req, res) => {
 const config = async (req, res) => {
   const apiVersion = String(req.cookies.api_version);
   const where = {
-    is_use: 1,
+    isUse: 1,
     id: apiVersion,
   };
 
-  const data = await Model.api_document.findOne({
+  const data = await Model.apiDocument.findOne({
     where,
     order: [['id', 'desc']],
   })
     .then(r => r.dataValues.content)
     .catch(async () => {
-      const recent = await Model.api_document.findOne({
+      const recent = await Model.apiDocument.findOne({
         where: {
-          is_use: 1,
+          isUse: 1,
         },
-        order: [['created_at', 'DESC']],
+        order: [['createdAt', 'DESC']],
       });
       return recent.dataValues.content;
     });

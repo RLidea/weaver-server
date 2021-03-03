@@ -6,27 +6,27 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER.UNSIGNED
       },
       key: {
-        type: Sequelize.STRING(127)
+        type: Sequelize.STRING
       },
       value: {
-        type: Sequelize.STRING(127)
+        type: Sequelize.STRING
       },
       comment: {
-        type: Sequelize.STRING(127)
+        type: Sequelize.STRING
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updated_at: {
+      updatedAt: {
         allowNull: true,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
-      deleted_at: {
+      deletedAt: {
         allowNull: true,
         type: Sequelize.DATE,
       },

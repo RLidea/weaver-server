@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class config extends Model {
+  class apiDocument extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,15 +13,15 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  config.init({
-    key: DataTypes.STRING,
-    value: DataTypes.STRING,
-    comment: DataTypes.STRING,
+  apiDocument.init({
+    version: DataTypes.STRING,
+    content: DataTypes.STRING,
+    memo: DataTypes.STRING,
+    isUse: DataTypes.BOOLEAN
   }, {
     sequelize,
-    modelName: 'config',
+    modelName: 'apiDocument',
     timestamps: true,
-    paranoid: true,
   });
-  return config;
+  return apiDocument;
 };

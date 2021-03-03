@@ -1,23 +1,20 @@
 'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const authority = sequelize.define(
-    'authority',
-    {
-      name: DataTypes.STRING(191),
-      description: DataTypes.STRING(191),
-      is_use: DataTypes.BOOLEAN,
-    },
-    {
-      createdAt   : 'created_at',
-      updatedAt   : 'updated_at',
-      timestamps  : true,
-      underscored : true,
-    },
-  );
-  authority.associate = function(models) {
-    authority.hasMany(models.user_authority_relation, {
-      foreignKey: 'authorities_id',
-    });
-  };
+  class authority extends Model {
+    static associate(models) {
+      authority.hasMany(models.userAuthorityRelation, {
+        foreignKey: 'authoritiesId',
+      });
+    }
+  }
+  authority.init({
+    name: DataTypes.STRING,
+    description: DataTypes.STRING,
+    isUse: DataTypes.BOOLEAN
+  }, {
+    sequelize,
+    modelName: 'authority',
+  });
   return authority;
 };

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('api_documents', {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('apiDocuments', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -20,23 +20,23 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
-      is_use: {
+      isUse: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
         defaultValue: true,
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updated_at: {
+      updatedAt: {
         allowNull: true,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
     });
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('api_documents');
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('apiDocuments');
   }
 };

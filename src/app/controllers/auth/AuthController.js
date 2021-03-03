@@ -61,7 +61,7 @@ controller.doLogin = async (req, res, next) => {
 
       // update last login
       Model.user.update({
-        last_login: new Date(),
+        lastLogin: new Date(),
       }, {
         where: {
           email: payload.email,
@@ -144,9 +144,9 @@ controller.doRegister = async (req, res, next) => {
     });
 
   // Create user-auth relations
-  await Model.user_authority_relation.create({
-    users_id: user?.id,
-    authorities_id: authoritiesId,
+  await Model.userAuthorityRelation.create({
+    usersId: user?.id,
+    authoritiesId,
   }).then(() => { /* do nothing */ })
     .catch(() => {
       return messageHandler.failed(res, 'fail_to_create_relations');

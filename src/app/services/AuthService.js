@@ -123,7 +123,7 @@ const getLoginInfo = (req) => {
   });
 };
 
-const getAuthInfo = async (req, authorities_ids = []) => {
+const getAuthInfo = async (req, authoritiesIds = []) => {
   const loginInfo = getLoginInfo(req);
   const objResult = (isAllowed) => {
     return {
@@ -135,14 +135,14 @@ const getAuthInfo = async (req, authorities_ids = []) => {
 
   // not logged in
   if (!loginInfo.decoded) {
-    if (authorities_ids.length !== 0) {
+    if (authoritiesIds.length !== 0) {
       return objResult(false);
     }
     return objResult(true);
   }
 
   // logged in
-  const users_id = await Model.user.findOne({
+  const usersId = await Model.user.findOne({
     where: {
       email: loginInfo.decoded.email,
     },
@@ -164,12 +164,12 @@ const getAuthInfo = async (req, authorities_ids = []) => {
       };
     });
 
-  const authorities_id = await Model.user_authority_relation.findOne({
+  const authoritiesId = await Model.userAuthorityRelation.findOne({
     where: {
-      users_id,
+      usersId,
     },
   })
-    .then((auth) => auth?.dataValues?.authorities_id)
+    .then((auth) => auth?.dataValues?.authoritiesId)
     .catch(e => {
       global.logger.devError(e);
       return {
@@ -178,7 +178,7 @@ const getAuthInfo = async (req, authorities_ids = []) => {
       };
     });
 
-  if (authorities_ids.includes(authorities_id)) {
+  if (authoritiesIds.includes(authoritiesId)) {
     return objResult(true);
   }
   return objResult(false);
