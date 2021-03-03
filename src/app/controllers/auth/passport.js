@@ -9,7 +9,7 @@ const passportJwt = require('passport-jwt');
 
 const JWTStrategy = passportJwt.Strategy;
 const ExtractJWT = passportJwt.ExtractJwt;
-const crypto = require('crypto');
+const encryption = require('@system/encryption');
 const LocalStrategy = require('passport-local').Strategy;
 
 const UserModel = require('@models').user;
@@ -31,10 +31,7 @@ module.exports = () => {
             const { salt } = user.dataValues;
             const dbPassword = user.dataValues.password;
 
-            const hashPassword = crypto
-              .createHash('sha512')
-              .update(password + salt)
-              .digest('hex');
+            const hashPassword = encryption.createHash(password, salt);
 
             if (hashPassword === dbPassword) {
               user.update({

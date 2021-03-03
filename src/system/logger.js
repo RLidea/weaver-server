@@ -7,7 +7,7 @@ const varDir = `${__dirname}/../../var`;
 const logDir = `${varDir}/logs`;
 if (!fs.existsSync(varDir)) fs.mkdirSync(varDir);
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
-const utils = {};
+const handler = {};
 
 // winston format
 const { combine, timestamp, printf } = winston.format;
@@ -35,7 +35,7 @@ const logLevels = {
   },
 };
 
-utils.logger = winston.createLogger({
+handler.logger = winston.createLogger({
   format: combine(
     timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
@@ -90,7 +90,7 @@ utils.logger = winston.createLogger({
 // colors https://www.npmjs.com/package/colors
 winston.addColors(logLevels.colors);
 
-utils.logger.add(
+handler.logger.add(
   new winston.transports.Console({
     format: combine(
       winston.format.colorize(),
@@ -99,20 +99,20 @@ utils.logger.add(
     level: 'silly' }),
 );
 
-utils.stream = {
+handler.stream = {
   write: (message) => {
-    utils.logger.info(message.substring(0, message.lastIndexOf('\n')));
+    handler.logger.info(message.substring(0, message.lastIndexOf('\n')));
   },
 };
 
-utils.logger.dev = message => {
+handler.logger.dev = message => {
   // eslint-disable-next-line no-console
   if (process.env.NODE_ENV === 'development') console.log(message);
 };
 
-utils.logger.devError = message => {
+handler.logger.devError = message => {
   // eslint-disable-next-line no-console
   if (process.env.NODE_ENV === 'development') console.error(message);
 };
 
-module.exports = utils;
+module.exports = handler;

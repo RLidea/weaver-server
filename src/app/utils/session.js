@@ -1,5 +1,5 @@
 const fs = require('fs');
-const crypto = require('crypto');
+const encryption = require('@system/encryption');
 
 // session directory
 const varDir = `${__dirname}/../../../var`;
@@ -15,10 +15,7 @@ utils.create = (req, res, target, key) => {
 
   switch (target) {
     case 'instant':
-      req.session.instant = crypto
-        .createHash('sha512')
-        .update(`${(new Date()).getTime()}`)
-        .digest('hex').substring(0, 7);
+      res.session.instant = encryption.createHash(`${(new Date()).getTime()}`, 'salt')?.substring(0, 7);
       break;
     default:
       if (key === undefined) {

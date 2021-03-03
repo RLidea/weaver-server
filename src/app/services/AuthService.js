@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 const Model = require('@models');
+const encryption = require('@system/encryption');
 const requestHandler = require('@utils/requestHandler');
 
 /*
@@ -63,10 +63,7 @@ const initialParamsForLogin = async () => {
  */
 const createSaltAndHash = (password) => {
   const salt = `${Math.round(new Date().valueOf() * Math.random())}`;
-  const hashPassword = crypto
-    .createHash('sha512')
-    .update(password + salt)
-    .digest('hex');
+  const hashPassword = encryption.createHash(password, salt);
   return { salt, hashPassword };
 };
 
