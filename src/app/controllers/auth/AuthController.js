@@ -128,43 +128,52 @@ controller.doRegister = async (req, res, next) => {
   }
 
   // salt and hash
-  const { salt, hashPassword } = AuthService.createSaltAndHash(password);
+  const { salt, hashPassword } = await AuthService.createSaltAndHash(password);
   const authoritiesId = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
 
   // Create User
-  const user = await Model.user.create({
-    name,
-    email,
-    password: hashPassword,
-    salt,
-  })
-    .then(d => d.dataValues)
-    .catch(() => {
-      return messageHandler.failed(res, 'fail_to_create_user');
-    });
-
-  // Create user-auth relations
-  await Model.userAuthorityRelation.create({
-    usersId: user?.id,
-    authoritiesId,
-  }).then(() => { /* do nothing */ })
-    .catch(() => {
-      return messageHandler.failed(res, 'fail_to_create_relations');
-    });
-
-  // Login
-  const reqLogin = {
-    body: {
+  const t = await Model.sequelize.transaction();
+  try {
+    const user = await Model.user.create({
+      name,
       email,
-      password,
-    },
-    login: req.login,
-  };
-  const payload = {
-    email,
-  };
-  const message = 'login with register';
-  await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
+      password: hashPassword,
+      salt,
+    }, { transaction: t })
+      .then(d => d.dataValues)
+      .catch((err) => {
+        global.logger.devError(err);
+      });
+
+    // Create user-auth relations
+    await Model.userAuthorityRelation.create({
+      usersId: user?.id,
+      authoritiesId,
+    }, { transaction: t }).then(() => { /* do nothing */ })
+      .catch((err) => {
+        global.logger.devError(err);
+      });
+
+    await t.commit();
+
+    // Login
+    const reqLogin = {
+      body: {
+        email,
+        password,
+      },
+      login: req.login,
+    };
+    const payload = {
+      email,
+    };
+    const message = 'login with register';
+    await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
+  } catch (err) {
+    global.logger.devError(err);
+    await t.rollback();
+    return messageHandler.failed(res, 'fail_to_create_user');
+  }
 };
 
 /*

@@ -10,10 +10,7 @@ handler.createHash = (password, salt) => {
 };
 
 handler.pbkdf2 = (password, salt) => {
-  return crypto.pbkdf2(password, salt, 100000, 64, 'sha512', (err, derivedKey) => {
-    if (err) throw err;
-    return derivedKey.toString('hex');
-  });
+  return crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
 };
 
 module.exports = handler;

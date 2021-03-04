@@ -61,9 +61,9 @@ const initialParamsForLogin = async () => {
 /*
   Register
  */
-const createSaltAndHash = (password) => {
+const createSaltAndHash = async (password) => {
   const salt = `${Math.round(new Date().valueOf() * Math.random())}`;
-  const hashPassword = encryption.createHash(password, salt);
+  const hashPassword = await encryption.pbkdf2(password, salt);
   return { salt, hashPassword };
 };
 

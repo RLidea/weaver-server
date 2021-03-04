@@ -24,14 +24,14 @@ module.exports = () => {
       },
       ((email, password, done) => {
         return UserModel.findOne({ where: { email } })
-          .then((user) => {
+          .then(async (user) => {
             if (!user) {
               return done(null, false, { message: 'Incorrect email' });
             }
             const { salt } = user.dataValues;
             const dbPassword = user.dataValues.password;
 
-            const hashPassword = encryption.createHash(password, salt);
+            const hashPassword = await encryption.pbkdf2(password, salt);
 
             if (hashPassword === dbPassword) {
               user.update({

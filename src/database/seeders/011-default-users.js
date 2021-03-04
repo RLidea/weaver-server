@@ -9,9 +9,9 @@ module.exports = {
           id: 1,
           email: 'dev@weaver.com',
           password:
-            '1b4ffcb1b8bacb82c29e75fb9c127c9af1fdd7588303e01d69e477de355c708e337f0e204c27e5f2e01c2d6ecca553527b04c3409f5c016d78e71f750524f5ae', // secret
+            '4de4ecd2289c87cdb1868312c1f967bf855ba56152d9378dc3fbd3d498739d4ace13bce9d0ec896524d67ae593b532fbb018b90408a8bc770297fc1db238757b', // secret
           name: 'Master Developer',
-          salt: '553860772260',
+          salt: '1341230744792',
         },
       ],
       {},
