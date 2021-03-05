@@ -2,11 +2,13 @@ const jwt = require('jsonwebtoken');
 const Model = require('@models');
 const encryption = require('@system/encryption');
 const requestHandler = require('@utils/requestHandler');
+const ConfigService = require('@services/ConfigService');
 
+const services = {};
 /*
   Login
  */
-const login = (req, res, params) => {
+services.login = (req, res, params) => {
   const { payload, period, redirectUrl, message } = params;
   req.login(payload, { session: false }, loginError => {
     if (loginError) {
@@ -45,7 +47,7 @@ const login = (req, res, params) => {
   });
 };
 
-const initialParamsForLogin = async () => {
+services.initialParamsForLogin = async () => {
   const authPeriod = '3';
   const redirectUriAfterLogin = '/';
 
@@ -61,10 +63,83 @@ const initialParamsForLogin = async () => {
 /*
   Register
  */
-const createSaltAndHash = async (password) => {
+services.createSaltAndHash = async (password) => {
   const salt = `${Math.round(new Date().valueOf() * Math.random())}`;
   const hashPassword = await encryption.pbkdf2(password, salt);
   return { salt, hashPassword };
+};
+
+services.createUser = async ({
+  name,
+  email,
+  password,
+  profileImageUrl,
+  profileThumbnailUrl,
+  oAuth,
+}) => {
+  const defaultAuthorities = (await ConfigService.get('DEFAULT_AUTHORITIES_ID'))?.value;
+
+  // salt and hash
+  const { salt, hashPassword } = await services.createSaltAndHash(password);
+  const authoritiesId = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
+
+  // Crate User
+  const t = await Model.sequelize.transaction();
+  try {
+    const user = await Model.user.create({
+      name,
+      email,
+      password: hashPassword,
+      profileImageUrl,
+      profileThumbnailUrl,
+      salt,
+    }, { transaction: t })
+      .then(d => d.dataValues)
+      .catch((err) => {
+        global.logger.devError(err);
+        return false;
+      });
+
+    // Create user-auth relations
+    await Model.userAuthorityRelation.create({
+      usersId: user?.id,
+      authoritiesId,
+    }, { transaction: t }).then(() => { /* do nothing */ })
+      .catch((err) => {
+        global.logger.devError(err);
+        return false;
+      });
+
+    if (oAuth) {
+      await services.createOauthMeta({
+        t,
+        usersId: user?.id,
+        ...oAuth,
+      });
+    }
+
+    await t.commit();
+    return true;
+  } catch (e) {
+    global.logger.devError(e);
+    await t.rollback();
+    return false;
+  }
+};
+
+services.createOauthMeta = async ({
+  t, usersId, service, accountId, accessToken, refreshToken,
+}) => {
+  await Model.oAuthMeta.create({
+    usersId,
+    service,
+    accountId,
+    accessToken,
+    refreshToken,
+  }, { transaction: t }).catch(err => {
+    global.logger.devError(err);
+    return false;
+  });
 };
 
 /*
@@ -123,7 +198,7 @@ const getLoginInfo = (req) => {
   });
 };
 
-const getAuthInfo = async (req, authoritiesIds = []) => {
+services.getAuthInfo = async (req, authoritiesIds = []) => {
   const loginInfo = getLoginInfo(req);
   const objResult = (isAllowed) => {
     return {
@@ -184,7 +259,7 @@ const getAuthInfo = async (req, authoritiesIds = []) => {
   return objResult(false);
 };
 
-const getLoginUser = async (req) => {
+services.getLoginUser = async (req) => {
   const token = requestHandler.getJwt(req);
   if (token === undefined) return null;
 
@@ -209,12 +284,4 @@ const getLoginUser = async (req) => {
   return user;
 };
 
-module.exports = {
-  login,
-  initialParamsForLogin,
-  createSaltAndHash,
-  createToken,
-  getLoginInfo,
-  getAuthInfo,
-  getLoginUser,
-};
+module.exports = services;

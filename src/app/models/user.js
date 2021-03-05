@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
       user.hasMany(models.userAuthorityRelation, {
         foreignKey: 'usersId',
       });
+      user.hasMany(models.oAuthMeta, {
+        foreignKey: 'usersId',
+      });
     }
   }
   user.init({

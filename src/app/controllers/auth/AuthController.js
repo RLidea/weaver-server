@@ -3,9 +3,7 @@ const Schema = require('validate');
 const Model = require('@models');
 const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
-const ConfigService = require('@services/ConfigService');
 const regex = require('@utils/regex');
-const messageHandler = require('@system/message');
 
 require('dotenv').config();
 
@@ -38,19 +36,19 @@ controller.doLogin = async (req, res, next) => {
 
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return messageHandler.failed(res, validationError[0].message);
+    return global.message.failed(res, validationError[0].message);
   }
 
   // Login
   passport.authenticate(
     'local',
     { session: false },
-    (err, user, message) => {
+    (err, user, data) => {
       if (err || !user) {
         global.logger.devError('login failed');
-        return messageHandler.failed(
+        return global.message.failed(
           res,
-          message?.message,
+          data?.message,
           err,
         );
       }
@@ -73,7 +71,7 @@ controller.doLogin = async (req, res, next) => {
         payload,
         period,
         redirectUrl,
-        message: message.message,
+        message: data.message,
       });
     },
   )(req, res, redirectUrl, period);
@@ -98,8 +96,6 @@ controller.doRegister = async (req, res, next) => {
   const { name, email, password } = req.body;
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
-  const defaultAuthorities = (await ConfigService.get('DEFAULT_AUTHORITIES_ID'))?.value;
-
   // Validation Check
   const reqBodySchema = new Schema({
     name: validation.check.auth.name,
@@ -110,7 +106,7 @@ controller.doRegister = async (req, res, next) => {
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
     const message = validationError[0]?.message;
-    return messageHandler.failed({
+    return global.message.failed({
       res,
       message,
     });
@@ -124,39 +120,16 @@ controller.doRegister = async (req, res, next) => {
     .catch(() => { /* do nothing */ });
 
   if (existUser) {
-    return messageHandler.failed(res, 'user exist');
+    return global.message.failed(res, 'user exist');
   }
 
-  // salt and hash
-  const { salt, hashPassword } = await AuthService.createSaltAndHash(password);
-  const authoritiesId = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
+  const isUserCreated = await AuthService.createUser({
+    name,
+    email,
+    password,
+  });
 
-  // Create User
-  const t = await Model.sequelize.transaction();
-  try {
-    const user = await Model.user.create({
-      name,
-      email,
-      password: hashPassword,
-      salt,
-    }, { transaction: t })
-      .then(d => d.dataValues)
-      .catch((err) => {
-        global.logger.devError(err);
-      });
-
-    // Create user-auth relations
-    await Model.userAuthorityRelation.create({
-      usersId: user?.id,
-      authoritiesId,
-    }, { transaction: t }).then(() => { /* do nothing */ })
-      .catch((err) => {
-        global.logger.devError(err);
-      });
-
-    await t.commit();
-
-    // Login
+  if (isUserCreated) {
     const reqLogin = {
       body: {
         email,
@@ -169,10 +142,8 @@ controller.doRegister = async (req, res, next) => {
     };
     const message = 'login with register';
     await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
-  } catch (err) {
-    global.logger.devError(err);
-    await t.rollback();
-    return messageHandler.failed(res, 'fail_to_create_user');
+  } else {
+    return global.message.failed(res, 'fail_to_create_user');
   }
 };
 
@@ -218,7 +189,7 @@ controller.resetUserPassword = async (req, res) => {
   });
 
   if (req.session.instant !== params.code) {
-    return messageHandler.failed(res, 'failed');
+    return global.message.failed(res, 'failed');
   }
 
   // salt and hash
@@ -235,9 +206,9 @@ controller.resetUserPassword = async (req, res) => {
   });
 
   if (result[0]) {
-    return messageHandler.success(res, 'success', email);
+    return global.message.success(res, 'success', email);
   }
-  return messageHandler.failed(res, 'password_reset_failed');
+  return global.message.failed(res, 'password_reset_failed');
 };
 
 module.exports = controller;

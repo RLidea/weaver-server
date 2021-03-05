@@ -132,6 +132,7 @@
     "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
     "sendmail": "^1.6.1",
     "sequelize": "^5.22.3",

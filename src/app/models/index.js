@@ -15,6 +15,7 @@ const db = {
   authority: undefined,
   user: undefined,
   userAuthorityRelation: undefined,
+  oAuthMeta: undefined,
 }; // db 안에 model 이름을 미리 안 넣어도 동작하지만 있으면 개발할때 자동완성이 되서 편하다!
 
 // Sequelize settings

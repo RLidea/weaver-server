@@ -1,5 +1,6 @@
 const express = require('express');
 const AuthController = require('@controllers/auth/AuthController');
+const OAuthController = require('@controllers/auth/OAuthController');
 
 const router = express.Router();
 
@@ -12,6 +13,14 @@ router
   .route('/register')
   .get(AuthController.viewRegister)
   .post(AuthController.doRegister);
+
+router
+  .route('/oauth')
+  .get(OAuthController.viewLogin);
+
+router
+  .route('/kakao')
+  .get(OAuthController.doKakaoAuth);
 
 router.route('/logout').get(AuthController.doLogout);
 
