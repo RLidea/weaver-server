@@ -1,10 +1,11 @@
 module.exports = {
-  development: {
-    origin: true,
-    credentials: true,
-  },
-  production: {
-    origin: process.env.CLIENT_DOMAIN,
-    credentials: true,
-  },
+  development: [
+    process.env.CLIENT_DOMAIN,
+  ],
+  test: [
+    process.env.CLIENT_DOMAIN,
+  ],
+  production: [
+    process.env.CLIENT_DOMAIN,
+  ],
 };

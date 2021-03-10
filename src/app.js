@@ -9,7 +9,6 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
-const cors = require('cors');
 const ejsLocals = require('ejs-locals');
 const helmet = require('helmet');
 const session = require('express-session');
@@ -55,7 +54,17 @@ passportConfig();
  */
 
 // CORS
-app.use(cors(corsConfig[process.env.NODE_ENV]));
+app.use((req, res, next) => {
+  const allowedOrigins = corsConfig[process.env.NODE_ENV];
+
+  if (allowedOrigins.includes(req.headers.origin)) {
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', true);
+  return next();
+});
 
 // logger
 app.use(systemLogger[process.env.NODE_ENV]);
