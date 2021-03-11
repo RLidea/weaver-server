@@ -127,19 +127,22 @@ services.createUser = async ({
   }
 };
 
-services.createOauthMeta = async ({
-  t, usersId, service, accountId, accessToken, refreshToken,
-}) => {
-  await Model.oAuthMeta.create({
-    usersId,
-    service,
-    accountId,
-    accessToken,
-    refreshToken,
-  }, { transaction: t }).catch(err => {
-    global.logger.devError(err);
-    return false;
-  });
+services.createOauthMeta = ({ t, usersId, service, accountId, accessToken, refreshToken }) => {
+  return Model.oAuthMeta.create({
+    usersId, service, accountId, accessToken, refreshToken,
+  }, { transaction: t })
+    .catch(err => {
+      global.logger.devError(err);
+      return false;
+    });
+};
+
+services.createUserMeta = async ({ t, usersId, name, key, value }) => {
+  return Model.userMeta.create({ usersId, name, key, value }, { transaction: t })
+    .catch(err => {
+      global.logger.devError(err);
+      return false;
+    });
 };
 
 /*
@@ -282,6 +285,14 @@ services.getLoginUser = async (req) => {
     });
 
   return user;
+};
+
+services.findUserByEmail = (email) => {
+  return Model.user.findOne({
+    where: {
+      email,
+    },
+  });
 };
 
 module.exports = services;

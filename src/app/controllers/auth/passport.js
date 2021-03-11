@@ -85,6 +85,7 @@ module.exports = () => {
         return done(null, user, {
           accessToken,
           refreshToken,
+          profile,
           message: 'Logged In Successfully',
         });
       })
