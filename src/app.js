@@ -113,7 +113,7 @@ app.use(async (req, res, next) => {
   // not require jwt verification url list
   const allowedUrlPatterns = [
     /^\/$/,
-    /\/auth\/(\w)*$/i,
+    /^\/auth\/(\w)*$/i,
     /^\/docs$/i,
     /^\/api_history$/i,
     /^\/insomnia.json$/i,

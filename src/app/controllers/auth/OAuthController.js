@@ -37,7 +37,7 @@ controllers.doKakaoAuth = async (req, res) => {
       const existUser = await AuthService.findUserByEmail(payload.email);
 
       if (existUser) {
-        await AuthService.createOauthMeta({
+        await AuthService.createOAuthMeta({
           usersId: existUser.id,
           service: 'kakao',
           accountId: data.profile.id,

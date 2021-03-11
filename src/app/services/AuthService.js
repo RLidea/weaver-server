@@ -111,7 +111,7 @@ services.createUser = async ({
       });
 
     if (oAuth) {
-      await services.createOauthMeta({
+      await services.createOAuthMeta({
         t,
         usersId: user?.id,
         ...oAuth,
@@ -127,7 +127,7 @@ services.createUser = async ({
   }
 };
 
-services.createOauthMeta = ({ t, usersId, service, accountId, accessToken, refreshToken }) => {
+services.createOAuthMeta = ({ t, usersId, service, accountId, accessToken, refreshToken }) => {
   return Model.oAuthMeta.create({
     usersId, service, accountId, accessToken, refreshToken,
   }, { transaction: t })
