@@ -22,6 +22,10 @@ router
   .route('/kakao')
   .get(OAuthController.doKakaoAuth);
 
+router
+  .route('/naver')
+  .get(OAuthController.doNaverAuth);
+
 router.route('/logout').get(AuthController.doLogout);
 
 router

@@ -76,6 +76,7 @@ services.createUser = async ({
   profileImageUrl,
   profileThumbnailUrl,
   oAuth,
+  userMeta,
 }) => {
   const defaultAuthorities = (await ConfigService.get('DEFAULT_AUTHORITIES_ID'))?.value;
 
@@ -83,7 +84,7 @@ services.createUser = async ({
   const { salt, hashPassword } = await services.createSaltAndHash(password);
   const authoritiesId = (defaultAuthorities || 0) !== 0 ? defaultAuthorities || 0 : 3;
 
-  // Crate User
+  // Create User
   const t = await Model.sequelize.transaction();
   try {
     const user = await Model.user.create({
@@ -118,6 +119,15 @@ services.createUser = async ({
       });
     }
 
+    if (userMeta) {
+      await services.createUserMeta({
+        t,
+        prefix: oAuth.service,
+        usersId: user?.id,
+        userMeta,
+      });
+    }
+
     await t.commit();
     return true;
   } catch (e) {
@@ -137,12 +147,23 @@ services.createOAuthMeta = ({ t, usersId, service, accountId, accessToken, refre
     });
 };
 
-services.createUserMeta = async ({ t, usersId, name, key, value }) => {
-  return Model.userMeta.create({ usersId, name, key, value }, { transaction: t })
-    .catch(err => {
-      global.logger.devError(err);
-      return false;
-    });
+services.createUserMeta = ({ t, prefix, usersId, userMeta }) => {
+  const keys = Object.keys(userMeta);
+  const promises = [];
+  keys.forEach(key => {
+    promises.push(Model.userMeta.create({
+      usersId,
+      name: `${prefix}_${key}`,
+      key,
+      value: userMeta[key],
+    }, { transaction: t })
+      .catch(err => {
+        global.logger.devError(err);
+        return false;
+      }));
+  });
+
+  return Promise.all(promises);
 };
 
 /*

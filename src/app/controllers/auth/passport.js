@@ -12,8 +12,30 @@ const ExtractJWT = passportJwt.ExtractJwt;
 const encryption = require('@system/encryption');
 const LocalStrategy = require('passport-local').Strategy;
 const KakaoStrategy = require('passport-kakao').Strategy;
+const NaverStrategy = require('passport-naver').Strategy;
 
 const Model = require('@models');
+
+const checkOAuth = ({ service, accountId, accessToken, refreshToken, profile, done }) => {
+  Model.oAuthMeta.findOne({ where: { service, accountId } })
+    .then(user => {
+      if (!user) {
+        return done(null, false, {
+          accessToken,
+          refreshToken,
+          profile,
+          message: 'User Created',
+        });
+      }
+      return done(null, user, {
+        accessToken,
+        refreshToken,
+        profile,
+        message: 'Logged In Successfully',
+      });
+    })
+    .catch(err => done(err));
+};
 
 module.exports = () => {
   // Local Strategy
@@ -72,23 +94,28 @@ module.exports = () => {
     callbackURL: `${process.env.SERVER_DOMAIN}/auth/kakao`,
   },
   (accessToken, refreshToken, profile, done) => {
-    Model.oAuthMeta.findOne({ where: { service: 'kakao', accountId: profile.id } })
-      .then(user => {
-        if (!user) {
-          return done(null, false, {
-            accessToken,
-            refreshToken,
-            profile,
-            message: 'User Created',
-          });
-        }
-        return done(null, user, {
-          accessToken,
-          refreshToken,
-          profile,
-          message: 'Logged In Successfully',
-        });
-      })
-      .catch(err => done(err));
+    checkOAuth({
+      service: 'kakao',
+      accountId: profile.id,
+      accessToken,
+      refreshToken,
+      profile,
+      done,
+    });
+  }));
+
+  passport.use(new NaverStrategy({
+    clientID: process.env.NAVER_CLIENT_ID,
+    clientSecret: process.env.NAVER_CLIENT_SECRET,
+    callbackURL: `${process.env.SERVER_DOMAIN}/auth/naver`,
+  }, (accessToken, refreshToken, profile, done) => {
+    checkOAuth({
+      service: 'naver',
+      accountId: profile.id,
+      accessToken,
+      refreshToken,
+      profile,
+      done,
+    });
   }));
 };
