@@ -178,20 +178,22 @@ services.addSocialAccount = async ({
   let isSuccess = false;
   try {
     await services.createOAuthMeta({
+      t,
       usersId,
       service,
       accountId,
       accessToken,
       refreshToken,
-    }, { transaction: t }).then(() => {
+    }).then(() => {
       isSuccess = true;
     });
     if (userMeta) {
       await services.createUserMeta({
+        t,
         prefix: service,
         usersId,
         userMeta,
-      }, { transaction: t });
+      });
     }
     await t.commit();
     isSuccess = true;
