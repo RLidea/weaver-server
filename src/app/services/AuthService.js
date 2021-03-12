@@ -166,6 +166,44 @@ services.createUserMeta = ({ t, prefix, usersId, userMeta }) => {
   return Promise.all(promises);
 };
 
+services.addSocialAccount = async ({
+  usersId,
+  service,
+  accountId,
+  accessToken,
+  refreshToken,
+  userMeta,
+}) => {
+  const t = await Model.sequelize.transaction();
+  let isSuccess = false;
+  try {
+    await services.createOAuthMeta({
+      usersId,
+      service,
+      accountId,
+      accessToken,
+      refreshToken,
+    }, { transaction: t }).then(() => {
+      isSuccess = true;
+    });
+    if (userMeta) {
+      await services.createUserMeta({
+        prefix: service,
+        usersId,
+        userMeta,
+      }, { transaction: t });
+    }
+    await t.commit();
+    isSuccess = true;
+  } catch (e) {
+    await t.rollback();
+    isSuccess = false;
+    global.logger.devError(e);
+  }
+
+  return isSuccess;
+};
+
 /*
   Authentication
  */

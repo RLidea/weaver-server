@@ -2,7 +2,6 @@
 /* eslint consistent-return: 0 */
 const passport = require('passport');
 const AuthService = require('@services/AuthService');
-const Model = require('@models');
 
 const controllers = {};
 
@@ -29,6 +28,7 @@ controllers.doKakaoAuth = async (req, res) => {
       redirectUrl,
       message: data.message,
     };
+    const userMeta = {};
     let isSuccess = false;
 
     if (user) {
@@ -38,14 +38,12 @@ controllers.doKakaoAuth = async (req, res) => {
       const existUser = await AuthService.findUserByEmail(payload.email);
 
       if (existUser) {
-        await AuthService.createOAuthMeta({
+        isSuccess = await AuthService.addSocialAccount({
           usersId: existUser.id,
           service: 'kakao',
           accountId: data.profile.id,
           accessToken: data.accessToken,
           refreshToken: data.refreshToken,
-        }).then(() => {
-          isSuccess = true;
         });
       } else {
         // If there is no user, sign up
@@ -61,9 +59,7 @@ controllers.doKakaoAuth = async (req, res) => {
             accessToken: data.accessToken,
             refreshToken: data.refreshToken,
           },
-          userMeta: {
-            id: data.profile.id,
-          },
+          userMeta,
         })
           .then(() => {
             isSuccess = true;
@@ -112,29 +108,14 @@ controllers.doNaverAuth = async (req, res) => {
       const existUser = await AuthService.findUserByEmail(payload.email);
 
       if (existUser) {
-        const t = await Model.sequelize.transaction();
-        try {
-          await AuthService.createOAuthMeta({
-            usersId: existUser.id,
-            service: 'naver',
-            accountId: data.profile.id,
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
-          }, { transaction: t }).then(() => {
-            isSuccess = true;
-          });
-          await AuthService.createUserMeta({
-            prefix: 'naver',
-            usersId: existUser.id,
-            userMeta,
-          }, { transaction: t });
-          await t.commit();
-          isSuccess = true;
-        } catch (e) {
-          await t.rollback();
-          global.logger.devError(e);
-          return global.message.failed(res, 'fail_to_create_user');
-        }
+        isSuccess = await AuthService.addSocialAccount({
+          usersId: existUser.id,
+          service: 'naver',
+          accountId: data.profile.id,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          userMeta,
+        });
       } else {
         // If there is no user, sign up
         await AuthService.createUser({
