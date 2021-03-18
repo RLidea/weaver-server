@@ -4,16 +4,126 @@
     <meta charset="utf8">
     <meta name="generator" content="Insomnia Documenter v0.4.1">
     <meta name="viewport" content="width=device-width, user-scalable=no">
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="stylesheet" href="bundle.css">
-    <script defer src="bundle.js"></script>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/docs/bundle.css">
+    <script defer src="/docs/bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-    <script defer src="history.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <title>Docs</title>
 </head>
 <body>
 <noscript>In order to view this documentation page, you have to enable JavaScript in your web browser.</noscript>
 <div id="app"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const target = document.querySelector('body');
+
+        let optionData = [];
+        // eslint-disable-next-line no-undef
+        axios.get('/docs/documents')
+          .then(response => {
+              optionData = response.data;
+          })
+          .catch(err => {
+              console.error(Error(err.response.data.message));
+          });
+
+        // create an observer instance
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach(() => {
+                // container
+                const divHistory = document.createElement('div');
+                divHistory.style.fontSize = '13px';
+                divHistory.style.display = 'inline-block';
+                divHistory.style.verticalAlign = 'middle';
+                divHistory.className = 'history';
+
+                // title
+                const spanTitle = document.createElement('span');
+                spanTitle.innerText = 'history: ';
+                divHistory.appendChild(spanTitle);
+
+                // select options
+                const selectHistory = document.createElement('select');
+                selectHistory.className = 'select-history';
+
+                // set cookie for selected version of document
+                selectHistory.addEventListener('change', () => {
+                    const apiDocumentsId = selectHistory.options[selectHistory.selectedIndex].value;
+                    setCookie('api_version', apiDocumentsId, { secure: true, 'max-age': 3600 });
+                    // eslint-disable-next-line no-restricted-globals
+                    location.reload();
+                });
+
+                // create options
+                const recentOption = document.createElement('option');
+                recentOption.value = '0';
+                recentOption.innerText = 'Recent Version';
+                selectHistory.appendChild(recentOption);
+
+                optionData.forEach(i => {
+                    const option = document.createElement('option');
+                    option.value = i.version;
+                    option.innerText = i.version;
+                    selectHistory.appendChild(option);
+                });
+                divHistory.appendChild(selectHistory);
+                selectHistory.value = getCookie('api_version') || 0;
+
+                // append container
+                try {
+                    if (document.querySelector('.history') === null) {
+                        document.querySelector('.header-right').appendChild(divHistory);
+                        document.title = 'API Document';
+                        document.querySelector('.error-page').style.display = 'none';
+                    }
+                } catch (e) {
+                    // do nothing
+                }
+            });
+        });
+
+        // configuration of the observer:
+        const config = { attributes: true, childList: true, characterData: true };
+
+        // pass in the target node, as well as the observer options
+        observer.observe(target, config);
+    });
+
+    function getCookie(name) {
+        const matches = document.cookie.match(new RegExp(
+          `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`,
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    function setCookie(name, value, options = {}) {
+        const opts = {
+            path: '/',
+            ...options,
+        };
+
+        if (opts.expires instanceof Date) {
+            opts.expires = opts.expires.toUTCString();
+        }
+
+        let updatedCookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
+
+        for (const optionKey in opts) {
+            if (optionKey !== '') {
+                updatedCookie += `; ${optionKey}`;
+                const optionValue = opts[optionKey];
+                if (optionValue !== true) {
+                    updatedCookie += `=${optionValue}`;
+                }
+            }
+        }
+
+        document.cookie = updatedCookie;
+    }
+
+</script>
 </body>
 </html>

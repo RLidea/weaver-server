@@ -225,7 +225,7 @@ const createToken = async (payload) => {
 /*
   Check Authentication
  */
-const getLoginInfo = (req) => {
+services.getLoginInfo = (req) => {
   // Validation
   const token = requestHandler.getJwt(req);
   const sign = process.env.JWT_SECRET_KEY;
@@ -263,7 +263,7 @@ const getLoginInfo = (req) => {
 };
 
 services.getAuthInfo = async (req, authoritiesIds = []) => {
-  const loginInfo = getLoginInfo(req);
+  const loginInfo = services.getLoginInfo(req);
   const objResult = (isAllowed) => {
     return {
       isAllowed,
@@ -327,7 +327,7 @@ services.getLoginUser = async (req) => {
   const token = requestHandler.getJwt(req);
   if (token === undefined) return null;
 
-  const email = await getLoginInfo(req).decoded.email;
+  const email = await services.getLoginInfo(req).decoded.email;
   const user = Model.user.findOne({
     attributes: {
       exclude: [

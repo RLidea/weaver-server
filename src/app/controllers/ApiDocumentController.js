@@ -1,49 +1,38 @@
 /*
   API Document Insomnia documenter
  */
-const Model = require('@models');
+const fs = require('fs');
 
-const docs = (req, res, next) => {
+const controllers = {};
+
+controllers.view = (req, res, next) => {
   return res.render('docs/index');
 };
 
-const history = async (req, res) => {
-  const data = await Model.apiDocument.findAll({
-    isUse: 1,
-    order: [['id', 'desc']],
-  })
-    .then(r => r.map(i => {
-      return i.dataValues;
-    }));
-  return res.json(data);
+controllers.list = async (req, res) => {
+  const result = [];
+  fs.readdirSync(`${__dirname}/../../../var/apiDocs`).forEach(file => {
+    result.push({
+      version: file,
+    });
+  });
+  return res.json(result);
 };
 
-const config = async (req, res) => {
+controllers.document = async (req, res) => {
   const apiVersion = String(req.cookies.api_version);
-  const where = {
-    isUse: 1,
-    id: apiVersion,
-  };
-
-  const data = await Model.apiDocument.findOne({
-    where,
-    order: [['id', 'desc']],
-  })
-    .then(r => r.dataValues.content)
-    .catch(async () => {
-      const recent = await Model.apiDocument.findOne({
-        where: {
-          isUse: 1,
-        },
-        order: [['createdAt', 'DESC']],
-      });
-      return recent.dataValues.content;
+  const fileList = [];
+  const dir = `${__dirname}/../../docs`;
+  let data;
+  try {
+    data = fs.readFileSync(`${dir}/${apiVersion}`);
+  } catch (e) {
+    fs.readdirSync(dir).forEach(file => {
+      fileList.push(file);
     });
+    data = fs.readFileSync(`${dir}/${fileList[fileList.length - 1]}`);
+  }
   return res.json(JSON.parse(data));
 };
 
-module.exports = {
-  docs,
-  history,
-  config,
-};
+module.exports = controllers;

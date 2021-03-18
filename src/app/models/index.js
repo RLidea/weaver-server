@@ -11,7 +11,6 @@ const config = require(__dirname + '/../../database/config.js')[env];
 // Database schema
 const db = {
   config: undefined,
-  apiDocument: undefined,
   authority: undefined,
   user: undefined,
   userAuthorityRelation: undefined,

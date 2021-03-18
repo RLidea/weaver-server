@@ -22,9 +22,13 @@ router.get('/expired', (req, res, next) => {
   res.render('expired', { title: process.env.APP_NAME });
 });
 
-router.get('/docs', ApiDocumentController.docs);
-router.get('/api_history', ApiDocumentController.history);
-router.get('/insomnia.json', ApiDocumentController.config);
+/* API Document */
+router.get('/docs/documents', ApiDocumentController.list);
+// router.get('/docs', (req, res) => {
+//   return res.redirect('/docs/recent');
+// });
+router.get('/docs', ApiDocumentController.view);
+router.get('/insomnia.json', ApiDocumentController.document);
 
 router.post('/mail', MailController.send);
 

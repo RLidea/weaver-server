@@ -2,4 +2,4 @@ src/app/models
 src/database/migrations
 src/database/seeders
 webStorm.config.js
-src/public/bundle.js
+src/public/docs/bundle.js
