@@ -3,13 +3,25 @@ const Model = require('@models');
 const encryption = require('@system/encryption');
 const requestHandler = require('@utils/requestHandler');
 const ConfigService = require('@services/ConfigService');
+const Schema = require('validate');
+const validation = require('@utils/validation');
 
 const services = {};
 /*
   Login
  */
-services.login = (req, res, params) => {
-  const { payload, period, redirectUrl, message } = params;
+services.login = (req, res, { payload, period, redirectUrl, message }) => {
+  // Validation Check
+  const payloadSchema = new Schema({
+    // id: validation.check.common.reqInteger,
+    email: validation.check.common.reqString,
+  });
+  const validationError = payloadSchema.validate(payload);
+  if (validationError.length > 0) {
+    return global.message.failed(res, `${validationError[0].message} check your payload.`);
+  }
+
+  // Do login
   req.login(payload, { session: false }, loginError => {
     if (loginError) {
       global.logger.devError(loginError);
