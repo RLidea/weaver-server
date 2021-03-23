@@ -1,5 +1,4 @@
 const passport = require('passport');
-const Schema = require('validate');
 const Model = require('@models');
 const validation = require('@utils/validation');
 const AuthService = require('@services/AuthService');
@@ -29,15 +28,10 @@ controller.doLogin = async (req, res, next) => {
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   // Validation Check
-  const reqBodySchema = new Schema({
+  validation.validator(res, req.body, {
     email: validation.check.auth.email,
     password: validation.check.auth.password,
   });
-
-  const validationError = reqBodySchema.validate(req.body);
-  if (validationError.length > 0) {
-    return global.message.badRequest(res, validationError[0].message);
-  }
 
   // Login
   passport.authenticate(
@@ -97,17 +91,11 @@ controller.doRegister = async (req, res, next) => {
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   // Validation Check
-  const reqBodySchema = new Schema({
+  validation.validator(res, req.body, {
     name: validation.check.auth.name,
     email: validation.check.auth.email,
     password: validation.check.auth.password,
   });
-
-  const validationError = reqBodySchema.validate(req.body);
-  if (validationError.length > 0) {
-    const message = validationError[0]?.message;
-    return global.message.badRequest(res, message);
-  }
 
   const existUser = await Model.user.findOne({
     where: {
@@ -164,14 +152,9 @@ controller.getSecretCode = (req, res) => {
   const { email } = req.body;
 
   // Validation Check
-  const reqBodySchema = new Schema({
+  validation.validator(res, req.body, {
     email: validation.check.auth.email,
   });
-
-  const validationError = reqBodySchema.validate(req.body);
-  if (validationError.length > 0) {
-    return global.message.badRequest(res, validationError[0].message);
-  }
 
   AuthService.findUserByEmail(email)
     .then(user => {

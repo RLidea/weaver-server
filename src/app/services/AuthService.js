@@ -3,7 +3,6 @@ const Model = require('@models');
 const encryption = require('@system/encryption');
 const requestHandler = require('@utils/requestHandler');
 const ConfigService = require('@services/ConfigService');
-const Schema = require('validate');
 const validation = require('@utils/validation');
 
 const services = {};
@@ -12,14 +11,10 @@ const services = {};
  */
 services.login = (req, res, { payload, period, redirectUrl, message }) => {
   // Validation Check
-  const payloadSchema = new Schema({
+  validation.validator(res, payload, {
     // id: validation.check.common.reqInteger,
     email: validation.check.common.reqString,
   });
-  const validationError = payloadSchema.validate(payload);
-  if (validationError.length > 0) {
-    return global.message.badRequest(res, `${validationError[0].message} check your payload.`);
-  }
 
   // Do login
   req.login(payload, { session: false }, loginError => {

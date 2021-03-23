@@ -70,8 +70,11 @@ const validator = (res, params, definition) => {
   const reqBodySchema = new Schema(definition);
   const validationError = reqBodySchema.validate(params);
   if (validationError.length > 0) {
-    return res.json({ error: true, message: validationError[0].message });
+    return global.message.badRequest(res, validationError[0].message, {
+      type: 'parameter validation error',
+    });
   }
+  return false;
 };
 
 module.exports = {

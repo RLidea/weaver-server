@@ -11,19 +11,36 @@ const errorMessage = function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV === 'production' ? { status: err.status } : err;
 
-  // global.logger.error('[system] An error has occurred from client');
-  global.logger.error(res.locals);
-  global.logger.error(`aaa:${res.locals}`);
+  const errors = {
+    code: err.status,
+    message: err.message,
+    detail: {
+      url: res.req.url,
+      headers: res.req.headers,
+    },
+  };
+  global.logger.error(JSON.stringify(errors));
   global.logger.devError({
-    url: res.req.url,
-    headers: res.req.headers,
-    error: res.locals,
+    ...errors,
+    locals: res.locals,
   });
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error', {
-    title: `::${err.status}`,
+  // res.status(err.status || 500);
+  // res.render('error', {
+  //   title: `::${err.status}`,
+  // });
+
+  // send json error
+  return res.status(err.status || 500).json({
+    errors: {
+      code: err.status,
+      message: err.message,
+      detail: {
+        url: res.req.url,
+        headers: res.req.headers,
+      },
+    },
   });
 };
 
