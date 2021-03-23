@@ -159,7 +159,7 @@ controller.getSecretCode = (req, res) => {
   AuthService.findUserByEmail(email)
     .then(user => {
       return global.message.ok(res, 'success', {
-        code: user.updatedAt.getTime().substring(0, 6),
+        code: `${user.updatedAt.getTime()}`.substring(0, 6),
       });
     })
     .catch(e => {
@@ -177,10 +177,8 @@ controller.showResetUserPassword = async (req, res, next) => {
   });
 };
 
-controller.resetUserPassword = async (req, res) => {
+controller.resetUserPassword = async (req, res, next) => {
   // Parameters
-  const userUpdatedAt = (await AuthService.getLoginUser(req)).updatedAt;
-  console.log(userUpdatedAt);
   const { email, password, code } = req.body;
   const params = {
     email,
@@ -195,27 +193,36 @@ controller.resetUserPassword = async (req, res) => {
     code: validation.check.common.reqString,
   });
 
-  if (userUpdatedAt.getTime.substring(0, 6) !== params.code) {
-    return global.message.badRequest(res, 'password reset failed');
+  const user = await AuthService.findUserByEmail(params.email);
+
+  if (`${user.updatedAt.getTime()}`.substring(0, 6) !== params.code) {
+    return global.message.badRequest(res, 'Not the correct code.');
   }
 
   // salt and hash
-  const { salt, hashPassword } = AuthService.createSaltAndHash(params.password);
+  const { salt, hashPassword } = await AuthService.createSaltAndHash(params.password);
 
   // Service
-  const result = await Model.user.update({
+  Model.user.update({
     password: hashPassword,
     salt,
   }, {
     where: {
       email: params.email,
     },
+  }).then(v => {
+    if (v[0]) {
+      return global.message.created(res, 'success');
+    }
+    return global.message.badRequest(res, 'password reset failed', {
+      type: 'data not changed',
+    });
+  }).catch(() => {
+    return global.message.badRequest(res, 'password reset failed', {
+      type: 'query error',
+    });
   });
-
-  if (result[0]) {
-    return global.message.ok(res, 'success', email);
-  }
-  return global.message.badRequest(res, 'password reset failed');
+  return next();
 };
 
 module.exports = controller;
