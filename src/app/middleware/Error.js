@@ -3,11 +3,12 @@
  */
 const createError = require('http-errors');
 
-const notFoundError = (req, res, next) => {
+const handler = {};
+handler.notFoundError = (req, res, next) => {
   next(createError(404));
 };
 
-const errorMessage = (err, req, res) => {
+handler.errorMessage = (err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV === 'production' ? { status: err.status } : err;
 
@@ -25,12 +26,6 @@ const errorMessage = (err, req, res) => {
     locals: res.locals,
   });
 
-  // render the error page
-  // res.status(err.status || 500);
-  // res.render('error', {
-  //   title: `::${err.status}`,
-  // });
-
   // send json error
   return res.status(err.status || 500).json({
     errors: {
@@ -44,8 +39,4 @@ const errorMessage = (err, req, res) => {
   });
 };
 
-module.exports = {
-
-  notFoundError,
-  errorMessage,
-};
+module.exports = handler;

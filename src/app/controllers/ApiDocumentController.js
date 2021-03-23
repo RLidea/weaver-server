@@ -22,8 +22,8 @@ controllers.list = async (req, res) => {
 controllers.document = async (req, res) => {
   const apiVersion = String(req.cookies.api_version);
   const fileList = [];
-  const dir = `${__dirname}/../../docs`;
-  let data;
+  const dir = `${__dirname}/../../../var/apiDocs`;
+  let data = '';
   try {
     data = fs.readFileSync(`${dir}/${apiVersion}`);
   } catch (e) {

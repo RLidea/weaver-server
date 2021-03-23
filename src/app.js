@@ -101,7 +101,6 @@ app.use(async (req, res, next) => {
   // not require jwt verification url list
   const allowedUrlPatterns = [
     /^\/$/,
-    /^\/auth\/(\w)*$/i,
     /^\/docs$/i,
     /^\/api_history$/i,
     /^\/insomnia.json$/i,
@@ -110,6 +109,7 @@ app.use(async (req, res, next) => {
     /^\/session\/[0-9a-z]*$/i,
     /^\/expired$/i,
     /^\/mail$/i,
+    /\/auth\/(\w)*$/i,
   ];
 
   for (let i = 0, l = allowedUrlPatterns.length; i < l; i += 1) {
@@ -129,6 +129,7 @@ app.use(async (req, res, next) => {
  */
 app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
+app.use('/v1/auth', require('./routes/v1/auth'));
 
 /*
  * Error

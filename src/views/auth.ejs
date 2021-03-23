@@ -11,7 +11,7 @@
 <body>
 <div class="flex-center full-height flex-direction-column">
   <div class="content m-b-md">
-    <form id="auth" action="/auth/<%= page %>" method="post">
+    <form id="auth" method="post">
       <h1><%= title %></h1>
       <% if(page == 'register'){ %>
         <input id="name" type="text" name="name" placeholder="name">
@@ -50,20 +50,18 @@
       password: passwordHashing(document.querySelector('#password').value),
     };
 
-    axios.post('/auth/<%= page %>', sendData)
+    axios.post('/v1/auth/<%= page %>', sendData)
       .then(res => {
-        const result = res.data;
-        if (!!result.error) {
-          setMessage(result.message)
-          return false;
-        }
-        setCookie(result.data.cookie);
-        alert(result.message)
-        window.location.href = result.data.redirectUrl;
+        const data = res.data;
+
+        setCookie(data.result.cookie);
+        alert(data.message)
+        window.location.href = data.result.redirectUrl;
         return res;
       })
       .catch(err => {
-        console.log(Error(err));
+        const data = err.response.data;
+        setMessage(data.errors.message)
       });
   }
 
