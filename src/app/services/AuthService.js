@@ -18,7 +18,7 @@ services.login = (req, res, { payload, period, redirectUrl, message }) => {
   });
   const validationError = payloadSchema.validate(payload);
   if (validationError.length > 0) {
-    return global.message.failed(res, `${validationError[0].message} check your payload.`);
+    return global.message.badRequest(res, `${validationError[0].message} check your payload.`);
   }
 
   // Do login
@@ -35,18 +35,14 @@ services.login = (req, res, { payload, period, redirectUrl, message }) => {
           sameSite: 'Lax',
         };
         res.cookie('jwt', token, cookieOptions);
-        res.json({
-          error: false,
-          message,
-          data: {
-            cookie: {
-              name: 'jwt',
-              value: token,
-              ...cookieOptions,
-            },
-            redirectUrl,
-            payload,
+        global.message.ok(res, message, {
+          cookie: {
+            name: 'jwt',
+            value: token,
+            ...cookieOptions,
           },
+          redirectUrl,
+          payload,
         });
       })
       .catch(() => {

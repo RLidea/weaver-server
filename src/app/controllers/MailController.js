@@ -45,10 +45,10 @@ const sendWithSMTP = (req, res) => {
     if (error) {
       // if using Gmail, check this: https://myaccount.google.com/lesssecureapps
       global.logger.error(`${error.message}`);
-      return global.message.failed(res, 'email sent failed', error.message);
+      return global.message.badRequest(res, 'email sent failed', error.message);
     }
     global.logger.dev(`Email sent: ${info.response}`);
-    return global.message.success(res, 'email sent successfully', mailOptions);
+    return global.message.ok(res, 'email sent successfully', mailOptions);
   });
 };
 
@@ -63,7 +63,7 @@ const sendWithOutSMTP = (req, res) => {
     if (error) global.logger.error(error && error.stack);
     global.logger.dev(reply);
   });
-  return global.message.success(res, 'email sent successfully', {});
+  return global.message.ok(res, 'email sent successfully', {});
 };
 
 module.exports = controllers;

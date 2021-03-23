@@ -36,7 +36,7 @@ controller.doLogin = async (req, res, next) => {
 
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
-    return global.message.failed(res, validationError[0].message);
+    return global.message.badRequest(res, validationError[0].message);
   }
 
   // Login
@@ -46,7 +46,7 @@ controller.doLogin = async (req, res, next) => {
     (err, user, data) => {
       if (err || !user) {
         global.logger.devError('login failed');
-        return global.message.failed(
+        return global.message.unauthorized(
           res,
           data?.message,
           err,
@@ -106,10 +106,7 @@ controller.doRegister = async (req, res, next) => {
   const validationError = reqBodySchema.validate(req.body);
   if (validationError.length > 0) {
     const message = validationError[0]?.message;
-    return global.message.failed({
-      res,
-      message,
-    });
+    return global.message.badRequest(res, message);
   }
 
   const existUser = await Model.user.findOne({
@@ -120,7 +117,7 @@ controller.doRegister = async (req, res, next) => {
     .catch(() => { /* do nothing */ });
 
   if (existUser) {
-    return global.message.failed(res, 'user exist');
+    return global.message.badRequest(res, 'user exist');
   }
 
   const isUserCreated = await AuthService.createUser({
@@ -143,7 +140,7 @@ controller.doRegister = async (req, res, next) => {
     const message = 'login with register';
     await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
   } else {
-    return global.message.failed(res, 'fail_to_create_user');
+    return global.message.badRequest(res, 'failed create user');
   }
 };
 
@@ -189,7 +186,7 @@ controller.resetUserPassword = async (req, res) => {
   });
 
   if (req.session.instant !== params.code) {
-    return global.message.failed(res, 'failed');
+    return global.message.badRequest(res, 'password reset failed');
   }
 
   // salt and hash
@@ -206,9 +203,9 @@ controller.resetUserPassword = async (req, res) => {
   });
 
   if (result[0]) {
-    return global.message.success(res, 'success', email);
+    return global.message.ok(res, 'success', email);
   }
-  return global.message.failed(res, 'password_reset_failed');
+  return global.message.badRequest(res, 'password reset failed');
 };
 
 module.exports = controller;

@@ -88,34 +88,38 @@ module.exports = () => {
     ),
   );
 
-  passport.use(new KakaoStrategy({
-    clientID: process.env.KAKAO_JS_APP_KEY,
-    clientSecret: process.env.KAKAO_CLIENT_SECRET, // clientSecret을 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
-    callbackURL: `${process.env.SERVER_DOMAIN}/auth/kakao`,
-  },
-  (accessToken, refreshToken, profile, done) => {
-    checkOAuth({
-      service: 'kakao',
-      accountId: profile.id,
-      accessToken,
-      refreshToken,
-      profile,
-      done,
-    });
-  }));
+  if (process.env.KAKAO_JS_APP_KEY) {
+    passport.use(new KakaoStrategy({
+      clientID: process.env.KAKAO_JS_APP_KEY,
+      clientSecret: process.env.KAKAO_CLIENT_SECRET, // clientSecret을 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
+      callbackURL: `${process.env.SERVER_DOMAIN}/auth/kakao`,
+    },
+    (accessToken, refreshToken, profile, done) => {
+      checkOAuth({
+        service: 'kakao',
+        accountId: profile.id,
+        accessToken,
+        refreshToken,
+        profile,
+        done,
+      });
+    }));
+  }
 
-  passport.use(new NaverStrategy({
-    clientID: process.env.NAVER_CLIENT_ID,
-    clientSecret: process.env.NAVER_CLIENT_SECRET,
-    callbackURL: `${process.env.SERVER_DOMAIN}/auth/naver`,
-  }, (accessToken, refreshToken, profile, done) => {
-    checkOAuth({
-      service: 'naver',
-      accountId: profile.id,
-      accessToken,
-      refreshToken,
-      profile,
-      done,
-    });
-  }));
+  if (process.env.NAVER_CLIENT_ID) {
+    passport.use(new NaverStrategy({
+      clientID: process.env.NAVER_CLIENT_ID,
+      clientSecret: process.env.NAVER_CLIENT_SECRET,
+      callbackURL: `${process.env.SERVER_DOMAIN}/auth/naver`,
+    }, (accessToken, refreshToken, profile, done) => {
+      checkOAuth({
+        service: 'naver',
+        accountId: profile.id,
+        accessToken,
+        refreshToken,
+        profile,
+        done,
+      });
+    }));
+  }
 };

@@ -65,7 +65,7 @@ controllers.doKakaoAuth = async (req, res) => {
             isSuccess = true;
           })
           .catch(() => {
-            return global.message.failed(res, 'fail_to_create_user');
+            return global.message.badRequest(res, 'register failed');
           });
       }
     }
@@ -74,7 +74,7 @@ controllers.doKakaoAuth = async (req, res) => {
     if (isSuccess) {
       AuthService.login(req, res, loginParams);
     } else {
-      return global.message.failed(res, 'fail_to_login_user');
+      return global.message.unauthorized(res, 'login failed');
     }
   })(req, res, redirectUrl, period);
 };
@@ -136,7 +136,7 @@ controllers.doNaverAuth = async (req, res) => {
             isSuccess = true;
           })
           .catch(() => {
-            return global.message.failed(res, 'fail_to_create_user');
+            return global.message.badRequest(res, 'register failed');
           });
       }
     }
@@ -145,7 +145,7 @@ controllers.doNaverAuth = async (req, res) => {
     if (isSuccess) {
       AuthService.login(req, res, loginParams);
     } else {
-      return global.message.failed(res, 'fail_to_login_user');
+      return global.message.unauthorized(res, 'login failed');
     }
   })(req, res, redirectUrl, period);
 };
