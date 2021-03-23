@@ -11,8 +11,6 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const ejsLocals = require('ejs-locals');
 const helmet = require('helmet');
-// const session = require('express-session');
-// const FileStore = require('session-file-store')(session);
 const corsConfig = require('@middleware/CORS');
 const systemLogger = require('@middleware/Logger');
 const { logger } = require('@system/logger');
@@ -43,7 +41,7 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
+app.use(passport.initialize({}));
 app.use(helmet({
   contentSecurityPolicy: false,
 }));
@@ -62,23 +60,12 @@ app.use((req, res, next) => {
   }
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Credentials', 'true');
   return next();
 });
 
 // logger
 app.use(systemLogger[process.env.NODE_ENV]);
-
-// session
-// app.use(session({
-//   secret: process.env.SESSION_SECRET,
-//   resave: true,
-//   saveUninitialized: true,
-//   store: new FileStore({
-//     path: './var/session',
-//     ttl: process.env.SESSION_TTL,
-//   }),
-// }));
 
 // robot.txt
 app.get('/robots.txt', (req, res) => {
@@ -102,6 +89,7 @@ app.all('*', (req, res, next) => {
       const to = `https://'${req.hostname}${req.url}`;
 
       // log and redirect
+      // eslint-disable-next-line no-console
       console.log(`[${req.method}]: ${from} -> ${to}`);
       res.redirect(to);
     }
@@ -133,6 +121,7 @@ app.use(async (req, res, next) => {
     return res.status(401).json({ message: 'access denied' });
   }
   next();
+  return false;
 });
 
 /*
@@ -146,8 +135,8 @@ app.use('/auth', require('./routes/auth'));
  */
 const error = require('@middleware/Error');
 
-app.use(error.notFoundError);
-app.use(error.errorMessage);
+app.use(error?.notFoundError);
+app.use(error?.errorMessage);
 
 logger.system(`🚀 ${process.env.APP_NAME} is ready on ${process.env.PORT}`);
 

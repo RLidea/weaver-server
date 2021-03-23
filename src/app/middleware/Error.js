@@ -3,17 +3,17 @@
  */
 const createError = require('http-errors');
 
-const notFoundError = function(req, res, next) {
+const notFoundError = (req, res, next) => {
   next(createError(404));
 };
 
-const errorMessage = function(err, req, res, next) {
+const errorMessage = (err, req, res) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV === 'production' ? { status: err.status } : err;
 
   const errors = {
-    code: err.status,
-    message: err.message,
+    code: err?.status,
+    message: err?.message,
     detail: {
       url: res.req.url,
       headers: res.req.headers,
