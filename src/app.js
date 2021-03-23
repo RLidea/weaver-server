@@ -11,8 +11,8 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const ejsLocals = require('ejs-locals');
 const helmet = require('helmet');
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
+// const session = require('express-session');
+// const FileStore = require('session-file-store')(session);
 const corsConfig = require('@middleware/CORS');
 const systemLogger = require('@middleware/Logger');
 const { logger } = require('@system/logger');
@@ -70,15 +70,15 @@ app.use((req, res, next) => {
 app.use(systemLogger[process.env.NODE_ENV]);
 
 // session
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: new FileStore({
-    path: './var/session',
-    ttl: process.env.SESSION_TTL,
-  }),
-}));
+// app.use(session({
+//   secret: process.env.SESSION_SECRET,
+//   resave: true,
+//   saveUninitialized: true,
+//   store: new FileStore({
+//     path: './var/session',
+//     ttl: process.env.SESSION_TTL,
+//   }),
+// }));
 
 // robot.txt
 app.get('/robots.txt', (req, res) => {

@@ -31,6 +31,10 @@ router.route('/logout').get(AuthController.doLogout);
 router
   .route('/reset/password')
   .get(AuthController.showResetUserPassword)
-  .post(AuthController.resetUserPassword);
+  .put(AuthController.resetUserPassword);
+
+router
+  .route('/reset/code')
+  .get(AuthController.getSecretCode);
 
 module.exports = router;

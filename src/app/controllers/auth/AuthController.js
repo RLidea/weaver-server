@@ -140,7 +140,7 @@ controller.doRegister = async (req, res, next) => {
     const message = 'login with register';
     await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
   } else {
-    return global.message.badRequest(res, 'failed create user');
+    return global.message.serviceUnavailable(res, 'register failed');
   }
 };
 
@@ -159,6 +159,31 @@ controller.doLogout = async (req, res, next) => {
 /*
   Find or Reset Authentication Information
  */
+controller.getSecretCode = (req, res) => {
+  // parameters
+  const { email } = req.body;
+
+  // Validation Check
+  const reqBodySchema = new Schema({
+    email: validation.check.auth.email,
+  });
+
+  const validationError = reqBodySchema.validate(req.body);
+  if (validationError.length > 0) {
+    return global.message.badRequest(res, validationError[0].message);
+  }
+
+  AuthService.findUserByEmail(email)
+    .then(user => {
+      return global.message.ok(res, 'success', {
+        code: user.updatedAt.getTime().substring(0, 6),
+      });
+    })
+    .catch(e => {
+      return global.message.badRequest(res, 'user not found', e);
+    });
+};
+
 controller.showResetUserPassword = async (req, res, next) => {
   return res.render('reset_password', {
     email_regex: regex.email,
@@ -171,6 +196,8 @@ controller.showResetUserPassword = async (req, res, next) => {
 
 controller.resetUserPassword = async (req, res) => {
   // Parameters
+  const userUpdatedAt = (await AuthService.getLoginUser(req)).updatedAt;
+  console.log(userUpdatedAt);
   const { email, password, code } = req.body;
   const params = {
     email,
@@ -185,7 +212,7 @@ controller.resetUserPassword = async (req, res) => {
     code: validation.check.common.reqString,
   });
 
-  if (req.session.instant !== params.code) {
+  if (userUpdatedAt.getTime.substring(0, 6) !== params.code) {
     return global.message.badRequest(res, 'password reset failed');
   }
 
