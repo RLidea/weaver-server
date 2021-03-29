@@ -28,11 +28,11 @@ controller.doLogin = async (req, res) => {
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   // Validation Check
-  const valError = validation.validator(res, req.body, {
+  const valErr = validation.validator(res, req.body, {
     email: validation.check.auth.email,
     password: validation.check.auth.password,
   });
-  if (valError) return global.message.badRequest(res, valError.message, valError.data);
+  if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
   // Login
   passport.authenticate(
@@ -94,12 +94,12 @@ controller.doRegister = async (req, res) => {
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   // Validation Check
-  const valError = validation.validator(res, req.body, {
+  const valErr = validation.validator(res, req.body, {
     name: validation.check.auth.name,
     email: validation.check.auth.email,
     password: validation.check.auth.password,
   });
-  if (valError) return global.message.badRequest(res, valError.message, valError.data);
+  if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
   const existUser = await Model.user.findOne({
     where: {
@@ -157,10 +157,10 @@ controller.getSecretCode = (req, res) => {
   const { email } = req.body;
 
   // Validation Check
-  const valError = validation.validator(res, req.body, {
+  const valErr = validation.validator(res, req.body, {
     email: validation.check.auth.email,
   });
-  if (valError) return global.message.badRequest(res, valError.message, valError.data);
+  if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
   AuthService.findUserByEmail(email)
     .then(user => {
@@ -195,12 +195,12 @@ controller.resetUserPassword = async (req, res, next) => {
   };
 
   // Validation
-  const valError = validation.validator(res, params, {
+  const valErr = validation.validator(res, params, {
     email: validation.check.common.reqString,
     password: validation.check.common.reqString,
     code: validation.check.common.reqString,
   });
-  if (valError) return global.message.badRequest(res, valError.message, valError.data);
+  if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
   const user = await AuthService.findUserByEmail(params.email);
 
