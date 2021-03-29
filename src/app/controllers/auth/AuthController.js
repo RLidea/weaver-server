@@ -10,10 +10,10 @@ const controller = {};
 /*
   Login
  */
-controller.viewLogin = async (req, res, next) => {
+controller.viewLogin = async (req, res) => {
   const authInfo = await AuthService.getAuthInfo(req);
 
-  if (authInfo.isLogin) {
+  if (authInfo?.isLogin) {
     return res.redirect('/');
   }
 
@@ -23,7 +23,7 @@ controller.viewLogin = async (req, res, next) => {
   });
 };
 
-controller.doLogin = async (req, res, next) => {
+controller.doLogin = async (req, res) => {
   // System config Parameters
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
@@ -71,14 +71,15 @@ controller.doLogin = async (req, res, next) => {
       return false;
     },
   )(req, res, redirectUrl, period);
+  return false;
 };
 
 /*
   Register
  */
-controller.viewRegister = async (req, res, next) => {
+controller.viewRegister = async (req, res) => {
   const authInfo = await AuthService.getAuthInfo(req);
-  if (authInfo.isLogin) {
+  if (authInfo?.isLogin) {
     res.redirect('/');
   }
   res.render('auth', {
@@ -87,7 +88,7 @@ controller.viewRegister = async (req, res, next) => {
   });
 };
 
-controller.doRegister = async (req, res, next) => {
+controller.doRegister = async (req, res) => {
   // Parameters
   const { name, email, password } = req.body;
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
@@ -133,14 +134,15 @@ controller.doRegister = async (req, res, next) => {
   } else {
     return global.message.serviceUnavailable(res, 'register failed');
   }
+  return false;
 };
 
 /*
   Logout
  */
-controller.doLogout = async (req, res, next) => {
+controller.doLogout = async (req, res) => {
   const authInfo = await AuthService.getAuthInfo(req);
-  if (authInfo.isLogin) {
+  if (authInfo?.isLogin) {
     res.clearCookie('jwt');
     return res.redirect('/');
   }
@@ -169,9 +171,11 @@ controller.getSecretCode = (req, res) => {
     .catch(e => {
       return global.message.badRequest(res, 'user not found', e);
     });
+
+  return false;
 };
 
-controller.showResetUserPassword = async (req, res, next) => {
+controller.showResetUserPassword = async (req, res) => {
   return res.render('reset_password', {
     email_regex: regex.email,
     password_regex: regex.password,
@@ -200,7 +204,7 @@ controller.resetUserPassword = async (req, res, next) => {
 
   const user = await AuthService.findUserByEmail(params.email);
 
-  if (`${user.updatedAt.getTime()}`.substring(0, 6) !== params.code) {
+  if (`${user?.updatedAt.getTime()}`.substring(0, 6) !== params.code) {
     return global.message.badRequest(res, 'Not the correct code.');
   }
 
