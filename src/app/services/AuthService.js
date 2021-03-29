@@ -11,10 +11,11 @@ const services = {};
  */
 services.login = (req, res, { payload, period, redirectUrl, message }) => {
   // Validation Check
-  validation.validator(res, payload, {
+  const valError = validation.validator(res, payload, {
     // id: validation.check.common.reqInteger,
     email: validation.check.common.reqString,
   });
+  if (valError) return global.message.badRequest(res, valError.message, valError.data);
 
   // Do login
   req.login(payload, { session: false }, loginError => {

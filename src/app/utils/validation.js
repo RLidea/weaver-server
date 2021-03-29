@@ -69,12 +69,12 @@ const errorMessage = validationError => {
 const validator = (res, params, definition) => {
   const reqBodySchema = new Schema(definition);
   const validationError = reqBodySchema.validate(params);
-  if (validationError.length > 0) {
-    return global.message.badRequest(res, validationError[0].message, {
+  return validationError.length > 0 ? validationError[0]?.message : {
+    message: validationError[0]?.message,
+    data: {
       type: 'parameter validation error',
-    });
-  }
-  return false;
+    },
+  };
 };
 
 module.exports = {

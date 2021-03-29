@@ -28,10 +28,11 @@ controller.doLogin = async (req, res, next) => {
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   // Validation Check
-  validation.validator(res, req.body, {
+  const valError = validation.validator(res, req.body, {
     email: validation.check.auth.email,
     password: validation.check.auth.password,
   });
+  if (valError) return global.message.badRequest(res, valError.message, valError.data);
 
   // Login
   passport.authenticate(
@@ -67,6 +68,7 @@ controller.doLogin = async (req, res, next) => {
         redirectUrl,
         message: data.message,
       });
+      return false;
     },
   )(req, res, redirectUrl, period);
 };
@@ -91,11 +93,12 @@ controller.doRegister = async (req, res, next) => {
   const { period, redirectUrl } = await AuthService.initialParamsForLogin();
 
   // Validation Check
-  validation.validator(res, req.body, {
+  const valError = validation.validator(res, req.body, {
     name: validation.check.auth.name,
     email: validation.check.auth.email,
     password: validation.check.auth.password,
   });
+  if (valError) return global.message.badRequest(res, valError.message, valError.data);
 
   const existUser = await Model.user.findOne({
     where: {
@@ -152,9 +155,10 @@ controller.getSecretCode = (req, res) => {
   const { email } = req.body;
 
   // Validation Check
-  validation.validator(res, req.body, {
+  const valError = validation.validator(res, req.body, {
     email: validation.check.auth.email,
   });
+  if (valError) return global.message.badRequest(res, valError.message, valError.data);
 
   AuthService.findUserByEmail(email)
     .then(user => {
@@ -187,11 +191,12 @@ controller.resetUserPassword = async (req, res, next) => {
   };
 
   // Validation
-  validation.validator(res, params, {
+  const valError = validation.validator(res, params, {
     email: validation.check.common.reqString,
     password: validation.check.common.reqString,
     code: validation.check.common.reqString,
   });
+  if (valError) return global.message.badRequest(res, valError.message, valError.data);
 
   const user = await AuthService.findUserByEmail(params.email);
 
