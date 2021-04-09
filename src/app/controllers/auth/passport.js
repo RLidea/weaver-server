@@ -90,7 +90,7 @@ module.exports = () => {
   if (process.env.KAKAO_JS_APP_KEY) {
     passport.use('kakao', new KakaoStrategy({
       clientID: process.env.KAKAO_JS_APP_KEY,
-      clientSecret: process.env.KAKAO_CLIENT_SECRET, // clientSecret을 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
+      clientSecret: process.env.KAKAO_CLIENT_SECRET, // clientSecret 를 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
       callbackURL: `${process.env.SERVER_DOMAIN}/auth/kakao`,
     },
     (accessToken, refreshToken, profile, done) => {

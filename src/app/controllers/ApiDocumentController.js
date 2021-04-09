@@ -1,11 +1,11 @@
 /*
-  API Document Insomnia documenter
+  API Document Insomnia document
  */
 const fs = require('fs');
 
 const controllers = {};
 
-controllers.view = (req, res, next) => {
+controllers.view = (req, res) => {
   return res.render('docs/index');
 };
 
@@ -23,7 +23,7 @@ controllers.document = async (req, res) => {
   const apiVersion = String(req.cookies.api_version);
   const fileList = [];
   const dir = `${__dirname}/../../../var/apiDocs`;
-  let data = '';
+  let data;
   try {
     data = fs.readFileSync(`${dir}/${apiVersion}`);
   } catch (e) {

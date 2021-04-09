@@ -22,7 +22,7 @@ const mailConfig = {
   },
 };
 
-controllers.send = (req, res, next) => {
+controllers.send = (req, res) => {
   const isDevMailUserExist = process.env.NODE_ENV === 'development'
     && process.env.MAIL_DEV_USER
     && process.env.MAIL_DEV_PASSWORD;
