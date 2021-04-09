@@ -40,6 +40,7 @@ const checkOAuth = ({ service, accountId, accessToken, refreshToken, profile, do
 module.exports = () => {
   // Local Strategy
   passport.use(
+    'local',
     new LocalStrategy(
       {
         usernameField: 'email',
@@ -71,6 +72,7 @@ module.exports = () => {
 
   // JWT Strategy
   passport.use(
+    'jwt',
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
@@ -89,7 +91,7 @@ module.exports = () => {
   );
 
   if (process.env.KAKAO_JS_APP_KEY) {
-    passport.use(new KakaoStrategy({
+    passport.use('kakao', new KakaoStrategy({
       clientID: process.env.KAKAO_JS_APP_KEY,
       clientSecret: process.env.KAKAO_CLIENT_SECRET, // clientSecret을 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
       callbackURL: `${process.env.SERVER_DOMAIN}/auth/kakao`,
@@ -107,7 +109,7 @@ module.exports = () => {
   }
 
   if (process.env.NAVER_CLIENT_ID) {
-    passport.use(new NaverStrategy({
+    passport.use('naver', new NaverStrategy({
       clientID: process.env.NAVER_CLIENT_ID,
       clientSecret: process.env.NAVER_CLIENT_SECRET,
       callbackURL: `${process.env.SERVER_DOMAIN}/auth/naver`,
