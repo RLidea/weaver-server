@@ -58,9 +58,6 @@ module.exports = () => {
             const hashPassword = await encryption.pbkdf2(password, salt);
 
             if (hashPassword === dbPassword) {
-              user.update({
-                lastLogin: new Date(),
-              });
               return done(null, user, { message: 'Logged In Successfully' });
             }
             return done(null, false, { message: 'Incorrect password' });

@@ -59,6 +59,7 @@ controller.doLogin = async (req, res) => {
         where: {
           email: payload.email,
         },
+        silent: true,
       });
 
       // login
