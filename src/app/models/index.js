@@ -52,20 +52,31 @@ try {
 
 // get models
 fs.readdirSync(__dirname)
-  .filter(file => {
-    return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
+  .filter(filename => {
+    return filename.indexOf('.') !== 0 && filename !== basename && filename.slice(-3) === '.js';
   })
-  .forEach(file => {
-    const model = sequelize['import'](path.join(__dirname, file));
-    db[model.name] = model;
-    // db 에 기록할 때, db[model.name] 를 콘솔로 확인해보면 편하다!
-    // console.log(db[model.name]);
+  .forEach(filename => {
+    try {
+      const model = sequelize['import'](path.join(__dirname, filename));
+      db[model.name] = model;
+    } catch (e) {
+      logger.devError(`🔴 A fatal error has occurred in ${filename}`)
+      logger.devError(e);
+      logger.error(e.toString());
+    }
   });
 
 Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+  try {
+    if (db[modelName].associate) {
+      db[modelName].associate(db);
+    }
+  } catch (e) {
+    logger.devError(`🔴 A fatal error has occurred in ${modelName}`);
+    logger.devError(e);
+    logger.error(e.toString());
   }
+
 });
 
 db.sequelize = sequelize;
