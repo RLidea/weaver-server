@@ -1,14 +1,15 @@
 /*
  * Error Handler
+ * Must be behind the router.
  */
 const createError = require('http-errors');
 
-const handler = {};
-handler.notFoundError = (req, res, next) => {
+const error = {};
+error.notFoundError = (req, res, next) => {
   next(createError(404));
 };
 
-handler.errorMessage = (err, req, res, next) => {
+error.errorMessage = (err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV === 'production' ? { status: err.status } : err;
 
@@ -39,4 +40,12 @@ handler.errorMessage = (err, req, res, next) => {
   });
 };
 
-module.exports = handler;
+module.exports = async (app) => {
+  try {
+    app.use(error?.notFoundError);
+    app.use(error?.errorMessage);
+  } catch (e) {
+    global.logger.devError('🔴 /src/loaders/error.js');
+    global.logger.devError(e);
+  }
+};

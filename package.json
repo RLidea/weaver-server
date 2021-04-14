@@ -16,7 +16,6 @@
     "stop": "pm2 delete weaver",
     "log": "pm2 log",
     "dev": "./node_modules/.bin/nodemon ./bin/www",
-    "precommit": "lint-staged",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha ./tests --recursive -w",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "seed": "./node_modules/.bin/sequelize db:seed:all",
@@ -24,21 +23,17 @@
     "db:undo:migrate": "./node_modules/.bin/sequelize db:migrate:undo:all",
     "db:undo:seed": "./node_modules/.bin/sequelize db:seed:undo:all",
     "set": "./bin/install.sh",
-    "commit": "./node_modules/.bin/gitmoji -c"
+    "commit": "./node_modules/.bin/gitmoji -c",
+    "prepare": "husky install"
   },
   "_moduleAliases": {
     "@root": ".",
     "@system": "./src/system",
     "@controllers": "./src/app/controllers",
-    "@middleware": "./src/app/middleware",
+    "@middleware": "./src/middleware",
     "@models": "./src/app/models",
     "@services": "./src/app/services",
     "@utils": "./src/app/utils"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "nodemonConfig": {
     "ext": "js, json",
@@ -50,12 +45,13 @@
   },
   "lint-staged": {
     "*.js": [
-      "./node_modules/eslint/bin/eslint.js --fix 'src/app/controllers/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'src/app/middleware/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'src/app/utils/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'src/app/services/**/*.js'",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "eslintConfig": {
     "env": {

@@ -4,7 +4,7 @@ System.config({
     '@src/*': 'src/*',
     '@system/*': 'src/system/*',
     '@controllers/*': 'src/app/controllers/*',
-    '@middleware/*': 'src/app/middleware/*',
+    '@middleware/*': 'src/middleware/*',
     '@models': 'src/app/models',
     '@models/*': 'src/app/models/*',
     '@services/*': 'src/app/services/*',
