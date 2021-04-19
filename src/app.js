@@ -1,3 +1,4 @@
+/* eslint global-require: 0 */
 /*
  * Modules
  */
@@ -27,9 +28,13 @@ allowedUrlLoader(app);
 /*
  * Routers
  */
-app.use('/', require('./routes/index'));
-app.use('/auth', require('./routes/auth'));
-app.use('/v1/auth', require('./routes/v1/auth'));
+try {
+  app.use('/', require('./routes/index'));
+  app.use('/auth', require('./routes/auth'));
+  app.use('/v1/auth', require('./routes/v1/auth'));
+} catch (e) {
+  logger.devError(e);
+}
 
 errorLoader(app);
 

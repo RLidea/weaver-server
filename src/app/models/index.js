@@ -1,12 +1,12 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const { logger } = require('@system/logger')
+const { logger } = require('@system/logger');
+
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../../database/config.js')[env];
+// eslint-disable-next-line import/no-dynamic-require
+const config = require(`${__dirname}/../../database/config.js`)[env];
 
 // Database schema
 const db = {
@@ -57,10 +57,10 @@ fs.readdirSync(__dirname)
   })
   .forEach(filename => {
     try {
-      const model = sequelize['import'](path.join(__dirname, filename));
+      const model = sequelize.import(path.join(__dirname, filename));
       db[model.name] = model;
     } catch (e) {
-      logger.devError(`🔴 A fatal error has occurred in ${filename}`)
+      logger.devError(`🔴 A fatal error has occurred in ${filename}`);
       logger.devError(e);
       logger.error(e.toString());
     }
@@ -76,7 +76,6 @@ Object.keys(db).forEach(modelName => {
     logger.devError(e);
     logger.error(e.toString());
   }
-
 });
 
 db.sequelize = sequelize;

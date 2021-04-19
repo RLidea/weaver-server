@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class oAuthMeta extends Model {
     static associate(models) {
@@ -15,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     service: DataTypes.STRING,
     accountId: DataTypes.STRING,
     accessToken: DataTypes.STRING,
-    refreshToken: DataTypes.STRING
+    refreshToken: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'oAuthMeta',

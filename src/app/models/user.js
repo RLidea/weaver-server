@@ -1,5 +1,5 @@
-'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
     static associate(models) {
@@ -30,5 +30,13 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     paranoid: true,
   });
+
+  user.findByEmail = (email) => {
+    return user.findOne({
+      where: {
+        email,
+      },
+    });
+  };
   return user;
 };

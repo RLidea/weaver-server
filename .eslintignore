@@ -1,4 +1,3 @@
-src/app/models
 src/database/migrations
 src/database/seeders
 webStorm.config.js

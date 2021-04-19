@@ -1,5 +1,5 @@
-'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class userAuthorityRelation extends Model {
     static associate(models) {
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'userAuthorityRelation',
-    timestamps  : true,
+    timestamps: true,
   });
   return userAuthorityRelation;
 };

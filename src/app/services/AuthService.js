@@ -353,11 +353,7 @@ services.getLoginUser = async (req) => {
 };
 
 services.findUserByEmail = (email) => {
-  return Model.user.findOne({
-    where: {
-      email,
-    },
-  });
+  return Model.user.findByEmail(email);
 };
 
 module.exports = services;

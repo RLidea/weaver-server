@@ -1,5 +1,5 @@
-'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class authority extends Model {
     static associate(models) {
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   authority.init({
     name: DataTypes.STRING,
     description: DataTypes.STRING,
-    isUse: DataTypes.BOOLEAN
+    isUse: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'authority',
