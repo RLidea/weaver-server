@@ -1,4 +1,4 @@
-const AuthService = require('@services/AuthService');
+const authService = require('@services/authService');
 
 module.exports = async (app) => {
   try {
@@ -21,7 +21,7 @@ module.exports = async (app) => {
         if (allowedUrlPatterns[i].exec(req.path) !== null) return next();
       }
 
-      const loginInfo = AuthService.getLoginInfo(req);
+      const loginInfo = authService.getLoginState(req);
       if (!loginInfo.isLogin) {
         return res.status(401).json({ message: 'access denied' });
       }

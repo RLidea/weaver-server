@@ -6,6 +6,10 @@ module.exports = {
       key: 'DEFAULT_AUTHORITIES_ID',
       value: '3',
       comment: 'Permissions when first signed up',
+    }, {
+      key: 'DEFAULT_AUTH_PERIOD',
+      value: '3',
+      comment: '',
     }], {});
   },
 

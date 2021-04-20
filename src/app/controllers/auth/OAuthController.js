@@ -1,19 +1,13 @@
 /* eslint no-underscore-dangle: 0 */
 /* eslint consistent-return: 0 */
 const passport = require('passport');
-const AuthService = require('@services/AuthService');
+const authService = require('@services/authService');
+const userService = require('@services/userService');
 
 const controllers = {};
 
-controllers.viewLogin = (req, res) => {
-  return res.render('oauth', {
-    title: 'Login',
-    page: 'login',
-  });
-};
-
 controllers.doKakaoAuth = async (req, res) => {
-  const { period, redirectUrl } = await AuthService.initialParamsForLogin();
+  const { period, redirectUrl } = await authService.initialParamsForLogin();
   passport.authenticate('kakao', {
     failureRedirect: '#!/auth/kakao',
   }, async (err, user, data) => {
@@ -35,11 +29,11 @@ controllers.doKakaoAuth = async (req, res) => {
       isSuccess = true;
     } else {
       // Email that already exists
-      const existUser = await AuthService.findUserByEmail(payload.email);
+      const existUser = await userService.findUserByEmail(payload.email);
 
       if (existUser) {
-        isSuccess = await AuthService.addSocialAccount({
-          usersId: existUser.id,
+        isSuccess = await authService.addSocialAccount({
+          usersId: existUser?.id,
           service: 'kakao',
           accountId: data.profile.id,
           accessToken: data.accessToken,
@@ -47,7 +41,7 @@ controllers.doKakaoAuth = async (req, res) => {
         });
       } else {
         // If there is no user, sign up
-        await AuthService.createUser({
+        await userService.create({
           name: data.profile.displayName || data.profile.username,
           email: payload.email,
           password: String(data.profile.id),
@@ -72,7 +66,7 @@ controllers.doKakaoAuth = async (req, res) => {
 
     // do login
     if (isSuccess) {
-      AuthService.login(req, res, loginParams);
+      authService.login(req, res, loginParams);
     } else {
       return global.message.unauthorized(res, 'login failed');
     }
@@ -80,7 +74,7 @@ controllers.doKakaoAuth = async (req, res) => {
 };
 
 controllers.doNaverAuth = async (req, res) => {
-  const { period, redirectUrl } = await AuthService.initialParamsForLogin();
+  const { period, redirectUrl } = await authService.initialParamsForLogin();
   passport.authenticate('naver', {
     failureRedirect: '#!/auth/naver',
   }, async (err, user, data) => {
@@ -105,11 +99,11 @@ controllers.doNaverAuth = async (req, res) => {
       isSuccess = true;
     } else {
       // Email that already exists
-      const existUser = await AuthService.findUserByEmail(payload.email);
+      const existUser = await userService.findUserByEmail(payload.email);
 
       if (existUser) {
-        isSuccess = await AuthService.addSocialAccount({
-          usersId: existUser.id,
+        isSuccess = await authService.addSocialAccount({
+          usersId: existUser?.id,
           service: 'naver',
           accountId: data.profile.id,
           accessToken: data.accessToken,
@@ -118,7 +112,7 @@ controllers.doNaverAuth = async (req, res) => {
         });
       } else {
         // If there is no user, sign up
-        await AuthService.createUser({
+        await userService.create({
           name: data.profile.displayName || data.profile._json?.nickname,
           email: payload.email,
           password: String(data.profile.id),
@@ -143,7 +137,7 @@ controllers.doNaverAuth = async (req, res) => {
 
     // do login
     if (isSuccess) {
-      AuthService.login(req, res, loginParams);
+      authService.login(req, res, loginParams);
     } else {
       return global.message.unauthorized(res, 'login failed');
     }

@@ -15,10 +15,6 @@ router
   .post(AuthController.doRegister);
 
 router
-  .route('/oauth')
-  .get(OAuthController.viewLogin);
-
-router
   .route('/kakao')
   .get(OAuthController.doKakaoAuth);
 
@@ -35,6 +31,6 @@ router
 
 router
   .route('/reset/code')
-  .get(AuthController.getSecretCode);
+  .get(AuthController.getResetCode);
 
 module.exports = router;

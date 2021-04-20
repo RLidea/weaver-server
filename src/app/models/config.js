@@ -21,5 +21,25 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     paranoid: true,
   });
+
+  config.findByKey = (key) => {
+    return config.findOne({
+      where: { key },
+    });
+  };
+
+  config.findValueByKey = (key) => {
+    return config.findOne({
+      where: { key },
+    })
+      .then(r => r.value);
+  };
+
+  config.deleteByKey = (key) => {
+    return Model.config.destroy({
+      where: { key },
+    });
+  };
+
   return config;
 };

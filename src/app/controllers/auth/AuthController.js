@@ -1,7 +1,7 @@
 const passport = require('passport');
-const Model = require('@models');
 const validation = require('@utils/validation');
-const AuthService = require('@services/AuthService');
+const authService = require('@services/authService');
+const userService = require('@services/userService');
 const regex = require('@utils/regex');
 
 require('dotenv').config();
@@ -11,11 +11,9 @@ const controller = {};
   Login
  */
 controller.viewLogin = async (req, res) => {
-  const authInfo = await AuthService.getAuthInfo(req);
+  const authInfo = await authService.getAuthState(req);
 
-  if (authInfo?.isLogin) {
-    return res.redirect('/');
-  }
+  if (authInfo?.isLogin) return res.redirect('/');
 
   return res.render('auth', {
     title: 'Login',
@@ -25,7 +23,7 @@ controller.viewLogin = async (req, res) => {
 
 controller.doLogin = async (req, res) => {
   // System config Parameters
-  const { period, redirectUrl } = await AuthService.initialParamsForLogin();
+  const { period, redirectUrl } = await authService.initialParamsForLogin();
 
   // Validation Check
   const valErr = validation.validator(res, req.body, {
@@ -52,24 +50,13 @@ controller.doLogin = async (req, res) => {
         email: user.email,
       };
 
-      // update last login
-      Model.user.update({
-        lastLogin: new Date(),
-      }, {
-        where: {
-          email: payload.email,
-        },
-        silent: true,
-      });
-
       // login
-      AuthService.login(req, res, {
+      return authService.login(req, res, {
         payload,
         period,
         redirectUrl,
         message: data.message,
       });
-      return false;
     },
   )(req, res, redirectUrl, period);
   return false;
@@ -79,7 +66,7 @@ controller.doLogin = async (req, res) => {
   Register
  */
 controller.viewRegister = async (req, res) => {
-  const authInfo = await AuthService.getAuthInfo(req);
+  const authInfo = await authService.getAuthState(req);
   if (authInfo?.isLogin) {
     res.redirect('/');
   }
@@ -92,7 +79,7 @@ controller.viewRegister = async (req, res) => {
 controller.doRegister = async (req, res) => {
   // Parameters
   const { name, email, password } = req.body;
-  const { period, redirectUrl } = await AuthService.initialParamsForLogin();
+  const { period, redirectUrl } = await authService.initialParamsForLogin();
 
   // Validation Check
   const valErr = validation.validator(res, req.body, {
@@ -102,24 +89,16 @@ controller.doRegister = async (req, res) => {
   });
   if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
-  const existUser = await Model.user.findOne({
-    where: {
-      email,
-    },
-  }).then(d => d.dataValues)
-    .catch(() => { /* do nothing */ });
-
-  if (existUser) {
-    return global.message.badRequest(res, 'user exist');
-  }
-
-  const isUserCreated = await AuthService.createUser({
+  // create user
+  const createUser = await userService.create({
     name,
     email,
     password,
   });
+  if (createUser?.error) return global.message.badRequest(res, createUser?.message);
 
-  if (isUserCreated) {
+  // login
+  if (!createUser?.error) {
     const reqLogin = {
       body: {
         email,
@@ -132,17 +111,16 @@ controller.doRegister = async (req, res) => {
     };
     const message = 'login with register';
     await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
-  } else {
-    return global.message.serviceUnavailable(res, 'register failed');
+    return false;
   }
-  return false;
+  return global.message.serviceUnavailable(res, 'register failed');
 };
 
 /*
   Logout
  */
 controller.doLogout = async (req, res) => {
-  const authInfo = await AuthService.getAuthInfo(req);
+  const authInfo = await authService.getAuthState(req);
   if (authInfo?.isLogin) {
     res.clearCookie('jwt');
     return res.redirect('/');
@@ -153,7 +131,7 @@ controller.doLogout = async (req, res) => {
 /*
   Find or Reset Authentication Information
  */
-controller.getSecretCode = (req, res) => {
+controller.getResetCode = (req, res) => {
   // parameters
   const { email } = req.body;
 
@@ -163,17 +141,16 @@ controller.getSecretCode = (req, res) => {
   });
   if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
-  AuthService.findUserByEmail(email)
-    .then(user => {
-      return global.message.ok(res, 'success', {
-        code: `${user.updatedAt.getTime()}`.substring(0, 6),
+  return userService.getResetCodeByEmail(email)
+    .then(code => {
+      if (!code) return global.message.badRequest(res, 'code not created');
+      return global.menubar.ok(res, 'success', {
+        code,
       });
     })
     .catch(e => {
-      return global.message.badRequest(res, 'user not found', e);
+      return global.message.badRequest(res, 'error occurred', e);
     });
-
-  return false;
 };
 
 controller.showResetUserPassword = async (req, res) => {
@@ -186,7 +163,7 @@ controller.showResetUserPassword = async (req, res) => {
   });
 };
 
-controller.resetUserPassword = async (req, res, next) => {
+controller.resetUserPassword = async (req, res) => {
   // Parameters
   const { email, password, code } = req.body;
   const params = {
@@ -203,36 +180,12 @@ controller.resetUserPassword = async (req, res, next) => {
   });
   if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
-  const user = await AuthService.findUserByEmail(params.email);
+  const result = await userService.resetPassword(params);
 
-  if (`${user?.updatedAt.getTime()}`.substring(0, 6) !== params.code) {
-    return global.message.badRequest(res, 'Not the correct code.');
+  if (!result?.error) {
+    return global.message.ok(res, result?.message);
   }
-
-  // salt and hash
-  const { salt, hashPassword } = await AuthService.createSaltAndHash(params.password);
-
-  // Service
-  Model.user.update({
-    password: hashPassword,
-    salt,
-  }, {
-    where: {
-      email: params.email,
-    },
-  }).then(v => {
-    if (v[0]) {
-      return global.message.created(res, 'success');
-    }
-    return global.message.badRequest(res, 'password reset failed', {
-      type: 'data not changed',
-    });
-  }).catch(() => {
-    return global.message.badRequest(res, 'password reset failed', {
-      type: 'query error',
-    });
-  });
-  return next();
+  return global.message.badRequest(res, result?.message);
 };
 
 module.exports = controller;

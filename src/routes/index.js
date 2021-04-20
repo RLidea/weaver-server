@@ -2,12 +2,12 @@ const express = require('express');
 
 const router = express.Router();
 const ApiDocumentController = require('@controllers/ApiDocumentController');
-const AuthService = require('@services/AuthService');
+const authService = require('@services/authService');
 const MailController = require('@controllers/MailController');
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
-  const authInfo = await AuthService.getAuthInfo(req);
+  const authInfo = await authService.getAuthState(req);
   res.render('production/index', { title: process.env.APP_NAME, auth: authInfo, text: {} });
 });
 

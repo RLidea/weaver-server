@@ -3,6 +3,8 @@
  */
 const fs = require('fs');
 
+const requestHandler = require('@utils/requestHandler');
+
 const controllers = {};
 
 controllers.view = (req, res) => {
@@ -20,7 +22,7 @@ controllers.list = async (req, res) => {
 };
 
 controllers.document = async (req, res) => {
-  const apiVersion = String(req.cookies.api_version);
+  const apiVersion = requestHandler.getApiVersion(req);
   const fileList = [];
   const dir = `${__dirname}/../../../var/apiDocs`;
   let data;

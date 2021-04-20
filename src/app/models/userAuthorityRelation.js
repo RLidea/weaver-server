@@ -19,5 +19,11 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'userAuthorityRelation',
     timestamps: true,
   });
+
+  userAuthorityRelation.findByUsersId = (usersId) => {
+    return userAuthorityRelation.findOne({
+      where: { usersId },
+    });
+  };
   return userAuthorityRelation;
 };

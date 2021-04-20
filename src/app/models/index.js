@@ -26,8 +26,8 @@ const sequelize = new Sequelize(
   { ...config,
     timezone: '+09:00',
     seederStorage: 'sequelize',
-    migrationStorageTableName: 'sequelize_meta',
-    seederStorageTableName: 'sequelize_data',
+    migrationStorageTableName: 'sequelizeMeta',
+    seederStorageTableName: 'sequelizeData',
     define: {
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci',

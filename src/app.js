@@ -45,5 +45,8 @@ logger.system(`🚀 ${process.env.APP_NAME} is ready on ${process.env.PORT}`);
  */
 global.logger = logger;
 global.message = message;
+global.env = {
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+};
 
 module.exports = app;
