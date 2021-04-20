@@ -1,7 +1,19 @@
 require('dotenv').config();
 
+const common = {
+  timezone: '+09:00',
+  seederStorage: 'sequelize',
+  migrationStorageTableName: 'MigrationHistory',
+  seederStorageTableName: 'SeederHistory',
+  define: {
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_general_ci',
+  },
+};
+
 module.exports = {
   development: {
+    ...common,
     user: process.env.MYSQL_USER,
     username: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
@@ -12,6 +24,7 @@ module.exports = {
     logQueryParameters: true,
   },
   test: {
+    ...common,
     user: process.env.MYSQL_TEST_USER,
     username: process.env.MYSQL_TEST_USER,
     password: process.env.MYSQL_TEST_PASSWORD,
@@ -22,6 +35,7 @@ module.exports = {
     logging: false,
   },
   production: {
+    ...common,
     user: process.env.MYSQL_PRODUCTION_USER,
     username: process.env.MYSQL_PRODUCTION_USER,
     password: process.env.MYSQL_PRODUCTION_PASSWORD,

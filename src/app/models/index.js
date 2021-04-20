@@ -23,15 +23,8 @@ const sequelize = new Sequelize(
   config.database,
   config.username,
   config.password,
-  { ...config,
-    timezone: '+09:00',
-    seederStorage: 'sequelize',
-    migrationStorageTableName: 'sequelizeMeta',
-    seederStorageTableName: 'sequelizeData',
-    define: {
-      charset: 'utf8mb4',
-      collate: 'utf8mb4_general_ci',
-    },
+  {
+    ...config,
     benchmark: true,
     logging: (query, time) => {
       if (query !== 'Executed (default): SELECT 1+1 AS result') {
