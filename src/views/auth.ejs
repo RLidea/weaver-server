@@ -50,7 +50,7 @@
       password: passwordHashing(document.querySelector('#password').value),
     };
 
-    axios.post('/v1/auth/<%= page %>', sendData)
+    axios.post('/auth/<%= page %>', sendData)
       .then(res => {
         const data = res.data;
 

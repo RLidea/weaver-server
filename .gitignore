@@ -54,8 +54,7 @@ Temporary Items
 
 ### Node ###
 # Logs
-var/logs/*
-var/sessions/*
+var/*
 logs
 *.log
 npm-debug.log*

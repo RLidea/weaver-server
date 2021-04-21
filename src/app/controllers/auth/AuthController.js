@@ -1,3 +1,4 @@
+/* eslint max-len:0 */
 const passport = require('passport');
 const validation = require('@utils/validation');
 const authService = require('@services/authService');
@@ -6,9 +7,37 @@ const regex = require('@utils/regex');
 
 require('dotenv').config();
 
+/**
+ * @swagger
+ * definitions:
+ *  auth:
+ *    type: "object"
+ *    properties:
+ *      email:
+ *        type: "string"
+ *      password:
+ *        type: "string"
+ */
 const controller = {};
 /*
   Login
+ */
+
+/**
+ * @swagger
+ * /auth/login:
+ *   get:
+ *     tags:
+ *     - "auth"
+ *     summary: "Login page"
+ *     description: "Open login page view"
+ *     produces:
+ *     - "application/json; charset=utf-8"
+ *     responses:
+ *       "200":
+ *         description: "Success"
+ *       "404":
+ *         description: "Page Not Found"
  */
 controller.viewLogin = async (req, res) => {
   const authInfo = await authService.getAuthState(req);
@@ -21,6 +50,39 @@ controller.viewLogin = async (req, res) => {
   });
 };
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     tags:
+ *     - "auth"
+ *     summary: "Login with email and password"
+ *     operationId: "doLogin"
+ *     consumes:
+ *     - "application/json"
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *     - in: "body"
+ *       name: "body"
+ *       required: true
+ *       schema:
+ *         type: "object"
+ *         properties:
+ *           email:
+ *             type: "string"
+ *             example: "dev@weaver.com"
+ *             description: "user email"
+ *           password:
+ *             type: "string"
+ *             example: "bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"
+ *             description: "user password"
+ *     responses:
+ *       "200":
+ *         description: "Logged in successfully"
+ *       "405":
+ *         description: "Invalid input"
+ */
 controller.doLogin = async (req, res) => {
   // System config Parameters
   const { period, redirectUrl } = await authService.initialParamsForLogin();
@@ -125,7 +187,7 @@ controller.doLogout = async (req, res) => {
     res.clearCookie('jwt');
     return res.redirect('/');
   }
-  return res.send('Not Logged In');
+  return global.message.badRequest(res, 'Not Logged In');
 };
 
 /*

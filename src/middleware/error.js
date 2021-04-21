@@ -45,7 +45,7 @@ module.exports = async (app) => {
     app.use(error?.notFoundError);
     app.use(error?.errorMessage);
   } catch (e) {
-    global.logger.devError('🔴 /src/loaders/error.js');
+    global.logger.devError('🔴 /src/middleware/error.js');
     global.logger.devError(e);
   }
 };

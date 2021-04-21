@@ -28,13 +28,8 @@ allowedUrlLoader(app);
 /*
  * Routers
  */
-try {
-  app.use('/', require('./routes/index'));
-  app.use('/auth', require('./routes/auth'));
-  app.use('/v1/auth', require('./routes/v1/auth'));
-} catch (e) {
-  logger.devError(e);
-}
+app.use('/', require('./routes/index'));
+app.use('/auth', require('./routes/auth'));
 
 errorLoader(app);
 

@@ -6,10 +6,4 @@ handler.getJwt = req => {
   return token;
 };
 
-handler.getApiVersion = req => {
-  const version = req.cookies.api_version;
-  if (version === undefined) return null;
-  return String(version);
-};
-
 module.exports = handler;

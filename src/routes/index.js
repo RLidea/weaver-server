@@ -1,9 +1,9 @@
 const express = require('express');
 
 const router = express.Router();
-const ApiDocumentController = require('@controllers/ApiDocumentController');
 const authService = require('@services/authService');
 const MailController = require('@controllers/MailController');
+const swagger = require('@middleware/swaggerDoc')();
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -20,9 +20,7 @@ router.get('/expired', (req, res, next) => {
 });
 
 /* API Document */
-router.get('/docs/documents', ApiDocumentController.list);
-router.get('/docs', ApiDocumentController.view);
-router.get('/insomnia.json', ApiDocumentController.document);
+router.use('/docs', swagger?.path, swagger?.handlers);
 
 /* Send email */
 router.post('/mail', MailController.send);

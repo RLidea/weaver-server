@@ -24,7 +24,7 @@ module.exports = async (app) => {
       return next();
     });
   } catch (e) {
-    global.logger.devError('🔴 /src/loaders/cors.js');
+    global.logger.devError('🔴 /src/middleware/cors.js');
     global.logger.devError(e);
   }
 };

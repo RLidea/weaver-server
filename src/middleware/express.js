@@ -89,7 +89,7 @@ module.exports = async (app) => {
     };
     app.use(systemLogger[process.env.NODE_ENV]);
   } catch (e) {
-    logger.devError('🔴 /src/loaders/express.js');
+    logger.devError('🔴 /src/middleware/express.js');
     logger.devError(e);
   }
 };
