@@ -29,11 +29,12 @@
   "_moduleAliases": {
     "@root": ".",
     "@system": "./src/system",
-    "@controllers": "./src/app/controllers",
     "@middleware": "./src/middleware",
     "@models": "./src/app/models",
     "@services": "./src/app/services",
-    "@utils": "./src/app/utils"
+    "@controllers": "./src/app/controllers",
+    "@utils": "./src/app/utils",
+    "@queries": "./src/app/queries"
   },
   "nodemonConfig": {
     "ext": "js, json",

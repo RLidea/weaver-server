@@ -32,7 +32,7 @@ const controller = {};
  *     summary: "Login page"
  *     description: "Open login page view"
  *     produces:
- *     - "application/json; charset=utf-8"
+ *     - "text/html; charset=utf-8"
  *     responses:
  *       "200":
  *         description: "Success"
@@ -71,6 +71,7 @@ controller.viewLogin = async (req, res) => {
  *         properties:
  *           email:
  *             type: "string"
+ *             required: true
  *             example: "dev@weaver.com"
  *             description: "user email"
  *           password:
@@ -79,7 +80,7 @@ controller.viewLogin = async (req, res) => {
  *             description: "user password"
  *     responses:
  *       "200":
- *         description: "Logged in successfully"
+ *         description: "success"
  *       "405":
  *         description: "Invalid input"
  */
@@ -127,6 +128,22 @@ controller.doLogin = async (req, res) => {
 /*
   Register
  */
+/**
+ * @swagger
+ * /auth/register:
+ *   get:
+ *     tags:
+ *     - "auth"
+ *     summary: "Register page"
+ *     description: "Open register page view"
+ *     produces:
+ *     - "text/html; charset=utf-8"
+ *     responses:
+ *       "200":
+ *         description: "success"
+ *       "400":
+ *         description: "not logged in"
+ */
 controller.viewRegister = async (req, res) => {
   const authInfo = await authService.getAuthState(req);
   if (authInfo?.isLogin) {
@@ -138,6 +155,43 @@ controller.viewRegister = async (req, res) => {
   });
 };
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     tags:
+ *     - "auth"
+ *     summary: "Create new user"
+ *     operationId: "doRegister"
+ *     consumes:
+ *     - "application/json"
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *     - in: "body"
+ *       name: "body"
+ *       required: true
+ *       schema:
+ *         type: "object"
+ *         properties:
+ *           email:
+ *             type: "string"
+ *             example: "new-user@weaver.com"
+ *             description: "user email"
+ *           password:
+ *             type: "string"
+ *             example: "bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"
+ *             description: "user password"
+ *           name:
+ *             type: "string"
+ *             example: "new user"
+ *             description: "user's name"
+ *     responses:
+ *       "200":
+ *         description: "success"
+ *       "405":
+ *         description: "Invalid input"
+ */
 controller.doRegister = async (req, res) => {
   // Parameters
   const { name, email, password } = req.body;
@@ -181,6 +235,22 @@ controller.doRegister = async (req, res) => {
 /*
   Logout
  */
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     tags:
+ *     - "auth"
+ *     summary: "logout"
+ *     operationId: "doLogout"
+ *     consumes:
+ *     - "text/html; charset=utf-8"
+ *     produces:
+ *     - "text/html; charset=utf-8"
+ *     responses:
+ *       "200":
+ *         description: "success"
+ */
 controller.doLogout = async (req, res) => {
   const authInfo = await authService.getAuthState(req);
   if (authInfo?.isLogin) {
@@ -215,6 +285,22 @@ controller.getResetCode = (req, res) => {
     });
 };
 
+/**
+ * @swagger
+ * /auth/reset/password:
+ *   get:
+ *     tags:
+ *     - "auth"
+ *     summary: "reset password page"
+ *     description: "Open reset password page view"
+ *     produces:
+ *     - "text/html; charset=utf-8"
+ *     responses:
+ *       "200":
+ *         description: "Success"
+ *       "404":
+ *         description: "Page Not Found"
+ */
 controller.showResetUserPassword = async (req, res) => {
   return res.render('reset_password', {
     email_regex: regex.email,
@@ -225,6 +311,45 @@ controller.showResetUserPassword = async (req, res) => {
   });
 };
 
+/**
+ * @swagger
+ * /auth/reset/password:
+ *   post:
+ *     tags:
+ *     - "auth"
+ *     summary: "reset user password"
+ *     operationId: "doResetPassword"
+ *     consumes:
+ *     - "application/json"
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *     - in: "body"
+ *       name: "body"
+ *       required: true
+ *       schema:
+ *         type: "object"
+ *         properties:
+ *           email:
+ *             type: "string"
+ *             required: true
+ *             example: "dev@weaver.com"
+ *             description: "user email"
+ *           password:
+ *             type: "string"
+ *             required: true
+ *             example: "bd2b1aaf7ef4f09be9f52ce2d8d599674d81aa9d6a4421696dc4d93dd0619d682ce56b4d64a9ef097761ced99e0f67265b5f76085e5b0ee7ca4696b2ad6fe2b2"
+ *             description: "user password"
+ *           code:
+ *             type: "string"
+ *             required: true
+ *             description: ""
+ *     responses:
+ *       "200":
+ *         description: "success"
+ *       "405":
+ *         description: "Invalid input"
+ */
 controller.resetUserPassword = async (req, res) => {
   // Parameters
   const { email, password, code } = req.body;

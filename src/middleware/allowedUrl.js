@@ -6,16 +6,13 @@ module.exports = async (app) => {
       // not require jwt verification url list
       const allowedUrlPatterns = [
         /^\/$/i,
-        // /^\/docs(.*)$/i,
         /^\/docs(.*)$/i,
-        // /^\/api_history(.*)$/i,
-        // /^\/insomnia.json(.*)$/i,
         /^\/robots.txt(.*)$/i,
         /^\/session(.*)$/i,
         /^\/session\/[0-9a-z]*(.*)$/i,
         /^\/expired(.*)$/i,
         /^\/mail(.*)$/i,
-        /\/auth\/(\w)*$/i,
+        /\/auth(.*)*$/i,
       ];
 
       for (let i = 0, l = allowedUrlPatterns.length; i < l; i += 1) {

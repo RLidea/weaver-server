@@ -1,4 +1,4 @@
-const Model = require('@models');
+const Query = require('@queries');
 
 const authService = require('@services/authService');
 
@@ -16,14 +16,14 @@ userServices.create = async ({
   /*
     get parameters
    */
-  const defaultAuthoritiesId = await Model.config.findValueByKey('DEFAULT_AUTHORITIES_ID');
+  const defaultAuthoritiesId = await Query.config.findValueByKey('DEFAULT_AUTHORITIES_ID');
 
   // salt and hash
   const { salt, hashPassword } = await authService.createSaltAndHash(password);
   const authoritiesId = (defaultAuthoritiesId || 0) !== 0 ? defaultAuthoritiesId || 0 : 3;
 
   // check user exist
-  const existUser = await Model.user.findByEmail(email);
+  const existUser = await Query.user.findByEmail(email);
   if (existUser) {
     return {
       error: true,
@@ -31,9 +31,9 @@ userServices.create = async ({
     };
   }
   // Create User
-  const t = await Model.sequelize.transaction();
+  const t = await Query.sequelize.transaction();
   try {
-    const user = await Model.user.create({
+    const user = await Query.user.create({
       name,
       email,
       password: hashPassword,
@@ -48,7 +48,7 @@ userServices.create = async ({
       });
 
     // Create user-auth relations
-    await Model.userAuthorityRelation.create({
+    await Query.userAuthorityRelation.create({
       usersId: user?.id,
       authoritiesId,
     }, { transaction: t }).then(() => { /* do nothing */ })
@@ -66,7 +66,7 @@ userServices.create = async ({
     }
 
     if (userMeta) {
-      await Model.userMeta.createAll({
+      await Query.userMeta.createAll({
         t,
         prefix: oAuth.service,
         usersId: user?.id,
@@ -84,7 +84,7 @@ userServices.create = async ({
     await t.rollback();
     return {
       error: true,
-      message: 'error occured',
+      message: 'error occurred',
     };
   }
 };
@@ -93,7 +93,7 @@ userServices.getLoginUser = async (req) => {
   const loginState = await authService.getLoginState(req);
   if (!loginState?.isLogin) return false;
 
-  return Model.user.findByEmail(loginState?.decoded.email)
+  return Query.user.findByEmail(loginState?.decoded.email)
     .catch(e => {
       global.logger.devError(e);
       return false;
@@ -101,7 +101,7 @@ userServices.getLoginUser = async (req) => {
 };
 
 userServices.findUserByEmail = (email) => {
-  return Model.user.findByEmail(email);
+  return Query.user.findByEmail(email);
 };
 /*
   password reset
@@ -111,7 +111,7 @@ const resetCode = (updatedAt) => {
 };
 
 userServices.getResetCodeByEmail = async (email) => {
-  const user = await Model.user.findByEmail(email)
+  const user = await Query.user.findByEmail(email)
     .catch(e => {
       global.logger.devError(e);
       return false;
@@ -121,7 +121,7 @@ userServices.getResetCodeByEmail = async (email) => {
 };
 
 userServices.resetPassword = async ({ email, password, code }) => {
-  const user = await Model.user.findByEmail(email)
+  const user = await Query.user.findByEmail(email)
     .catch(e => {
       global.logger.devError(e);
       return false;
@@ -137,7 +137,7 @@ userServices.resetPassword = async ({ email, password, code }) => {
    */
   // salt and hash
   const { salt, hashPassword } = await authService.createSaltAndHash(password);
-  return Model.user.updatePasswordByEmail({
+  return Query.user.updatePasswordByEmail({
     email, hashPassword, salt,
   })
     .then(r => {

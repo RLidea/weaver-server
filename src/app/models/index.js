@@ -1,3 +1,6 @@
+/*
+  models: It only maps the db structure.
+ */
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -8,15 +11,20 @@ const env = process.env.NODE_ENV || 'development';
 // eslint-disable-next-line import/no-dynamic-require
 const config = require(`${__dirname}/../../database/config.js`)[env];
 
-// Database schema
-const db = {
+// db 안에 model 이름을 미리 안 넣어도 동작하지만 있으면 개발할때 자동완성이 되서 편하다!
+const target = {
   config: undefined,
   authority: undefined,
   user: undefined,
   userAuthorityRelation: undefined,
   oAuthMeta: undefined,
   userMeta: undefined,
-}; // db 안에 model 이름을 미리 안 넣어도 동작하지만 있으면 개발할때 자동완성이 되서 편하다!
+};
+
+// Database schema
+const db = {
+  ...target,
+};
 
 // Sequelize settings
 const sequelize = new Sequelize(
@@ -73,5 +81,6 @@ Object.keys(db).forEach(modelName => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.target = target;
 
 module.exports = db;

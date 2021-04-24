@@ -5,24 +5,8 @@ const OAuthController = require('@controllers/auth/OAuthController');
 const router = express.Router();
 
 /*
-  Views
+  auth
  */
-router
-  .route('/login')
-  .get(AuthController.viewLogin);
-
-router
-  .route('/register')
-  .get(AuthController.viewRegister);
-
-router
-  .route('/reset/password')
-  .get(AuthController.showResetUserPassword);
-
-/*
-  APIs
- */
-
 router
   .route('/login')
   .get(AuthController.viewLogin)
@@ -34,6 +18,12 @@ router
   .post(AuthController.doRegister);
 
 router
+  .route('/logout')
+  .get(AuthController.doLogout);
+/*
+  oAuth
+ */
+router
   .route('/kakao')
   .get(OAuthController.doKakaoAuth);
 
@@ -41,8 +31,9 @@ router
   .route('/naver')
   .get(OAuthController.doNaverAuth);
 
-router.route('/logout').get(AuthController.doLogout);
-
+/*
+  reset password
+ */
 router
   .route('/reset/password')
   .get(AuthController.showResetUserPassword)
