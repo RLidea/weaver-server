@@ -33,7 +33,7 @@ util.listToTree = list => {
 util.toNumber = value => {
   const result = Number(value);
   if (value === null) return null;
-  if (Number.isNaN(result)) return undefined;
+  if (Number.isNaN(result)) return '';
   return result;
 };
 
