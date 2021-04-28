@@ -33,6 +33,8 @@ util.listToTree = list => {
 util.toNumber = value => {
   const result = Number(value);
   if (value === null) return null;
+  if (result > Number.MAX_SAFE_INTEGER) return 'too large';
+  if (result < Number.MIN_SAFE_INTEGER) return 'too small';
   if (Number.isNaN(result)) return '';
   return result;
 };
