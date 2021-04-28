@@ -1,6 +1,7 @@
 const fs = require('fs');
 const winston = require('winston');
 const WinstonDaily = require('winston-daily-rotate-file');
+const config = require('@src/config');
 
 // log directory
 const varDir = `${__dirname}/../../var`;
