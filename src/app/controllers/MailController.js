@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const sendmail = require('sendmail')();
+const config = require('@root/src/config');
 
 const controllers = {};
 
@@ -17,18 +18,18 @@ const mailConfig = {
   port: 465,
   secure: true,
   auth: {
-    user: process.env.NODE_ENV === 'production' ? process.env.MAIL_USER : process.env.MAIL_DEV_USER,
-    pass: process.env.NODE_ENV === 'production' ? process.env.MAIL_PASSWORD : process.env.MAIL_DEV_PASSWORD,
+    user: config.env.NODE_ENV === 'production' ? config.email.MAIL_USER : config.email.MAIL_DEV_USER,
+    pass: config.env.NODE_ENV === 'production' ? config.email.MAIL_PASSWORD : config.email.MAIL_DEV_PASSWORD,
   },
 };
 
 controllers.send = (req, res) => {
-  const isDevMailUserExist = process.env.NODE_ENV === 'development'
-    && process.env.MAIL_DEV_USER
-    && process.env.MAIL_DEV_PASSWORD;
-  const isMailUserExist = process.env.NODE_ENV === 'production'
-    && process.env.MAIL_USER
-    && process.env.MAIL_PASSWORD;
+  const isDevMailUserExist = config.env.NODE_ENV === 'development'
+    && config.email.MAIL_DEV_USER
+    && config.email.MAIL_DEV_PASSWORD;
+  const isMailUserExist = config.env.NODE_ENV === 'production'
+    && config.email.MAIL_USER
+    && config.email.MAIL_PASSWORD;
 
   if (isMailUserExist || isDevMailUserExist) {
     return sendWithSMTP(req, res);
@@ -55,7 +56,7 @@ const sendWithSMTP = (req, res) => {
 const sendWithOutSMTP = (req, res) => {
   const mailOptions = new MailOptions(req.body);
   sendmail({
-    from: mailOptions.from || `${process.env.APP_NAME.toLowerCase()}@${process.env.APP_NAME.toLowerCase()}.com`,
+    from: mailOptions.from || `${config.env.APP_NAME.toLowerCase()}@${config.env.APP_NAME.toLowerCase()}.com`,
     to: mailOptions.to,
     subject: mailOptions.subject,
     html: mailOptions.text,

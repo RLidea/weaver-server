@@ -1,4 +1,4 @@
-const config = {
+const env = {
   APP_NAME: process.env.APP_NAME,
   NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
@@ -64,7 +64,7 @@ const logger = {
 };
 
 module.exports = {
-  config,
+  env,
   secret,
   oAuth,
   database,

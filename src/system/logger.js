@@ -1,7 +1,7 @@
 const fs = require('fs');
 const winston = require('winston');
 const WinstonDaily = require('winston-daily-rotate-file');
-const config = require('@src/config');
+const config = require('@root/src/config');
 
 // log directory
 const varDir = `${__dirname}/../../var`;
@@ -26,13 +26,13 @@ const logLevels = {
     silly: 6,
   },
   colors: {
-    error: process.env.LOG_COLOR_ERROR,
-    warn: process.env.LOG_COLOR_WARN,
-    info: process.env.LOG_COLOR_INFO,
-    sql: process.env.LOG_COLOR_SQL,
-    system: process.env.LOG_COLOR_SYSTEM,
-    debug: process.env.LOG_COLOR_DEBUG,
-    silly: process.env.LOG_COLOR_SILLY,
+    error: config.logger.LOG_COLOR_ERROR,
+    warn: config.logger.LOG_COLOR_WARN,
+    info: config.logger.LOG_COLOR_INFO,
+    sql: config.logger.LOG_COLOR_SQL,
+    system: config.logger.LOG_COLOR_SYSTEM,
+    debug: config.logger.LOG_COLOR_DEBUG,
+    silly: config.logger.LOG_COLOR_SILLY,
   },
 };
 
@@ -50,7 +50,7 @@ handler.logger = winston.createLogger({
       datePattern: 'YYYY-MM-DD',
       dirname: `${logDir}/info`, // log file /logs/info/*.log in save
       filename: '%DATE%.log',
-      maxFiles: process.env.LOG_INFO_SAVED_UNTIL, // Days saved
+      maxFiles: config.logger.LOG_INFO_SAVED_UNTIL, // Days saved
       json: false,
       zippedArchive: true,
       colorize: true,
@@ -60,7 +60,7 @@ handler.logger = winston.createLogger({
       datePattern: 'YYYY-MM-DD',
       dirname: `${logDir}/info`, // log file /logs/info/*.log in save
       filename: '%DATE%.log',
-      maxFiles: process.env.LOG_INFO_SAVED_UNTIL, // Days saved
+      maxFiles: config.logger.LOG_INFO_SAVED_UNTIL, // Days saved
       json: false,
       zippedArchive: true,
       colorize: true,
@@ -70,7 +70,7 @@ handler.logger = winston.createLogger({
       datePattern: 'YYYY-MM-DD',
       dirname: `${logDir}/error`, // log file /logs/error/*.log in save
       filename: '%DATE%.error.log',
-      maxFiles: process.env.LOG_ERROR_SAVED_UNTIL, // Days saved
+      maxFiles: config.logger.LOG_ERROR_SAVED_UNTIL, // Days saved
       handleExceptions: true,
       json: true,
       zippedArchive: true,
@@ -80,7 +80,7 @@ handler.logger = winston.createLogger({
       datePattern: 'YYYY-MM-DD',
       dirname: `${logDir}/info`, // log file /logs/info/*.log in save
       filename: '%DATE%.log',
-      maxFiles: process.env.LOG_SYSTEM_SAVED_UNTIL, // Days saved
+      maxFiles: config.logger.LOG_SYSTEM_SAVED_UNTIL, // Days saved
       handleExceptions: true,
       json: true,
       zippedArchive: true,
@@ -108,12 +108,12 @@ handler.stream = {
 
 handler.logger.dev = message => {
   // eslint-disable-next-line no-console
-  if (process.env.NODE_ENV === 'development') console.log(message);
+  if (config.env.NODE_ENV === 'development') console.log(message);
 };
 
 handler.logger.devError = message => {
   // eslint-disable-next-line no-console
-  if (process.env.NODE_ENV === 'development') console.error(message);
+  if (config.env.NODE_ENV === 'development') console.error(message);
 };
 
 module.exports = handler;

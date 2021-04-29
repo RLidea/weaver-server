@@ -10,6 +10,8 @@ const passportJwt = require('passport-jwt');
 const JWTStrategy = passportJwt.Strategy;
 const ExtractJWT = passportJwt.ExtractJwt;
 const encryption = require('@system/encryption');
+const config = require('@root/src/config');
+
 const LocalStrategy = require('passport-local').Strategy;
 const KakaoStrategy = require('passport-kakao').Strategy;
 const NaverStrategy = require('passport-naver').Strategy;
@@ -73,7 +75,7 @@ module.exports = () => {
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey: process.env.JWT_SECRET_KEY,
+        secretOrKey: config.secret.JWT_SECRET_KEY,
       },
       ((jwtPayload, done) => {
         return Model.user.findOne({
@@ -87,11 +89,12 @@ module.exports = () => {
     ),
   );
 
-  if (process.env.KAKAO_JS_APP_KEY) {
+  // clientSecret 를 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
+  if (config.oAuth.KAKAO_JS_APP_KEY) {
     passport.use('kakao', new KakaoStrategy({
-      clientID: process.env.KAKAO_JS_APP_KEY,
-      clientSecret: process.env.KAKAO_CLIENT_SECRET, // clientSecret 를 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
-      callbackURL: `${process.env.SERVER_DOMAIN}/auth/kakao`,
+      clientID: config.oAuth.KAKAO_JS_APP_KEY,
+      clientSecret: config.oAuth.KAKAO_CLIENT_SECRET,
+      callbackURL: `${config.env.SERVER_DOMAIN}/auth/kakao`,
     },
     (accessToken, refreshToken, profile, done) => {
       checkOAuth({
@@ -105,11 +108,11 @@ module.exports = () => {
     }));
   }
 
-  if (process.env.NAVER_CLIENT_ID) {
+  if (config.oAuth.NAVER_CLIENT_ID) {
     passport.use('naver', new NaverStrategy({
-      clientID: process.env.NAVER_CLIENT_ID,
-      clientSecret: process.env.NAVER_CLIENT_SECRET,
-      callbackURL: `${process.env.SERVER_DOMAIN}/auth/naver`,
+      clientID: config.oAuth.NAVER_CLIENT_ID,
+      clientSecret: config.oAuth.NAVER_CLIENT_SECRET,
+      callbackURL: `${config.env.SERVER_DOMAIN}/auth/naver`,
     }, (accessToken, refreshToken, profile, done) => {
       checkOAuth({
         service: 'naver',

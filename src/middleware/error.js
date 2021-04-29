@@ -3,6 +3,7 @@
  * Must be behind the router.
  */
 const createError = require('http-errors');
+const config = require('@root/src/config');
 
 const error = {};
 error.notFoundError = (req, res, next) => {
@@ -11,7 +12,7 @@ error.notFoundError = (req, res, next) => {
 
 error.errorMessage = (err, req, res, next) => {
   res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV === 'production' ? { status: err.status } : err;
+  res.locals.error = config.env.NODE_ENV === 'production' ? { status: err.status } : err;
 
   const errors = {
     code: err?.status,

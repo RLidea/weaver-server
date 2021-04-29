@@ -9,6 +9,7 @@ const ejsLocals = require('ejs-locals');
 const morgan = require('morgan');
 const passport = require('passport');
 const passportConfig = require('@controllers/auth/passport');
+const config = require('@root/src/config');
 
 const { stream, logger } = require('@system/logger');
 
@@ -56,7 +57,7 @@ module.exports = async (app) => {
      */
     app.all('*', (req, res, next) => {
       // redirect HTTP to HTTPS
-      if (['development', 'test'].includes(process.env.NODE_ENV)) {
+      if (['development', 'test'].includes(config.env.NODE_ENV)) {
         next();
       } else {
         const protocol = req.headers['x-forwarded-proto'] || req.protocol;
@@ -87,7 +88,7 @@ module.exports = async (app) => {
       development: morgan('dev', { stream }),
       production: morgan('combined', { stream }),
     };
-    app.use(systemLogger[process.env.NODE_ENV]);
+    app.use(systemLogger[config.env.NODE_ENV]);
   } catch (e) {
     logger.devError('🔴 /src/middleware/express.js');
     logger.devError(e);

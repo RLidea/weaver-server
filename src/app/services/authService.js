@@ -3,6 +3,7 @@ const Model = require('@models');
 const encryption = require('@system/encryption');
 const requestHandler = require('@utils/requestHandler');
 const validation = require('@utils/validation');
+const config = require('@root/src/config');
 
 const authService = {};
 /*
@@ -128,11 +129,11 @@ const createToken = async (payload) => {
   const authPeriod = await Model.config.findValueByKey('DEFAULT_AUTH_PERIOD');
   return jwt.sign(
     { ...payload, access: 'authenticated' },
-    process.env.JWT_SECRET_KEY,
+    config.secret.JWT_SECRET_KEY,
     {
       algorithm: 'HS256',
       expiresIn: `${authPeriod}d`,
-      issuer: process.env.APP_NAME,
+      issuer: config.env.APP_NAME,
     },
   );
 };

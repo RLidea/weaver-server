@@ -1,19 +1,21 @@
+const config = require('@root/src/config');
+
 const corsConfig = {
   development: [
-    process.env.CLIENT_DOMAIN,
+    config.env.CLIENT_DOMAIN,
   ],
   test: [
-    process.env.CLIENT_DOMAIN,
+    config.env.CLIENT_DOMAIN,
   ],
   production: [
-    process.env.CLIENT_DOMAIN,
+    config.env.CLIENT_DOMAIN,
   ],
 };
 
 module.exports = async (app) => {
   try {
     app.use((req, res, next) => {
-      const allowedOrigins = corsConfig[process.env.NODE_ENV];
+      const allowedOrigins = corsConfig[config.env.NODE_ENV];
 
       if (allowedOrigins.includes(req.headers.origin)) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);

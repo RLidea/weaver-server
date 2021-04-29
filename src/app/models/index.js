@@ -5,9 +5,10 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const { logger } = require('@system/logger');
+const systemConfig = require('@root/src/config');
 
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
+const env = systemConfig.env.NODE_ENV || 'development';
 // eslint-disable-next-line import/no-dynamic-require
 const config = require(`${__dirname}/../../database/config.js`)[env];
 

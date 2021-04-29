@@ -4,6 +4,7 @@
  */
 require('dotenv').config();
 require('module-alias/register');
+const config = require('@root/src/config');
 
 const express = require('express');
 
@@ -33,7 +34,7 @@ app.use('/auth', require('./routes/auth'));
 
 errorLoader(app);
 
-logger.system(`🚀 ${process.env.APP_NAME} is ready on ${process.env.PORT}`);
+logger.system(`🚀 ${config.env.APP_NAME} is ready on ${config.env.PORT}`);
 
 /*
  * Global
@@ -41,7 +42,7 @@ logger.system(`🚀 ${process.env.APP_NAME} is ready on ${process.env.PORT}`);
 global.logger = logger;
 global.message = message;
 global.env = {
-  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  JWT_SECRET_KEY: config.secret.JWT_SECRET_KEY,
 };
 
 module.exports = app;

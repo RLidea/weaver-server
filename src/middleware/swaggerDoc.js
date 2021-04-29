@@ -2,15 +2,16 @@
 // import swaggerJsDoc from 'swagger-jsdoc';
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const config = require('@root/src/config');
 
 module.exports = () => {
   const controllerDirectory = `${__dirname}/../app/controllers`;
   const options = {
     swaggerDefinition: {
       info: {
-        title: `${process.env.APP_NAME} API`,
+        title: `${config.env.APP_NAME} API`,
         version: '0.0.1',
-        description: `${process.env.APP_NAME} API Document`,
+        description: `${config.env.APP_NAME} API Document`,
       },
       basePath: '/',
     },
