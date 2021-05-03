@@ -13,9 +13,20 @@ const {
   corsLoader,
   allowedUrlLoader,
   errorLoader,
+  configValidation,
 } = require('@middleware/index');
 const { logger } = require('@system/logger');
 const message = require('@system/message');
+
+/*
+ * Global
+ */
+global.logger = logger;
+global.message = message;
+global.env = config.env;
+configValidation(config, {
+  not_required: ['KAKAO_CLIENT_SECRET', 'MAIL_DEV_USER', 'MAIL_DEV_PASSWORD', 'MAIL_USER', 'MAIL_PASSWORD'],
+});
 
 /*
  * Environment Configurations
@@ -35,14 +46,5 @@ app.use('/auth', require('./routes/auth'));
 errorLoader(app);
 
 logger.system(`🚀 ${config.env.APP_NAME} is ready on ${config.env.PORT}`);
-
-/*
- * Global
- */
-global.logger = logger;
-global.message = message;
-global.env = {
-  JWT_SECRET_KEY: config.secret.JWT_SECRET_KEY,
-};
 
 module.exports = app;
