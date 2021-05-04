@@ -40,13 +40,13 @@ const controller = {};
  *         description: "Page Not Found"
  */
 controller.viewLogin = async (req, res) => {
-  const authInfo = await authService.getAuthState(req);
-
-  if (authInfo?.isLogin) return res.redirect('/');
+  const loginState = await authService.getLoginState(req);
+  if (loginState?.isLogin) return res.redirect('/');
 
   return res.render('auth', {
     title: 'Login',
     page: 'login',
+    csrfToken: req.csrfToken(),
   });
 };
 
@@ -152,6 +152,7 @@ controller.viewRegister = async (req, res) => {
   res.render('auth', {
     title: 'Register',
     page: 'register',
+    csrfToken: req.csrfToken(),
   });
 };
 

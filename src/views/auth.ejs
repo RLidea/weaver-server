@@ -16,6 +16,7 @@
       <% if(page == 'register'){ %>
         <input id="name" type="text" name="name" placeholder="name">
       <% } %>
+      <input id="csrf" type="hidden" name="_csrf" value="<%=csrfToken%>" />
       <input id="email" type="email" name="email" placeholder="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
       <input id="password" type="password" name="password" placeholder="password" pattern="(.{6,})">
       <button id="submit" type="submit">Submit</button>
@@ -48,12 +49,12 @@
       name: document.querySelector('#name') ? document.querySelector('#name').value : null,
       email: document.querySelector('#email').value,
       password: passwordHashing(document.querySelector('#password').value),
+      _csrf: document.querySelector('#csrf').value,
     };
 
     axios.post('/auth/<%= page %>', sendData)
       .then(res => {
         const data = res.data;
-
         setCookie(data.result.cookie);
         alert(data.message)
         window.location.href = data.result.redirectUrl;
@@ -61,6 +62,7 @@
       })
       .catch(err => {
         const data = err.response.data;
+        console.log(data);
         setMessage(data.errors.message)
       });
   }
@@ -72,9 +74,10 @@
     const {
       name,
       value,
-      maxAge
+      maxAge,
+      sameSite
     } = cookie;
-    document.cookie = `${name}=${value};max-age=${maxAge};SameSite=None;path=/;`
+    document.cookie = `${name}=${value};max-age=${maxAge};SameSite=${sameSite};path=/;`
   }
 
   const passwordHashing = password => {

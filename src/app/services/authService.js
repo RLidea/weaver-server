@@ -58,6 +58,7 @@ authService.login = (req, res, { payload, period, redirectUrl, message }) => {
         });
       })
       .catch(() => {
+        console.log('#');
         return global.message.badRequest(res, 'login failed', {});
       });
   });
@@ -143,7 +144,7 @@ const createToken = async (payload) => {
  */
 authService.getLoginState = (req) => {
   const token = requestHandler.getJwt(req);
-  const sign = global.env.JWT_SECRET_KEY;
+  const sign = global.env.secret.JWT_SECRET_KEY;
 
   const result = (isLogin, message, decoded = null) => {
     return {

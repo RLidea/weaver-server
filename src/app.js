@@ -11,6 +11,7 @@ const express = require('express');
 const {
   expressLoader,
   corsLoader,
+  csrfLoader,
   allowedUrlLoader,
   errorLoader,
   configValidation,
@@ -23,7 +24,7 @@ const message = require('@system/message');
  */
 global.logger = logger;
 global.message = message;
-global.env = config.env;
+global.env = config;
 configValidation(config, {
   not_required: ['KAKAO_CLIENT_SECRET', 'MAIL_DEV_USER', 'MAIL_DEV_PASSWORD', 'MAIL_USER', 'MAIL_PASSWORD'],
 });
@@ -35,6 +36,7 @@ const app = express();
 
 expressLoader(app);
 corsLoader(app);
+csrfLoader(app);
 allowedUrlLoader(app);
 
 /*

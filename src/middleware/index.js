@@ -1,16 +1,12 @@
+/* eslint global-require:0 */
 /*
  * middleware loaders
  */
-const expressLoader = require('./express');
-const corsLoader = require('./cors');
-const allowedUrlLoader = require('./allowedUrl');
-const errorLoader = require('./error');
-const configValidation = require('./configValidation');
-
 module.exports = {
-  expressLoader,
-  corsLoader,
-  allowedUrlLoader,
-  errorLoader,
-  configValidation,
+  expressLoader: require('./express'),
+  corsLoader: require('./cors'),
+  csrfLoader: require('./csrf'),
+  allowedUrlLoader: require('./allowedUrl'),
+  errorLoader: require('./error'),
+  configValidation: require('./configValidation'),
 };
