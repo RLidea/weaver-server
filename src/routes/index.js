@@ -27,6 +27,7 @@ router.use('/docs', swagger?.path, swagger?.handlers);
 /* Send email */
 router.post('/mail', MailController.send);
 
+/* security */
 router.get('/csrf', SecureController.csrf);
 
 module.exports = router;

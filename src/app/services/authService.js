@@ -144,7 +144,7 @@ const createToken = async (payload) => {
  */
 authService.getLoginState = (req) => {
   const token = requestHandler.getJwt(req);
-  const sign = global.env.secret.JWT_SECRET_KEY;
+  const sign = global.config.secret.JWT_SECRET_KEY;
 
   const result = (isLogin, message, decoded = null) => {
     return {
