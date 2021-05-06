@@ -156,23 +156,23 @@ authService.getLoginState = (req) => {
 
   return jwt.verify(token, sign, (err, decoded) => {
     if (err || !decoded) {
-      global.logger.dev('invalid token');
+      global.logger.dev('😔 invalid token');
       return result(false, 'invalid token');
     }
     if (
       decoded
       && (!decoded.access || decoded.access === 'unauthenticated')
     ) {
-      global.logger.dev('unauthenticated token');
+      global.logger.dev('😕 unauthenticated token');
       return result(false, 'unauthenticated token');
     }
 
     if (decoded && decoded.access === 'authenticated') {
-      global.logger.dev('valid token');
+      global.logger.dev(`😀 valid token :${decoded?.email}`);
       return result(true, 'login Succeed', decoded);
     }
 
-    global.logger.dev('something suspicious');
+    global.logger.dev('👻 something suspicious');
     return result(false, 'something suspicious');
   });
 };

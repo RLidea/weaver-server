@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const authService = require('@services/authService');
 const MailController = require('@controllers/MailController');
+const SecureController = require('@controllers/SecureController');
 const swagger = require('@middleware/swaggerDoc')();
 const config = require('@root/src/config');
 
@@ -25,5 +26,7 @@ router.use('/docs', swagger?.path, swagger?.handlers);
 
 /* Send email */
 router.post('/mail', MailController.send);
+
+router.get('/csrf', SecureController.csrf);
 
 module.exports = router;
