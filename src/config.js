@@ -9,6 +9,7 @@ const env = {
 
 const secret = {
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  ALLOWED_CSRF: process.env.ALLOWED_CSRF,
   CSRF_SECRET: process.env.CSRF_SECRET,
   SESSION_SECRET: process.env.SESSION_SECRET,
   SESSION_TTL: process.env.SESSION_TTL,
