@@ -1,3 +1,4 @@
+/* eslint no-undef: 0 */
 System.config({
   paths: {
     '@root/*': './*',

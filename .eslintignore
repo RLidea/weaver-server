@@ -1,4 +1,2 @@
-src/database/migrations
-src/database/seeders
 webStorm.config.js
 src/public/docs/bundle.js

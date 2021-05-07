@@ -24,7 +24,7 @@
     "db:undo:seed": "./node_modules/.bin/sequelize db:seed:undo:all",
     "set": "./bin/install.sh",
     "commit": "./node_modules/.bin/gitmoji -c",
-    "prepare": "husky install"
+    "lint": "./node_modules/.bin/eslint --ignore-path .eslintignore . --fix"
   },
   "_moduleAliases": {
     "@root": ".",
@@ -44,15 +44,16 @@
       "var/session/*"
     ]
   },
-  "lint-staged": {
-    "*.js": [
-      "git add"
-    ]
-  },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run lint"
     }
+  },
+  "lint-staged": {
+    "*.js": [
+      "/node_modules/.bin/eslint --fix",
+      "git add"
+    ]
   },
   "eslintConfig": {
     "env": {
@@ -88,7 +89,7 @@
       "no-unused-vars": [
         "error",
         {
-          "argsIgnorePattern": "^next$|^res"
+          "argsIgnorePattern": "^next$|^res|Sequelize"
         }
       ],
       "import/no-unresolved": "off",

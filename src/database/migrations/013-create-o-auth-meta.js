@@ -1,4 +1,3 @@
-'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('oAuthMeta', {
@@ -19,16 +18,16 @@ module.exports = {
         },
       },
       service: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       accountId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       accessToken: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       refreshToken: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -43,10 +42,10 @@ module.exports = {
       deletedAt: {
         allowNull: true,
         type: Sequelize.DATE,
-      }
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('oAuthMeta');
-  }
+  },
 };

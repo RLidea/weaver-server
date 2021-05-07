@@ -58,7 +58,6 @@ authService.login = (req, res, { payload, period, redirectUrl, message }) => {
         });
       })
       .catch(() => {
-        console.log('#');
         return global.message.badRequest(res, 'login failed', {});
       });
   });

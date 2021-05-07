@@ -1,4 +1,3 @@
-'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('userMeta', {
@@ -19,13 +18,13 @@ module.exports = {
         },
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       key: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       value: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -45,5 +44,5 @@ module.exports = {
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('userMeta');
-  }
+  },
 };
