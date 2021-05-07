@@ -51,10 +51,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "./node_modules/eslint/bin/eslint.js --fix 'app/controllers/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'app/middleware/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'app/utils/**/*.js'",
-      "./node_modules/eslint/bin/eslint.js --fix 'app/services/**/*.js'",
+      "npm run lint",
       "git add"
     ]
   },
@@ -144,7 +141,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "gitmoji-cli": "^3.2.18",
-    "husky": "^6.0.0",
+    "husky": "^4.2.3",
     "lint-staged": "^9.5.0",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.6",
