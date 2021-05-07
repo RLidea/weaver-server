@@ -11,6 +11,10 @@ module.exports = () => {
         description: `${global.config.env.APP_NAME} API Document`,
       },
       basePath: '/',
+      schemes: [
+        'https',
+        'http',
+      ],
     },
     apis: [
       `${controllerDirectory}/*.js`,
@@ -23,9 +27,6 @@ module.exports = () => {
         in: 'header',
       },
     },
-    security: [
-      { jwt: [] },
-    ],
   };
 
   const uiOptions = {

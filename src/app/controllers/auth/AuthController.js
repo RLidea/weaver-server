@@ -9,14 +9,9 @@ require('dotenv').config();
 
 /**
  * @swagger
- * definitions:
- *  auth:
- *    type: "object"
- *    properties:
- *      email:
- *        type: "string"
- *      password:
- *        type: "string"
+ * tags:
+ * - name: "auth"
+ *   description: "Related to certification"
  */
 const controller = {};
 /*
@@ -263,6 +258,31 @@ controller.doLogout = async (req, res) => {
 
 /*
   Find or Reset Authentication Information
+ */
+/**
+ * @swagger
+ * /auth/reset/code:
+ *   get:
+ *     tags:
+ *     - "auth"
+ *     summary: "Get code for reset user's password"
+ *     operationId: "resetCode"
+ *     consumes:
+ *     - "application/json"
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *     - in: "body"
+ *       name: "body"
+ *       required: true
+ *       schema:
+ *         type: "object"
+ *         properties:
+ *           email:
+ *             type: "string"
+ *             required: true
+ *             example: "dev@weaver.com"
+ *             description: "user email"
  */
 controller.getResetCode = (req, res) => {
   // parameters
