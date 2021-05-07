@@ -1,17 +1,14 @@
-// import swaggerUI from 'swagger-ui-express';
-// import swaggerJsDoc from 'swagger-jsdoc';
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const config = require('@root/src/config');
 
 module.exports = () => {
   const controllerDirectory = `${__dirname}/../app/controllers`;
-  const options = {
+  const docOptions = {
     swaggerDefinition: {
       info: {
-        title: `${config.env.APP_NAME} API`,
+        title: `${global.config.env.APP_NAME} API`,
         version: '0.0.1',
-        description: `${config.env.APP_NAME} API Document`,
+        description: `${global.config.env.APP_NAME} API Document`,
       },
       basePath: '/',
     },
@@ -31,9 +28,15 @@ module.exports = () => {
     ],
   };
 
-  const specs = swaggerJsDoc(options);
+  const uiOptions = {
+    customSiteTitle: `${global.config.env.APP_NAME} API Document`,
+    customCssUrl: '/docs.css',
+    customfavIcon: '/favicon.ico',
+  };
+
+  const specs = swaggerJsDoc(docOptions);
   return {
     path: swaggerUI.serve,
-    handlers: swaggerUI.setup(specs),
+    handlers: swaggerUI.setup(specs, uiOptions),
   };
 };
