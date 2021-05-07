@@ -11,10 +11,10 @@ module.exports = () => {
         description: `${global.config.env.APP_NAME} API Document`,
       },
       basePath: '/',
-      schemes: [
-        'https',
-        'http',
-      ],
+      // schemes: [
+      //   'https',
+      //   'http',
+      // ],
     },
     apis: [
       `${controllerDirectory}/*.js`,

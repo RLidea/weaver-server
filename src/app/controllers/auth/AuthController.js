@@ -260,21 +260,6 @@ controller.doLogout = async (req, res) => {
   Find or Reset Authentication Information
  */
 /**
- * @swagger
- * /auth/reset/code:
- *   get:
- *     tags:
- *     - "auth"
- *     summary: "Get code for reset user's password"
- *     operationId: "resetCode"
- *     consumes:
- *     - "application/json"
- *     produces:
- *     - "application/json"
- *     parameters:
- *     - in: "body"
- *       name: "body"
- *       required: true
  *       schema:
  *         type: "object"
  *         properties:
@@ -284,12 +269,33 @@ controller.doLogout = async (req, res) => {
  *             example: "dev@weaver.com"
  *             description: "user email"
  */
+/**
+ * @swagger
+ * /auth/reset/code:
+ *   get:
+ *     tags:
+ *     - "auth"
+ *     summary: "api summary"
+ *     description: "api description"
+ *     parameters:
+ *     - in: "query"
+ *       name: "email"
+ *       description: "parameters"
+ *       required: true
+ *       type: "string"
+ *       example: "dev@weaver.com"
+ *     responses:
+ *       "200":
+ *         description: "Success"
+ *       "400":
+ *         description: "Invalid input"
+ */
 controller.getResetCode = (req, res) => {
   // parameters
-  const { email } = req.body;
+  const { email } = req.query;
 
   // Validation Check
-  const valErr = validation.validator(res, req.body, {
+  const valErr = validation.validator(res, req.query, {
     email: validation.check.auth.email,
   });
   if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
@@ -297,7 +303,7 @@ controller.getResetCode = (req, res) => {
   return userService.getResetCodeByEmail(email)
     .then(code => {
       if (!code) return global.message.badRequest(res, 'code not created');
-      return global.menubar.ok(res, 'success', {
+      return global.message.ok(res, 'success', {
         code,
       });
     })
