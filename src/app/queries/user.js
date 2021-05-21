@@ -114,4 +114,12 @@ user.updateProfile = ({
   });
 };
 
+user.removeById = (usersId) => {
+  return user.destroy({
+    where: {
+      id: usersId,
+    },
+  });
+};
+
 module.exports = user;

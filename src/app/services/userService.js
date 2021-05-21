@@ -96,8 +96,12 @@ userServices.create = async ({
   }
 };
 
-userServices.update = async (params) => {
+userServices.update = (params) => {
   return Query?.user.updateProfile(params);
+};
+
+userServices.remove = (usersId) => {
+  return Query?.user.removeById(usersId);
 };
 
 userServices.getLoginUser = async (req) => {

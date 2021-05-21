@@ -74,7 +74,16 @@ controller.updateItem = async (req, res) => {
 };
 
 controller.deleteItem = async (req, res) => {
-  res.json({});
+  const { usersId } = req.params;
+
+  const me = await userService.getLoginUser(req);
+  const authState = await authService.getAuthState(req, [1]);
+  if (me?.id === usersId || authState?.isAllowed) {
+    const result = await userService.remove(usersId);
+    return global.message.ok(res, 'success', result);
+  }
+
+  return global.message.forbidden(res, 'not allowed');
 };
 
 module.exports = controller;
