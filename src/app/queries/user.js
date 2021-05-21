@@ -72,4 +72,18 @@ user.updatePasswordByEmail = ({
   });
 };
 
+user.updateProfile = ({
+  email, name, phone, imageUrl, imageThumbUrl,
+}) => {
+  return user.update({
+    email,
+    name,
+    phone,
+    profileImageUrl: imageUrl,
+    profileThumbnailUrl: imageThumbUrl,
+  }, {
+    where: { email },
+  });
+};
+
 module.exports = user;

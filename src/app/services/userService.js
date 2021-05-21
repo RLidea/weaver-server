@@ -89,19 +89,37 @@ userServices.create = async ({
   }
 };
 
+userServices.update = async (params) => {
+  try {
+    return Query?.user.updateProfile({
+      email: params.email,
+      name: params.name,
+      phone: params.phone,
+      imageUrl: params.image,
+      imageThumbUrl: params.image,
+    });
+  } catch (e) {
+    return e;
+  }
+};
+
 userServices.getLoginUser = async (req) => {
   const loginState = await authService.getLoginState(req);
   if (!loginState?.isLogin) return false;
 
-  return Query.user.findByEmail(loginState?.decoded.email)
+  return Query?.user.findByEmail(loginState?.decoded.email)
     .catch(e => {
       global.logger.devError(e);
       return false;
     });
 };
 
+userServices.findUserById = (usersId) => {
+  return Query?.user.findById(usersId);
+};
+
 userServices.findUserByEmail = (email) => {
-  return Query.user.findByEmail(email);
+  return Query?.user.findByEmail(email);
 };
 /*
   password reset
@@ -111,7 +129,7 @@ const resetCode = (updatedAt) => {
 };
 
 userServices.getResetCodeByEmail = async (email) => {
-  const user = await Query.user.findByEmail(email)
+  const user = await Query?.user.findByEmail(email)
     .catch(e => {
       global.logger.devError(e);
       return false;
@@ -121,7 +139,7 @@ userServices.getResetCodeByEmail = async (email) => {
 };
 
 userServices.resetPassword = async ({ email, password, code }) => {
-  const user = await Query.user.findByEmail(email)
+  const user = await Query?.user.findByEmail(email)
     .catch(e => {
       global.logger.devError(e);
       return false;
@@ -137,7 +155,7 @@ userServices.resetPassword = async ({ email, password, code }) => {
    */
   // salt and hash
   const { salt, hashPassword } = await authService.createSaltAndHash(password);
-  return Query.user.updatePasswordByEmail({
+  return Query?.user.updatePasswordByEmail({
     email, hashPassword, salt,
   })
     .then(r => {
