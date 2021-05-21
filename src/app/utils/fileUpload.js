@@ -15,7 +15,6 @@ utils.localStorage = (dir) => {
         cb(null, targetDir);
       },
       filename (req, file, cb) {
-        console.log(file);
         cb(null, file.originalname);
       },
     }),

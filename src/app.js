@@ -55,7 +55,7 @@ try {
    */
   app.use('/', require('./routes/index'));
   app.use('/auth', require('./routes/auth'));
-  app.use('/user', require('./routes/user'));
+  app.use('/users', require('./routes/user'));
 
   errorLoader(app);
 

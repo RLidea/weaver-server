@@ -1,3 +1,4 @@
+const formatter = require('@utils/formatter');
 const { user, userMeta } = require('@models');
 
 user.findDetailById = (usersId) => {
@@ -73,17 +74,17 @@ user.updatePasswordByEmail = ({
 };
 
 user.updateProfile = ({
-  email, name, phone, imageUrl, imageThumbUrl,
+  usersId, email, name, phone, imageUrl, imageThumbUrl,
 }) => {
-  return user.update({
-    email,
-    name,
-    phone,
-    profileImageUrl: imageUrl,
-    profileThumbnailUrl: imageThumbUrl,
-  }, {
-    where: { email },
-  });
+  const params = {
+    usersId, email, name, phone, imageUrl, imageThumbUrl,
+  };
+  return user.update(
+    formatter.removeUndefined(params),
+    {
+      where: { id: usersId },
+    },
+  );
 };
 
 module.exports = user;

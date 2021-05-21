@@ -4,6 +4,9 @@ const authService = require('@services/authService');
 
 const userServices = {};
 
+/*
+  user
+ */
 userServices.create = async ({
   name,
   email,
@@ -74,14 +77,14 @@ userServices.create = async ({
       });
     }
 
-    await t.commit();
+    await t?.commit();
     return {
       error: false,
       message: 'user created',
     };
   } catch (e) {
     global.logger.devError(e);
-    await t.rollback();
+    await t?.rollback();
     return {
       error: true,
       message: 'error occurred',
@@ -91,13 +94,7 @@ userServices.create = async ({
 
 userServices.update = async (params) => {
   try {
-    return Query?.user.updateProfile({
-      email: params.email,
-      name: params.name,
-      phone: params.phone,
-      imageUrl: params.image,
-      imageThumbUrl: params.image,
-    });
+    return Query?.user.updateProfile(params);
   } catch (e) {
     return e;
   }
@@ -114,7 +111,7 @@ userServices.getLoginUser = async (req) => {
     });
 };
 
-userServices.findUserById = (usersId) => {
+userServices.findById = (usersId) => {
   return Query?.user.findById(usersId);
 };
 

@@ -55,4 +55,10 @@ util.base64StringToImageFile = (dataString, filePath) => {
   };
 };
 
+util.removeUndefined = (obj) => {
+  // eslint-disable-next-line no-param-reassign
+  Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
+  return obj;
+};
+
 module.exports = util;
