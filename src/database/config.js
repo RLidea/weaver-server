@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const config = require('@root/src/config');
+const config = require('../config');
 
 const common = {
   timezone: '+09:00',

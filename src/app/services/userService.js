@@ -7,6 +7,10 @@ const userServices = {};
 /*
   user
  */
+userServices.paginate = (page, limit) => {
+  return Query?.user.paginate(page, limit);
+};
+
 userServices.create = async ({
   name,
   email,
@@ -93,11 +97,7 @@ userServices.create = async ({
 };
 
 userServices.update = async (params) => {
-  try {
-    return Query?.user.updateProfile(params);
-  } catch (e) {
-    return e;
-  }
+  return Query?.user.updateProfile(params);
 };
 
 userServices.getLoginUser = async (req) => {

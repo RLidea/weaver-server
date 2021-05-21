@@ -6,7 +6,19 @@ const authService = require('@services/AuthService');
 const controller = {};
 
 controller.list = async (req, res) => {
-  res.json({});
+  const { page, limit } = req.query;
+  const params = {
+    page: formatter.toNumber(page),
+    limit: formatter.toNumber(limit),
+  };
+  const valErr = validation.validator(res, formatter.remoteEmpty(params), {
+    page: validation.check.common.integer,
+    limit: validation.check.common.integer,
+  });
+  if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
+
+  const result = await userService.paginate(params.page, params.limit);
+  return global.message.ok(res, 'success', result);
 };
 
 controller.create = async (req, res) => {
@@ -57,6 +69,7 @@ controller.updateItem = async (req, res) => {
       image: req.file,
     });
   }
+
   return global.message.forbidden(res, 'not allowed');
 };
 

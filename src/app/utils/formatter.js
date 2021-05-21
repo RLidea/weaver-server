@@ -61,4 +61,10 @@ util.removeUndefined = (obj) => {
   return obj;
 };
 
+util.remoteEmpty = (obj) => {
+  // eslint-disable-next-line no-param-reassign
+  Object.keys(obj).forEach(key => obj[key] === '' && delete obj[key]);
+  return obj;
+};
+
 module.exports = util;

@@ -1,5 +1,30 @@
 const formatter = require('@utils/formatter');
+const queryHelper = require('@utils/query');
 const { user, userMeta } = require('@models');
+
+user.paginate = (page, limit) => {
+  return queryHelper.paginate(
+    user,
+    {
+      attributes: {
+        exclude: [
+          'password',
+          'salt',
+        ],
+      },
+      include: [{
+        model: userMeta,
+        attributes: {
+          exclude: [
+            'usersId',
+          ],
+        },
+      }],
+    },
+    page,
+    limit,
+  );
+};
 
 user.findDetailById = (usersId) => {
   return user.findOne({
@@ -84,7 +109,9 @@ user.updateProfile = ({
     {
       where: { id: usersId },
     },
-  );
+  ).catch(e => {
+    return e;
+  });
 };
 
 module.exports = user;
