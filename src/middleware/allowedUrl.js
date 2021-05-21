@@ -12,6 +12,7 @@ module.exports = async (app) => {
         /^\/expired(.*)$/i,
         /^\/mail(.*)$/i,
         /\/auth(.*)*$/i,
+        /\/uploads(.*)*$/i,
         /\/csrf$/i,
       ];
 

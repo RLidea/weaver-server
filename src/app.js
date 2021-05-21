@@ -1,4 +1,5 @@
 /* eslint global-require: 0 */
+/* eslint no-console: 0 */
 /*
  * Modules
  */
@@ -27,7 +28,16 @@ try {
   global.message = message;
   global.config = config;
   configValidation(config, {
-    not_required: ['KAKAO_CLIENT_SECRET', 'MAIL_DEV_USER', 'MAIL_DEV_PASSWORD', 'MAIL_USER', 'MAIL_PASSWORD'],
+    not_required: [
+      'KAKAO_JS_APP_KEY',
+      'KAKAO_CLIENT_SECRET',
+      'NAVER_CLIENT_ID',
+      'NAVER_CLIENT_SECRET',
+      'MAIL_DEV_USER',
+      'MAIL_DEV_PASSWORD',
+      'MAIL_USER',
+      'MAIL_PASSWORD',
+    ],
   });
 
   /*
@@ -53,6 +63,8 @@ try {
 
   module.exports = app;
 } catch (e) {
-  // eslint-disable-next-line no-console
-  console.log(e);
+  console.error(e);
+  if (e.message.includes('Dialect needs to be explicitly supplied')) {
+    console.log('⚠️ Check your .env file');
+  }
 }

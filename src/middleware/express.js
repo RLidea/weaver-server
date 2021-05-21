@@ -40,6 +40,7 @@ module.exports = async (app) => {
       extended: false,
     }));
     app.use(cookieParser());
+    app.use('/uploads/', express.static(path.join(__dirname, '../../var/uploads')));
     app.use(express.static(path.join(__dirname, '../public')));
 
     /*

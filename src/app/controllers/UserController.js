@@ -41,7 +41,7 @@ controller.updateItem = async (req, res, next) => {
   //   image: req.file,
   // });
   // return global.message.ok(res, 'success', result);
-  return global.message.ok(res, 'success');
+  return global.message.ok(res, 'success', req.file);
 };
 
 controller.deleteItem = async (req, res, next) => {
