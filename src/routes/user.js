@@ -5,8 +5,6 @@ const fileUpload = require('@utils/fileUpload');
 
 const router = express.Router();
 
-// create = auth.register
-
 router
   .route('/')
   .get(UserController.list);

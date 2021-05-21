@@ -4,6 +4,7 @@ const validation = require('@utils/validation');
 const authService = require('@services/authService');
 const userService = require('@services/userService');
 const regex = require('@utils/regex');
+const formatter = require('@utils/formatter');
 
 require('dotenv').config();
 
@@ -158,7 +159,7 @@ controller.viewRegister = async (req, res) => {
  *     tags:
  *     - "auth"
  *     summary: "Create new user"
- *     operationId: "doRegister"
+ *     operationId: "createUser"
  *     consumes:
  *     - "application/json"
  *     produces:
@@ -189,19 +190,24 @@ controller.viewRegister = async (req, res) => {
  *         description: "Invalid input"
  */
 controller.doRegister = async (req, res) => {
-  // Parameters
   const { name, email, password } = req.body;
+  const { isDoLogin } = req.query; // default 1
   const { period, redirectUrl } = await authService.initialParamsForLogin();
 
-  // Validation Check
-  const valErr = validation.validator(res, req.body, {
+  const params = {
+    name,
+    email,
+    password,
+    isDoLogin: formatter.toNumber(isDoLogin || 1),
+  };
+  const valErr = validation.validator(res, params, {
     name: validation.check.auth.name,
     email: validation.check.auth.email,
     password: validation.check.auth.password,
+    isDoLogin: validation.check.common.reqInteger,
   });
-  if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
 
-  // create user
+  if (valErr) return global.message.badRequest(res, valErr.message, valErr.data);
   const createUser = await userService.create({
     name,
     email,
@@ -209,21 +215,24 @@ controller.doRegister = async (req, res) => {
   });
   if (createUser?.error) return global.message.badRequest(res, createUser?.message);
 
-  // login
   if (!createUser?.error) {
-    const reqLogin = {
-      body: {
+    if (params.isDoLogin) {
+      const reqLogin = {
+        body: {
+          email,
+          password,
+        },
+        login: req.login,
+      };
+      const payload = {
         email,
-        password,
-      },
-      login: req.login,
-    };
-    const payload = {
-      email,
-    };
-    const message = 'login with register';
-    await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
-    return false;
+      };
+      const message = 'login with register';
+      await controller.doLogin(reqLogin, res, { payload, period, redirectUrl, message });
+      return false;
+    }
+
+    return global.message.ok(res, 'success', createUser);
   }
   return global.message.serviceUnavailable(res, 'register failed');
 };

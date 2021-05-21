@@ -30,6 +30,9 @@ const check = {
     },
   },
   common: {
+    any: {
+      required: false,
+    },
     url: {
       type: String,
       required: true,

@@ -85,6 +85,12 @@ userServices.create = async ({
     return {
       error: false,
       message: 'user created',
+      result: {
+        id: user?.id,
+        name: user?.name,
+        email: user?.email,
+        updatedAt: user?.updatedAt,
+      },
     };
   } catch (e) {
     global.logger.devError(e);

@@ -1,7 +1,7 @@
-const formatter = require('@utils/formatter');
-const validation = require('@utils/validation');
 const userService = require('@services/userService');
 const authService = require('@services/AuthService');
+const formatter = require('@utils/formatter');
+const validation = require('@utils/validation');
 
 const controller = {};
 
@@ -19,10 +19,6 @@ controller.list = async (req, res) => {
 
   const result = await userService.paginate(params.page, params.limit);
   return global.message.ok(res, 'success', result);
-};
-
-controller.create = async (req, res) => {
-  res.json({});
 };
 
 controller.item = async (req, res) => {
