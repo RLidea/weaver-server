@@ -3,20 +3,13 @@
 /*
  * Modules
  */
+require('module-alias/register');
+const express = require('express');
+const config = require('@root/src/config');
+const loader = require('@middleware/index');
+const router = require('@root/src/routes/router');
+
 try {
-  require('module-alias/register');
-  const config = require('@root/src/config');
-
-  const express = require('express');
-
-  const {
-    expressLoader,
-    corsLoader,
-    csrfLoader,
-    allowedUrlLoader,
-    errorLoader,
-    configValidation,
-  } = require('@middleware/index');
   const { logger } = require('@system/logger');
   const message = require('@system/message');
 
@@ -26,7 +19,7 @@ try {
   global.logger = logger;
   global.message = message;
   global.config = config;
-  configValidation(config, {
+  loader.configValidation(config, {
     not_required: [
       'KAKAO_JS_APP_KEY',
       'KAKAO_CLIENT_SECRET',
@@ -44,19 +37,16 @@ try {
    */
   const app = express();
 
-  expressLoader(app);
-  corsLoader(app);
-  csrfLoader(app);
-  allowedUrlLoader(app);
+  loader.express(app);
+  loader.cors(app);
+  loader.csrf(app);
+  loader.allowedUrl(app);
 
   /*
    * Routers
    */
-  app.use('/', require('./routes/index'));
-  app.use('/auth', require('./routes/auth'));
-  app.use('/users', require('./routes/user'));
-
-  errorLoader(app);
+  router(app);
+  loader.error(app);
 
   logger.system(`🚀 ${config.env.APP_NAME} is ready on ${config.env.PORT}`);
 

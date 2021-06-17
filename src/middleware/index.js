@@ -3,10 +3,10 @@
  * middleware loaders
  */
 module.exports = {
-  expressLoader: require('./express'),
-  corsLoader: require('./cors'),
-  csrfLoader: require('./csrf'),
-  allowedUrlLoader: require('./allowedUrl'),
-  errorLoader: require('./error'),
+  express: require('./express'),
+  cors: require('./cors'),
+  csrf: require('./csrf'),
+  allowedUrl: require('./allowedUrl'),
+  error: require('./error'),
   configValidation: require('./configValidation'),
 };
