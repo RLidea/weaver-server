@@ -6,8 +6,6 @@ const userService = require('@services/userService');
 const regex = require('@utils/regex');
 const formatter = require('@utils/formatter');
 
-require('dotenv').config();
-
 /**
  * @swagger
  * tags:

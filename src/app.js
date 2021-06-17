@@ -4,7 +4,6 @@
  * Modules
  */
 try {
-  require('dotenv').config();
   require('module-alias/register');
   const config = require('@root/src/config');
 

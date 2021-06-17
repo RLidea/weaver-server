@@ -1,9 +1,7 @@
-require('dotenv').config();
-
 const config = require('../config');
 
 const common = {
-  timezone: '+09:00',
+  // timezone: '+09:00',
   seederStorage: 'sequelize',
   migrationStorageTableName: 'MigrationHistory',
   seederStorageTableName: 'SeederHistory',

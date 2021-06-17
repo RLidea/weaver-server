@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-const debug = require('debug')('weaver-server:server');
+const debug = require('debug')(process.env.APP_NAME);
 const http = require('http');
 const app = require('../src/app');
 
@@ -12,7 +12,7 @@ const app = require('../src/app');
  * Get port from environment and store in Express.
  */
 
-const port = Number(normalizePort(process.env.PORT || 3000));
+const port = Number(normalizePort(process.env.PORT));
 app.set('port', port);
 
 /**
@@ -83,9 +83,9 @@ function onError(error) {
  */
 
 function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? `pipe ${addr}`
-    : `port ${addr.port}`;
+  const address = server.address();
+  const bind = typeof address === 'string'
+    ? `pipe ${address}`
+    : `port ${address.port}`;
   debug(`Listening on ${bind}`);
 }

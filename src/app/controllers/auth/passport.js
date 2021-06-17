@@ -2,8 +2,6 @@
  * @brief Passport 정의.
  */
 
-require('dotenv').config();
-
 const passport = require('passport');
 const passportJwt = require('passport-jwt');
 
