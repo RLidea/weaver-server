@@ -5,6 +5,7 @@ const authService = require('@services/authService');
 const userService = require('@services/userService');
 const regex = require('@utils/regex');
 const formatter = require('@utils/formatter');
+const config = require('@root/src/config');
 
 /**
  * @swagger
@@ -40,7 +41,7 @@ controller.viewLogin = async (req, res) => {
   return res.render('auth', {
     title: 'Login',
     page: 'login',
-    csrfToken: req.csrfToken(),
+    csrfToken: config.secret.ALLOWED_CSRF === true ? req.csrfToken() : '',
   });
 };
 
@@ -146,7 +147,7 @@ controller.viewRegister = async (req, res) => {
   res.render('auth', {
     title: 'Register',
     page: 'register',
-    csrfToken: req.csrfToken(),
+    csrfToken: config.secret.ALLOWED_CSRF === true ? req.csrfToken() : '',
   });
 };
 

@@ -1,12 +1,9 @@
+const format = require('../columnFormat');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('configs', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER.UNSIGNED,
-      },
+      id: format.id,
       key: {
         type: Sequelize.STRING,
       },
@@ -16,20 +13,9 @@ module.exports = {
       comment: {
         type: Sequelize.STRING,
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('NOW()'),
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('NOW()'),
-      },
-      deletedAt: {
-        allowNull: true,
-        type: Sequelize.DATE,
-      },
+      createdAt: format.createdAt,
+      updatedAt: format.updatedAt,
+      deletedAt: format.deletedAt,
     });
   },
   down: async (queryInterface, Sequelize) => {
