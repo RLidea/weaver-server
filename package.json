@@ -128,7 +128,7 @@
     "passport-local": "^1.0.0",
     "passport-naver": "^1.0.6",
     "sendmail": "^1.6.1",
-    "sequelize": "^5.22.3",
+    "sequelize": "^6.28.2",
     "swagger-jsdoc": "6.0.0",
     "swagger-ui-express": "^4.1.6",
     "validate": "^5.1.0",
